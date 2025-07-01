@@ -1,0 +1,140 @@
+.footer {
+  border-radius: var(--Corner-Extra-large, 28px) var(--Corner-Extra-large, 28px)
+    var(--Corner-None, 0px) var(--Corner-None, 0px);
+  background: var(--Brand, #1613ef);
+  padding: 48px 148px 32px 148px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.footer .container {
+  max-width: 100%;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 60px;
+  margin-bottom: 40px;
+}
+
+.footer-logo .logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+}
+
+.footer-logo .logo-icon {
+  font-size: 36px;
+}
+
+.footer-logo .logo-text {
+  background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.footer-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-link {
+  color: #fff;
+  font-family: Unbounded;
+  font-size: 16px;
+  font-weight: 300;
+}
+
+.footer-link:hover {
+  color: #a78bfa;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(199, 210, 254, 0.2);
+  padding-top: 30px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 30px;
+  align-items: center;
+}
+
+.footer-text {
+  font-size: 14px;
+  color: #c7d2fe;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.footer-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(167, 139, 250, 0.1);
+  padding: 12px 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(167, 139, 250, 0.3);
+}
+
+.badge-icon {
+  font-size: 18px;
+}
+
+.badge-text {
+  font-size: 14px;
+  color: #a78bfa;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 40px 0 30px;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+  }
+
+  .footer-logo .logo {
+    font-size: 24px;
+    justify-content: center;
+  }
+
+  .footer-logo .logo-icon {
+    font-size: 28px;
+  }
+
+  .footer-links {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .footer-bottom {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .footer-text {
+    font-size: 13px;
+  }
+
+  .footer-badge {
+    justify-content: center;
+    margin: 0 auto;
+  }
+}

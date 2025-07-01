@@ -1,0 +1,123 @@
+.contract-types {
+  width: 100%;
+  max-width: 100%;
+}
+
+.contract-types .container {
+  max-width: 100%;
+}
+
+.contract-types-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.award-icon {
+  margin-right: 10px;
+}
+
+.section-subtitle {
+  font-family: Unbounded;
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0;
+  flex: 1;
+  text-align: center;
+  margin-left: 280px;
+}
+
+.section-subtitle-2 {
+  color: #000;
+  font-family: Jura;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.section-subtitle-2-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  z-index: 100;
+  color: #000;
+  font-family: Jura;
+  font-size: 12px;
+  font-weight: 700;
+  margin-right: 30px;
+  border-color: transparent !important;
+  backdrop-filter: blur(10px) !important;
+  margin-top: 30px;
+}
+
+.register-link {
+  color: #2e2bff;
+  text-decoration: underline;
+}
+
+.contract-grid {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  width: auto;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.contract-card {
+  height: 118px;
+  padding: 48px;
+  border-radius: var(--Corner-Extra-large, 28px);
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.contract-title {
+  color: var(--Text-Primary, #1a1a1a);
+  font-family: Unbounded;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+@media (max-width: 768px) {
+  .contract-types {
+    padding: 40px 16px;
+  }
+
+  .contract-types-content {
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  .section-subtitle {
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .section-subtitle-2-container {
+    margin: 0;
+    justify-content: center;
+  }
+
+  .contract-grid {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .contract-card {
+    padding: 24px;
+    white-space: normal;
+  }
+
+  .contract-title {
+    font-size: 14px;
+  }
+}

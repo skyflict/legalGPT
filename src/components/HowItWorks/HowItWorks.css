@@ -1,0 +1,361 @@
+.how-it-works {
+  padding: 60px 0;
+}
+
+.how-it-works-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+  margin-bottom: 80px;
+}
+
+.section-title {
+  color: #000;
+  font-family: Unbounded;
+  font-size: 24px;
+  font-weight: 300;
+  margin-bottom: 40px;
+}
+
+.example-request {
+  border-radius: var(--Corner-Extra-large, 28px);
+  background: #fff;
+  backdrop-filter: blur(10px);
+  padding: 24px;
+  font-family: Inter;
+  font-size: 14px !important;
+  font-weight: 400;
+  color: var(--Text-Primary, #1a1a1a);
+  width: 573px !important;
+  height: 188px !important;
+  width: 100%;
+}
+
+.example-request p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #374151;
+  margin: 0;
+}
+
+.steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.step-item {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.step-number {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 800;
+  flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.step-description {
+  font-size: 16px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 8px 0 0;
+}
+
+.try-btn {
+  font-size: 18px;
+  padding: 16px 32px;
+}
+
+.how-it-works-image {
+  width: 315px;
+  height: 188px;
+  border-radius: var(--Corner-Extra-large, 28px);
+  background: url("../../assets/scales.webp") white center / contain no-repeat;
+  backdrop-filter: blur(10px);
+  margin-top: 76px;
+}
+
+.courthouse-illustration {
+  position: relative;
+  width: 250px;
+  height: 250px;
+}
+
+.courthouse-base {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 80px;
+  background: linear-gradient(135deg, #6b46c1 0%, #8b5cf6 100%);
+  border-radius: 8px;
+  box-shadow: 0 8px 25px rgba(107, 70, 193, 0.3);
+}
+
+.courthouse-roof {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 100px solid transparent;
+  border-right: 100px solid transparent;
+  border-bottom: 60px solid #a78bfa;
+  filter: drop-shadow(0 4px 15px rgba(167, 139, 250, 0.3));
+}
+
+.courthouse-columns {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180px;
+  height: 100px;
+  background: repeating-linear-gradient(
+    90deg,
+    #c4b5fd,
+    #c4b5fd 20px,
+    #a78bfa 20px,
+    #a78bfa 40px
+  );
+  border-radius: 8px 8px 0 0;
+}
+
+.guarantee-section {
+  display: flex;
+  gap: 24px;
+  margin-top: 60px;
+}
+
+.guarantee-card {
+  padding: 24px;
+  border-radius: var(--Corner-Extra-large, 28px);
+  background: #2e2bff;
+  width: 444px;
+  height: 168px;
+}
+
+.guarantee-title {
+  color: #fff;
+  font-family: Unbounded;
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 16px;
+}
+
+.guarantee-description {
+  color: #fff;
+  font-family: Inter;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.guarantee-image {
+  width: 444px;
+  height: 168px;
+  border-radius: var(--Corner-Extra-large, 28px);
+  background: url("../../assets/building.png") white 0px -28.785px / 100% 307.407%
+    no-repeat;
+  backdrop-filter: blur(10px);
+}
+
+.buildings-illustration {
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+
+.building {
+  position: absolute;
+  bottom: 0;
+  background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%);
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 4px 15px rgba(167, 139, 250, 0.3);
+}
+
+.building-1 {
+  left: 0;
+  width: 50px;
+  height: 120px;
+}
+
+.building-2 {
+  left: 60px;
+  width: 60px;
+  height: 160px;
+}
+
+.building-3 {
+  right: 0;
+  width: 45px;
+  height: 100px;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .how-it-works {
+    padding: 50px 0;
+  }
+
+  .how-it-works-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    margin-bottom: 50px;
+  }
+
+  .section-title {
+    font-size: 24px;
+  }
+
+  .example-request {
+    padding: 20px;
+  }
+
+  .step-item {
+    gap: 16px;
+  }
+
+  .step-number {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+
+  .step-title {
+    font-size: 16px;
+  }
+
+  .courthouse-illustration {
+    width: 180px;
+    height: 180px;
+  }
+
+  .guarantee-section {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 24px;
+  }
+
+  .guarantee-card {
+    padding: 24px;
+  }
+
+  .guarantee-title {
+    font-size: 20px;
+  }
+}
+
+.how-it-works-steps {
+  display: flex;
+  margin-bottom: 24px;
+  gap: 24px;
+}
+
+.how-it-works-step {
+  width: 329px;
+  padding: 24px;
+  height: 108px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-radius: var(--Corner-Extra-large, 28px);
+  background: #fff;
+  backdrop-filter: blur(10px);
+}
+
+.how-it-works-step-2 {
+  width: 559px;
+  padding: 24px;
+  height: 108px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-radius: var(--Corner-Extra-large, 28px);
+  background: #fff;
+  backdrop-filter: blur(10px);
+}
+
+.how-it-works-step-3 {
+  width: 534px;
+  padding: 24px;
+  height: 108px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-radius: var(--Corner-Extra-large, 28px);
+  background: #fff;
+  backdrop-filter: blur(10px);
+}
+
+.how-it-works-step-number {
+  color: #000;
+  font-family: Unbounded;
+  font-size: 64px;
+  font-weight: 300;
+}
+
+.how-it-works-step-title {
+  color: #000;
+  font-family: Unbounded;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.how-it-works-step-image {
+  width: 343px;
+  height: 108px;
+  border-radius: var(--Corner-Extra-large, 28px);
+  background: url("../../assets/building.png") white 0px -28.785px / 100% 207.407%
+    no-repeat;
+  backdrop-filter: blur(10px);
+}
+
+.how-it-works-button {
+  width: 100%;
+  height: 68px;
+  border-radius: var(--Corner-Extra-large, 28px);
+  background: #fff;
+  backdrop-filter: blur(10px);
+  color: #2e2bff;
+  text-align: center;
+  font-family: Unbounded;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  border: none;
+}

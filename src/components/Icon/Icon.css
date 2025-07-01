@@ -1,0 +1,169 @@
+.icon {
+  display: inline-block;
+  vertical-align: middle;
+  color: currentColor;
+  fill: currentColor;
+  line-height: 1;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+/* Размеры иконок */
+.icon--xs {
+  width: 12px;
+  height: 12px;
+}
+
+.icon--sm {
+  width: 16px;
+  height: 16px;
+}
+
+.icon--md {
+  width: 20px;
+  height: 20px;
+}
+
+.icon--lg {
+  width: 24px;
+  height: 24px;
+}
+
+.icon--xl {
+  width: 32px;
+  height: 32px;
+}
+
+.icon--xxl {
+  width: 48px;
+  height: 48px;
+}
+
+/* Интерактивные состояния */
+.icon--clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.icon--clickable:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
+.icon--clickable:active {
+  transform: scale(0.95);
+}
+
+/* SVG стили */
+.icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  fill: currentColor;
+}
+
+/* Для img тегов (логотипы) */
+.icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Модификаторы цветов */
+.icon--primary {
+  color: #7c3aed;
+}
+
+.icon--secondary {
+  color: #6b7280;
+}
+
+.icon--success {
+  color: #10b981;
+}
+
+.icon--warning {
+  color: #f59e0b;
+}
+
+.icon--error {
+  color: #ef4444;
+}
+
+.icon--white {
+  color: #ffffff;
+}
+
+.icon--black {
+  color: #000000;
+}
+
+/* Анимации */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.icon--spinning {
+  animation: spin 1s linear infinite;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .icon--responsive-xs {
+    width: 12px;
+    height: 12px;
+  }
+
+  .icon--responsive-sm {
+    width: 14px;
+    height: 14px;
+  }
+
+  .icon--responsive-md {
+    width: 16px;
+    height: 16px;
+  }
+
+  .icon--responsive-lg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Состояния для доступности */
+.icon:focus-visible {
+  outline: 2px solid #7c3aed;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Высокий контраст */
+@media (prefers-contrast: high) {
+  .icon {
+    filter: contrast(1.2);
+  }
+}
+
+/* Уменьшение движения */
+@media (prefers-reduced-motion: reduce) {
+  .icon {
+    transition: none;
+  }
+
+  .icon--spinning {
+    animation: none;
+  }
+
+  .icon--clickable:hover {
+    transform: none;
+  }
+
+  .icon--clickable:active {
+    transform: none;
+  }
+}
