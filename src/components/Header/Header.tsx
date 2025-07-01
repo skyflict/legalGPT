@@ -20,7 +20,7 @@ const Header = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Функция для маскировки номера телефона
-  const formatPhoneNumber = (email: string) => {
+  const formatPhoneNumber = (_email: string) => {
     // Предполагаем, что email содержит номер телефона или используем как есть
     // Для демонстрации создадим маскированный номер
     return "8 916 666 ** **";

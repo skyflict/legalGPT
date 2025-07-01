@@ -24,7 +24,7 @@ function App() {
     setIsAuthModalOpen(false);
   };
 
-  const handleLogin = (email: string, password: string) => {
+  const handleLogin = (email: string, _password: string) => {
     // Здесь будет логика аутентификации
     // Пока просто сохраняем email и устанавливаем состояние входа
     setUserEmail(email);

@@ -12,7 +12,7 @@ const AuthModal = ({ isOpen, onClose, onLogin }: AuthModalProps) => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isAccepted, setIsAccepted] = useState(false);
+  const [_isAccepted, setIsAccepted] = useState(false);
 
   if (!isOpen) return null;
 
