@@ -3,9 +3,10 @@ import Button from "../Button/Button";
 
 interface FeaturesProps {
   isLoggedIn?: boolean;
+  onOpenAuthModal?: () => void;
 }
 
-const Features = ({ isLoggedIn = false }: FeaturesProps) => {
+const Features = ({ isLoggedIn = false, onOpenAuthModal }: FeaturesProps) => {
   const features = [
     {
       id: 1,
@@ -60,6 +61,7 @@ const Features = ({ isLoggedIn = false }: FeaturesProps) => {
               noBorder
               glowing={true}
               className="features-footer-btn"
+              onClick={onOpenAuthModal}
             >
               Попробовать
             </Button>

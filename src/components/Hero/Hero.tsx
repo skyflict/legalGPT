@@ -2,7 +2,11 @@ import "./Hero.css";
 import Icon from "../Icon/Icon";
 import Button from "../Button";
 
-const Hero = () => {
+interface HeroProps {
+  onOpenAuthModal?: () => void;
+}
+
+const Hero = ({ onOpenAuthModal }: HeroProps) => {
   return (
     <section className="hero">
       <div className="container">
@@ -31,6 +35,7 @@ const Hero = () => {
               noBorder
               className="hero-btn"
               glowing={true}
+              onClick={onOpenAuthModal}
             >
               Начать работу
             </Button>

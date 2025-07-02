@@ -13,6 +13,7 @@ const Generation = () => {
   const [query, setQuery] = useState("");
   const [provider, setProvider] = useState("yandexgpt");
   const [isFocused, setIsFocused] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showContractType, setShowContractType] = useState(false);
   const [showContractSelect, setShowContractSelect] = useState(false);
@@ -23,9 +24,16 @@ const Generation = () => {
   const [stepTwoLoading, setStepTwoLoading] = useState(false);
   const [showFinalResult, setShowFinalResult] = useState(false);
   const [showHelpText, setShowHelpText] = useState(true);
+
+  // Состояния для полей формы
+  const [fullName, setFullName] = useState("");
+  const [requestText, setRequestText] = useState("");
+  const [address, setAddress] = useState("");
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const providerDropdownRef = useRef<HTMLDivElement>(null);
+  const inputWrapperRef = useRef<HTMLDivElement>(null);
 
   const handleQueryClick = (queryText: string) => {
     setQuery(queryText);
@@ -43,6 +51,7 @@ const Generation = () => {
 
   const handleFocus = () => {
     setIsFocused(true);
+    setShowOverlay(true);
   };
 
   const handleBlur = () => {
@@ -55,6 +64,24 @@ const Generation = () => {
       !showFinalResult
     ) {
       setIsFocused(false);
+      setShowOverlay(false);
+    }
+  };
+
+  const handleOverlayClick = () => {
+    if (
+      query.length === 0 &&
+      !isLoading &&
+      !showContractType &&
+      !showContractSelect &&
+      !showStepTwo &&
+      !showFinalResult
+    ) {
+      setIsFocused(false);
+      setShowOverlay(false);
+      if (textareaRef.current) {
+        textareaRef.current.blur();
+      }
     }
   };
 
@@ -87,6 +114,7 @@ const Generation = () => {
     setIsDropdownOpen(false);
     setIsProviderDropdownOpen(false);
     setIsFocused(false);
+    setShowOverlay(false);
     if (textareaRef.current) {
       textareaRef.current.blur();
     }
@@ -191,6 +219,7 @@ const Generation = () => {
   // Закрытие dropdown при клике вне его
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      // Проверяем клики вне dropdown'ов
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
@@ -203,16 +232,27 @@ const Generation = () => {
       ) {
         setIsProviderDropdownOpen(false);
       }
+
+      // Проверяем клики вне области ввода для скрытия overlay
+      if (
+        showOverlay &&
+        inputWrapperRef.current &&
+        !inputWrapperRef.current.contains(event.target as Node) &&
+        providerDropdownRef.current &&
+        !providerDropdownRef.current.contains(event.target as Node)
+      ) {
+        handleOverlayClick();
+      }
     };
 
-    if (isDropdownOpen || isProviderDropdownOpen) {
+    if (isDropdownOpen || isProviderDropdownOpen || showOverlay) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isDropdownOpen, isProviderDropdownOpen]);
+  }, [isDropdownOpen, isProviderDropdownOpen, showOverlay]);
 
   // Также добавляем обработчик для события input (для вставки текста)
   const handleInput = () => {
@@ -225,6 +265,22 @@ const Generation = () => {
     }
   };
 
+  // Проверка заполненности обязательных полей
+  const isFormValid = fullName.trim() !== "" && requestText.trim() !== "";
+
+  // Обработчики изменения полей формы
+  const handleFullNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFullName(e.target.value);
+  };
+
+  const handleRequestTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRequestText(e.target.value);
+  };
+
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAddress(e.target.value);
+  };
+
   return (
     <section
       className={`generation ${
@@ -235,6 +291,15 @@ const Generation = () => {
         showStepTwo ||
         showFinalResult
           ? "generation--focused"
+          : ""
+      } ${
+        showOverlay &&
+        !isLoading &&
+        !showContractType &&
+        !showContractSelect &&
+        !showStepTwo &&
+        !showFinalResult
+          ? "generation--overlay-visible"
           : ""
       }`}
     >
@@ -253,6 +318,7 @@ const Generation = () => {
                     ? "input-wrapper--focused"
                     : ""
                 }`}
+                ref={inputWrapperRef}
               >
                 {(isFocused ||
                   isLoading ||
@@ -550,11 +616,15 @@ const Generation = () => {
                             type="text"
                             placeholder="ФИО"
                             className="form-field"
+                            value={fullName}
+                            onChange={handleFullNameChange}
                           />
                           <input
                             type="text"
                             placeholder="Введите запрос"
                             className="form-field"
+                            value={requestText}
+                            onChange={handleRequestTextChange}
                           />
                         </div>
 
@@ -567,6 +637,8 @@ const Generation = () => {
                             type="text"
                             placeholder="Адрес регистрации"
                             className="form-field"
+                            value={address}
+                            onChange={handleAddressChange}
                           />
                         </div>
 
@@ -574,14 +646,9 @@ const Generation = () => {
                           <button
                             className="action-button action-button--primary"
                             onClick={handleStepThreeNext}
+                            disabled={!isFormValid}
                           >
                             Далее
-                          </button>
-                          <button
-                            className="action-button action-button--secondary"
-                            onClick={handleStepThreeSkip}
-                          >
-                            Пропустить
                           </button>
                         </div>
 
@@ -677,12 +744,7 @@ const Generation = () => {
                       </div>
                     </div>
 
-                    <div className="consultation-image">
-                      <img
-                        src="/src/assets/scales.webp"
-                        alt="Весы правосудия"
-                      />
-                    </div>
+                    <div className="consultation-image" />
                   </div>
                 </div>
               </div>
@@ -754,6 +816,21 @@ const Generation = () => {
             )}
         </div>
       </div>
+
+      {/* Overlay для затемнения фона */}
+      <div
+        className={`generation-overlay ${
+          showOverlay &&
+          !isLoading &&
+          !showContractType &&
+          !showContractSelect &&
+          !showStepTwo &&
+          !showFinalResult
+            ? "generation-overlay--visible"
+            : ""
+        }`}
+        onClick={handleOverlayClick}
+      />
     </section>
   );
 };

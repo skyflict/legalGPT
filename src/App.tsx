@@ -52,15 +52,21 @@ function App() {
         <main className="main-content">
           {!isLoggedIn && (
             <div>
-              <Hero />
+              <Hero onOpenAuthModal={handleOpenAuthModal} />
               <ContractTypes />
             </div>
           )}
 
           {isLoggedIn && <Generation />}
 
-          <Features />
-          <HowItWorks />
+          <Features
+            isLoggedIn={isLoggedIn}
+            onOpenAuthModal={handleOpenAuthModal}
+          />
+          <HowItWorks
+            isLoggedIn={isLoggedIn}
+            onOpenAuthModal={handleOpenAuthModal}
+          />
           <FAQ />
         </main>
       </div>

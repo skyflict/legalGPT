@@ -3,9 +3,13 @@ import Button from "../Button/Button";
 
 interface HowItWorksProps {
   isLoggedIn?: boolean;
+  onOpenAuthModal?: () => void;
 }
 
-const HowItWorks = ({ isLoggedIn = false }: HowItWorksProps) => {
+const HowItWorks = ({
+  isLoggedIn = false,
+  onOpenAuthModal,
+}: HowItWorksProps) => {
   return (
     <section className="how-it-works">
       <div className="container">
@@ -79,6 +83,7 @@ const HowItWorks = ({ isLoggedIn = false }: HowItWorksProps) => {
             noBorder
             glowing={true}
             className="features-footer-btn"
+            onClick={onOpenAuthModal}
           >
             Попробовать
           </Button>
