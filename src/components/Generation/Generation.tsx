@@ -191,11 +191,6 @@ const Generation = () => {
     setShowFinalResult(true);
   };
 
-  const handleStepThreeSkip = () => {
-    setShowStepTwo(false);
-    setShowFinalResult(true);
-  };
-
   const handleCloseHelpText = () => {
     setShowHelpText(false);
   };
