@@ -1,29 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./AuthModal.css";
-import Icon from "../Icon/Icon";
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   onLogin: (email: string, password: string) => void;
+  initialMode?: "login" | "register";
 }
 
-const AuthModal = ({ isOpen, onClose, onLogin }: AuthModalProps) => {
-  const [isLoginMode, setIsLoginMode] = useState(true);
+const AuthModal = ({
+  isOpen,
+  onClose,
+  onLogin,
+  initialMode = "login",
+}: AuthModalProps) => {
+  const [isLoginMode, setIsLoginMode] = useState(initialMode === "login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [_isAccepted, setIsAccepted] = useState(false);
+
+  // Обновляем режим при изменении initialMode
+  useEffect(() => {
+    setIsLoginMode(initialMode === "login");
+  }, [initialMode]);
 
   if (!isOpen) return null;
 
+  // Валидация пароля
+  const isPasswordValid = password.length >= 6;
+  const doPasswordsMatch = password === confirmPassword;
+  const isFormValid = isLoginMode
+    ? email && password
+    : email &&
+      password &&
+      confirmPassword &&
+      isPasswordValid &&
+      doPasswordsMatch;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && password) {
+    if (isFormValid) {
       onLogin(email, password);
       onClose();
       // Очищаем форму
       setEmail("");
       setPassword("");
+      setConfirmPassword("");
       setIsAccepted(false);
     }
   };
@@ -32,6 +55,7 @@ const AuthModal = ({ isOpen, onClose, onLogin }: AuthModalProps) => {
     setIsLoginMode(!isLoginMode);
     setEmail("");
     setPassword("");
+    setConfirmPassword("");
     setIsAccepted(false);
   };
 
@@ -44,19 +68,16 @@ const AuthModal = ({ isOpen, onClose, onLogin }: AuthModalProps) => {
 
         <div className="auth-modal-content">
           <h2 className="auth-title">
-            Войти
-            <br />
-            или зарегистрироваться
+            {isLoginMode ? <>Вход в личный кабинет</> : "Регистрация"}
           </h2>
 
           <form className="auth-form" onSubmit={handleSubmit}>
             <input
-              type="email"
+              type="text"
               placeholder="Телефон или почта"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="auth-input"
-              required
             />
 
             <input
@@ -65,33 +86,66 @@ const AuthModal = ({ isOpen, onClose, onLogin }: AuthModalProps) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="auth-input"
-              required
             />
 
-            <button type="submit" className="auth-submit-btn">
-              Войти
-            </button>
+            {!isLoginMode && (
+              <>
+                <input
+                  type="password"
+                  placeholder="Повторите пароль"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="auth-input"
+                />
+
+                {/* Показываем ошибки валидации только если пользователь начал вводить */}
+                {password && !isPasswordValid && (
+                  <div className="auth-error">
+                    Пароль должен содержать минимум 6 символов
+                  </div>
+                )}
+
+                {confirmPassword && !doPasswordsMatch && (
+                  <div className="auth-error">Пароли не совпадают</div>
+                )}
+              </>
+            )}
+
+            {isLoginMode && (
+              <button
+                type="submit"
+                className="auth-submit-btn"
+                disabled={!isFormValid}
+              >
+                Войти
+              </button>
+            )}
+
+            {!isLoginMode && (
+              <button
+                type="submit"
+                className="auth-submit-btn"
+                disabled={!isFormValid}
+              >
+                Зарегистрироваться
+              </button>
+            )}
 
             <button
               type="button"
               className="auth-register-btn"
               onClick={toggleMode}
             >
-              Создать аккаунт
+              {isLoginMode ? "Создать аккаунт" : "Уже есть аккаунт? Войти"}
             </button>
 
             <label className="auth-checkbox">
-              <Icon name="checkbox" size="sm" />
-              <span className="checkbox-text">
-                Нажимая «Войти», вы принимаете{" "}
-                <a href="#" className="auth-link">
-                  пользовательское соглашение
-                </a>{" "}
-                и{" "}
-                <a href="#" className="auth-link">
-                  политику конфиденциальности
-                </a>
-              </span>
+              {isLoginMode ? (
+                <span className="checkbox-text">
+                  Нажимая кнопку «Войти», я соглашаюсь c политикой
+                  конфиденциальности и обработкой персональных данных.
+                </span>
+              ) : null}
             </label>
           </form>
         </div>

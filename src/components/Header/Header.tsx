@@ -5,6 +5,7 @@ import "./Header.css";
 
 interface HeaderProps {
   onOpenAuthModal?: () => void;
+  onOpenRegisterModal?: () => void;
   isLoggedIn?: boolean;
   userEmail?: string;
   onLogout?: () => void;
@@ -12,6 +13,7 @@ interface HeaderProps {
 
 const Header = ({
   onOpenAuthModal,
+  onOpenRegisterModal,
   isLoggedIn = false,
   userEmail,
   onLogout,
@@ -114,7 +116,7 @@ const Header = ({
                   backgroundColor="#1A1A1A"
                   borderRadius={16}
                   noBorder
-                  onClick={onOpenAuthModal}
+                  onClick={onOpenRegisterModal}
                   className="header-btn"
                 >
                   Регистрация

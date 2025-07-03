@@ -13,10 +13,19 @@ import Generation from "./components/Generation/Generation";
 
 function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<"login" | "register">(
+    "login"
+  );
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState("");
 
   const handleOpenAuthModal = () => {
+    setAuthModalMode("login");
+    setIsAuthModalOpen(true);
+  };
+
+  const handleOpenRegisterModal = () => {
+    setAuthModalMode("register");
     setIsAuthModalOpen(true);
   };
 
@@ -41,6 +50,7 @@ function App() {
     <div className="app">
       <Header
         onOpenAuthModal={handleOpenAuthModal}
+        onOpenRegisterModal={handleOpenRegisterModal}
         isLoggedIn={isLoggedIn}
         userEmail={userEmail}
         onLogout={handleLogout}
@@ -77,6 +87,7 @@ function App() {
         isOpen={isAuthModalOpen}
         onClose={handleCloseAuthModal}
         onLogin={handleLogin}
+        initialMode={authModalMode}
       />
     </div>
   );
