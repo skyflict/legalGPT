@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./AuthModal.css";
+import Icon from "../Icon/Icon";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -73,7 +74,7 @@ const AuthModal = ({
 
           <form className="auth-form" onSubmit={handleSubmit}>
             <input
-              type="text"
+              type="email"
               placeholder="Телефон или почта"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -140,12 +141,24 @@ const AuthModal = ({
             </button>
 
             <label className="auth-checkbox">
-              {isLoginMode ? (
+              <Icon name="checkbox" size="sm" />
+              <span className="checkbox-text">
+                Нажимая «{isLoginMode ? "Войти" : "Зарегистрироваться"}», вы
+                принимаете{" "}
+                <a href="#" className="auth-link">
+                  пользовательское соглашение
+                </a>{" "}
+                и{" "}
+                <a href="#" className="auth-link">
+                  политику конфиденциальности
+                </a>
+              </span>
+              <div>
+                <Icon name="checkbox" size="sm" />
                 <span className="checkbox-text">
-                  Нажимая кнопку «Войти», я соглашаюсь c политикой
-                  конфиденциальности и обработкой персональных данных.
+                  Я соглашаюсь c обработкой моих персональных данных.
                 </span>
-              ) : null}
+              </div>
             </label>
           </form>
         </div>
