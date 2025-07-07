@@ -9,7 +9,8 @@ export const getApiBaseUrl = (): string => {
       return "/api";
     }
 
-    return "http://api.neuroyurist.ru:8000";
+    // В продакшене используем Vercel serverless функцию как прокси
+    return "/api/proxy?path=";
   })();
 
   return baseUrl;
@@ -18,7 +19,24 @@ export const getApiBaseUrl = (): string => {
 export const createApiUrl = (endpoint: string): string => {
   const baseUrl = getApiBaseUrl();
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint.slice(1) : endpoint;
-  return `${baseUrl}/${cleanEndpoint}`;
+
+  let finalUrl: string;
+
+  // В продакшене (через прокси) не добавляем слеш, так как он уже есть в query параметре
+  if (baseUrl.includes("proxy?path=")) {
+    finalUrl = `${baseUrl}${cleanEndpoint}`;
+  } else {
+    // В разработке добавляем слеш как обычно
+    finalUrl = `${baseUrl}/${cleanEndpoint}`;
+  }
+
+  console.log(`API URL [${endpoint}]:`, finalUrl, {
+    isDevelopment,
+    isLocalhost,
+    hostname: window.location.hostname,
+  });
+
+  return finalUrl;
 };
 
 export const API_ENDPOINTS = {
