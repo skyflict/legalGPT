@@ -1,0 +1,302 @@
+// Переменные
+$primary-color: #4f46e5;
+$text-primary: #1f2937;
+$text-secondary: #374151;
+$background-white: #ffffff;
+$background-hover: #f3f4f6;
+$background-dropdown: #e5e7eb;
+$border-color: #e5e7eb;
+$box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+$box-shadow-dropdown: 0 10px 25px rgba(0, 0, 0, 0.1);
+$border-radius: 8px;
+$border-radius-large: 12px;
+$border-radius-button: 16px;
+$transition: 0.3s ease;
+$z-index-header: 100000;
+$z-index-dropdown: 1000;
+
+// Миксины
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin button-base {
+  border: none;
+  cursor: pointer;
+  transition: all $transition;
+  font-family: Inter;
+  font-weight: 500;
+}
+
+@mixin dropdown-base {
+  position: absolute;
+  background: $background-white;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-large;
+  box-shadow: $box-shadow-dropdown;
+  z-index: $z-index-dropdown;
+}
+
+// Основные стили Header
+.header {
+  background: $background-white;
+  box-shadow: $box-shadow;
+  position: sticky;
+  top: 0;
+  z-index: $z-index-header;
+
+  // Принудительно устанавливаем шрифт для всех кнопок в header
+  button,
+  .btn {
+    font-family: Unbounded !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    line-height: 1.4 !important;
+  }
+
+  .container {
+    max-width: 100%;
+  }
+
+  &__content {
+    @include flex-between;
+    padding: 16px 32px;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  &__left {
+    @include flex-center;
+    gap: 12px;
+  }
+
+  &__actions {
+    @include flex-center;
+    gap: 12px;
+
+    // Применяем стили ко всем кнопкам в области действий
+    button,
+    .btn,
+    button.btn,
+    .header__btn {
+      font-family: Unbounded !important;
+      font-size: 14px !important;
+      font-weight: 400 !important;
+      line-height: 1.4 !important;
+    }
+
+    // Дополнительная специфичность для Button компонента
+    .btn.header__btn,
+    button.btn.header__btn {
+      font-family: Unbounded !important;
+      font-size: 14px !important;
+      font-weight: 400 !important;
+      line-height: 1.4 !important;
+    }
+  }
+
+  // Стили для кнопок в header
+  &__btn {
+    font-family: Unbounded !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+
+    // Убеждаемся, что стили применяются к button элементам
+    &.btn,
+    button.btn {
+      font-family: Unbounded !important;
+      font-size: 14px !important;
+      font-weight: 400 !important;
+    }
+  }
+}
+
+// Логотип
+.logo {
+  @include flex-center;
+  gap: 12px;
+  font-size: 24px;
+  font-weight: 700;
+  color: $text-primary;
+
+  &__icon {
+    margin-right: 15px;
+  }
+
+  &__text {
+    background: linear-gradient(135deg, $primary-color 0%, #7c3aed 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+// Кнопка сайдбара
+.sidebar-toggle {
+  @include button-base;
+  background: none;
+  padding: 8px;
+  border-radius: $border-radius;
+  @include flex-center;
+  justify-content: center;
+
+  &:hover {
+    background: $background-hover;
+  }
+}
+
+.hamburger {
+  width: 20px;
+  height: 2px;
+  background: $text-secondary;
+  position: relative;
+  display: block;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background: $text-secondary;
+    transition: all $transition;
+  }
+
+  &::before {
+    top: -6px;
+  }
+
+  &::after {
+    bottom: -6px;
+  }
+}
+
+// Dropdown пользователя
+.user-dropdown {
+  position: relative;
+
+  &__trigger {
+    @include flex-center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: rgba(26, 26, 26, 0.1);
+    border: none;
+    border-radius: $border-radius-button;
+    cursor: pointer;
+    transition: all $transition;
+    font-family: Inter;
+    font-size: 16px;
+    font-weight: 500;
+    color: $text-primary;
+    min-width: 180px;
+    justify-content: space-between;
+
+    &:hover {
+      background: rgba(26, 26, 26, 0.15);
+    }
+
+    &.open {
+      background: rgba(26, 26, 26, 0.15);
+      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+    }
+  }
+
+  &__menu {
+    @include dropdown-base;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    overflow: hidden;
+  }
+}
+
+.user-email {
+  flex: 1;
+  text-align: left;
+  color: $text-primary;
+}
+
+.dropdown {
+  &__arrow {
+    width: 16px;
+    height: 16px;
+    @include flex-center;
+    justify-content: center;
+    transition: transform $transition;
+
+    &.open {
+      transform: rotate(180deg);
+    }
+  }
+
+  &__item {
+    @include button-base;
+    display: block;
+    width: 100%;
+    padding: 12px 16px;
+    background: none;
+    font-size: 14px;
+    color: $text-secondary;
+    text-align: left;
+    transition: background-color 0.2s ease;
+
+    &:hover,
+    &:focus {
+      outline: none;
+      background: $background-hover;
+    }
+  }
+}
+
+// Адаптивные стили
+@media (max-width: 768px) {
+  .header {
+    &__content {
+      padding: 12px 0;
+    }
+
+    &__actions {
+      gap: 8px;
+
+      .btn {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .logo {
+    font-size: 20px;
+
+    &__icon {
+      font-size: 24px;
+    }
+  }
+
+  .user-email {
+    font-size: 14px;
+  }
+
+  .user-dropdown {
+    &__trigger {
+      min-width: 150px;
+      padding: 10px 12px;
+      font-size: 14px;
+    }
+  }
+
+  .dropdown {
+    &__item {
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+  }
+}

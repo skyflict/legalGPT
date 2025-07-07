@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_ENDPOINTS } from "../../../utils/api";
 
 interface UseAuthProps {
   onLogin: (email: string, password: string) => void;
@@ -19,7 +20,7 @@ export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
     setError("");
 
     try {
-      const response = await fetch("/api/v1/register", {
+      const response = await fetch(API_ENDPOINTS.REGISTER, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -49,7 +50,7 @@ export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
     setError("");
 
     try {
-      const response = await fetch("/api/v1/login", {
+      const response = await fetch(API_ENDPOINTS.LOGIN, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -86,7 +87,7 @@ export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
     setError("");
 
     try {
-      const response = await fetch("/api/v1/register/confirm", {
+      const response = await fetch(API_ENDPOINTS.REGISTER_CONFIRM, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

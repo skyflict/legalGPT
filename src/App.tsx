@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./App.css";
+import { API_ENDPOINTS } from "./utils/api";
 import Header from "./components/Header/Header";
 import Hero from "./components/Hero/Hero";
 import ContractTypes from "./components/ContractTypes/ContractTypes";
@@ -19,7 +20,6 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState("");
 
-  // Проверка авторизации при загрузке приложения
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     const savedEmail = localStorage.getItem("userEmail");
@@ -45,12 +45,10 @@ function App() {
   };
 
   const handleLogin = (email: string, _password: string) => {
-    // Сохраняем email и устанавливаем состояние входа
     setUserEmail(email);
     setIsLoggedIn(true);
     setIsAuthModalOpen(false);
 
-    // Сохраняем email в localStorage для восстановления при перезагрузке
     localStorage.setItem("userEmail", email);
   };
 
@@ -59,8 +57,7 @@ function App() {
       const token = localStorage.getItem("authToken");
 
       if (token) {
-        // Отправляем запрос на logout API
-        await fetch("/api/v1/logout", {
+        await fetch(API_ENDPOINTS.LOGOUT, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -70,13 +67,10 @@ function App() {
       }
     } catch (error) {
       console.error("Ошибка при выходе:", error);
-      // Продолжаем выход даже если API недоступен
     } finally {
-      // Очищаем локальное состояние в любом случае
       setIsLoggedIn(false);
       setUserEmail("");
 
-      // Очищаем данные из localStorage
       localStorage.removeItem("authToken");
       localStorage.removeItem("userEmail");
     }
