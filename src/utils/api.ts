@@ -9,7 +9,6 @@ export const getApiBaseUrl = (): string => {
       return "/api";
     }
 
-    // В продакшене используем Vercel serverless функцию как прокси
     return "/api/proxy?path=";
   })();
 
@@ -22,19 +21,11 @@ export const createApiUrl = (endpoint: string): string => {
 
   let finalUrl: string;
 
-  // В продакшене (через прокси) не добавляем слеш, так как он уже есть в query параметре
   if (baseUrl.includes("proxy?path=")) {
     finalUrl = `${baseUrl}${cleanEndpoint}`;
   } else {
-    // В разработке добавляем слеш как обычно
     finalUrl = `${baseUrl}/${cleanEndpoint}`;
   }
-
-  console.log(`API URL [${endpoint}]:`, finalUrl, {
-    isDevelopment,
-    isLocalhost,
-    hostname: window.location.hostname,
-  });
 
   return finalUrl;
 };
