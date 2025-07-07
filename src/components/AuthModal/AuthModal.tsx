@@ -1,6 +1,11 @@
-import { useState, useEffect } from "react";
-import "./AuthModal.css";
-import Icon from "../Icon/Icon";
+import React, { useState, useEffect } from "react";
+import "./AuthModal.scss";
+import { useAuth } from "./hooks/useAuth";
+import { useFormValidation } from "./hooks/useFormValidation";
+import { LoginForm } from "./components/LoginForm";
+import { RegisterForm } from "./components/RegisterForm";
+import { ConfirmationForm } from "./components/ConfirmationForm";
+import { AgreementCheckbox } from "./components/AgreementCheckbox";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -9,15 +14,14 @@ interface AuthModalProps {
   initialMode?: "login" | "register";
 }
 
-// Типы для этапов регистрации
 type RegistrationStep = "form" | "confirmation";
 
-const AuthModal = ({
+export const AuthModal: React.FC<AuthModalProps> = ({
   isOpen,
   onClose,
   onLogin,
   initialMode = "login",
-}: AuthModalProps) => {
+}) => {
   const [isLoginMode, setIsLoginMode] = useState(initialMode === "login");
   const [registrationStep, setRegistrationStep] =
     useState<RegistrationStep>("form");
@@ -25,338 +29,150 @@ const AuthModal = ({
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [confirmationCode, setConfirmationCode] = useState("");
-  const [_isAccepted, setIsAccepted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [tempToken, setTempToken] = useState("");
 
-  // Обновляем режим при изменении initialMode
+  const auth = useAuth({ onLogin, onClose });
+  const validation = useFormValidation({
+    email,
+    password,
+    confirmPassword,
+    isLoginMode,
+  });
+
   useEffect(() => {
     setIsLoginMode(initialMode === "login");
     setRegistrationStep("form");
   }, [initialMode]);
-
-  if (!isOpen) return null;
-
-  // Валидация пароля
-  const isPasswordValid = password.length >= 6;
-  const doPasswordsMatch = password === confirmPassword;
-  const isFormValid = isLoginMode
-    ? email && password
-    : email &&
-      password &&
-      confirmPassword &&
-      isPasswordValid &&
-      doPasswordsMatch;
-
-  // Функция для регистрации
-  const handleRegister = async () => {
-    setIsLoading(true);
-    setError("");
-
-    try {
-      const response = await fetch("/api/v1/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Ошибка при регистрации");
-      }
-
-      const data = await response.json();
-      setTempToken(data.token);
-      setRegistrationStep("confirmation");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Произошла ошибка");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Функция для входа
-  const handleLogin = async () => {
-    setIsLoading(true);
-    setError("");
-
-    try {
-      const response = await fetch("/api/v1/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Неверный email или пароль");
-      }
-
-      const data = await response.json();
-      // Сохраняем токен
-      localStorage.setItem("authToken", data.token);
-
-      // Закрываем модалку и очищаем форму
-      onClose();
-      resetForm();
-
-      // Вызываем callback для обновления состояния приложения
-      onLogin(email, password);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Произошла ошибка при входе"
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Функция для подтверждения кода
-  const handleConfirmCode = async () => {
-    setIsLoading(true);
-    setError("");
-
-    try {
-      const response = await fetch("/api/v1/register/confirm", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${tempToken}`,
-        },
-        body: JSON.stringify({
-          confirmation_code: parseInt(confirmationCode),
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Неверный код подтверждения");
-      }
-
-      const data = await response.json();
-      // Сохраняем финальный токен
-      localStorage.setItem("authToken", data.token);
-
-      // Закрываем модалку и очищаем форму
-      onClose();
-      resetForm();
-
-      // Можно вызвать callback для обновления состояния приложения
-      onLogin(email, password);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Произошла ошибка");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const resetForm = () => {
     setEmail("");
     setPassword("");
     setConfirmPassword("");
     setConfirmationCode("");
-    setIsAccepted(false);
-    setError("");
-    setTempToken("");
     setRegistrationStep("form");
+    auth.clearError();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (isLoginMode) {
-      if (isFormValid) {
-        handleLogin();
+      if (validation.isFormValid) {
+        await auth.handleLogin(email, password);
+        resetForm();
       }
     } else {
-      // Режим регистрации
-      if (registrationStep === "form" && isFormValid) {
-        handleRegister();
+      if (registrationStep === "form" && validation.isFormValid) {
+        const result = await auth.handleRegister(email, password);
+        if (result.success) {
+          setRegistrationStep("confirmation");
+        }
       } else if (registrationStep === "confirmation" && confirmationCode) {
-        handleConfirmCode();
+        const result = await auth.handleConfirmCode(
+          email,
+          password,
+          confirmationCode
+        );
+        if (result.success) {
+          resetForm();
+        }
       }
     }
   };
 
-  const toggleMode = () => {
+  const handleToggleMode = () => {
     setIsLoginMode(!isLoginMode);
     resetForm();
   };
 
-  const goBackToRegistration = () => {
+  const handleGoBackToRegistration = () => {
     setRegistrationStep("form");
     setConfirmationCode("");
-    setError("");
+    auth.clearError();
   };
 
+  const handleClose = () => {
+    onClose();
+    resetForm();
+  };
+
+  if (!isOpen) return null;
+
+  const getTitle = () => {
+    if (isLoginMode) return "Вход в личный кабинет";
+    if (registrationStep === "form") return "Регистрация";
+    return "Подтверждение регистрации";
+  };
+
+  const showModeToggle = isLoginMode || registrationStep === "form";
+
+  const showAgreements = isLoginMode || registrationStep === "form";
+
   return (
-    <div className="auth-modal-overlay" onClick={onClose}>
-      <div className="auth-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="close-button" onClick={onClose}>
+    <div className="auth-modal-overlay" onClick={handleClose}>
+      <div
+        className="auth-modal__container"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button className="auth-modal__close" onClick={handleClose}>
           ×
         </button>
 
-        <div className="auth-modal-content">
-          <h2 className="auth-title">
-            {isLoginMode ? (
-              <>Вход в личный кабинет</>
-            ) : registrationStep === "form" ? (
-              "Регистрация"
-            ) : (
-              "Подтверждение регистрации"
-            )}
-          </h2>
+        <div className="auth-modal__content">
+          <h2 className="auth-modal__title">{getTitle()}</h2>
 
-          {error && <div className="auth-error">{error}</div>}
+          {auth.error && <div className="auth-modal__error">{auth.error}</div>}
 
-          <form className="auth-form" onSubmit={handleSubmit}>
-            {/* Форма входа или регистрации */}
-            {(isLoginMode || registrationStep === "form") && (
-              <>
-                <input
-                  type="email"
-                  placeholder="Адрес электронной почты"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="auth-input"
-                  disabled={isLoading}
-                />
-
-                <input
-                  type="password"
-                  placeholder="Пароль"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="auth-input"
-                  disabled={isLoading}
-                />
-
-                {!isLoginMode && (
-                  <>
-                    <input
-                      type="password"
-                      placeholder="Повторите пароль"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="auth-input"
-                      disabled={isLoading}
-                    />
-
-                    {/* Показываем ошибки валидации только если пользователь начал вводить */}
-                    {password && !isPasswordValid && (
-                      <div className="auth-error">
-                        Пароль должен содержать минимум 6 символов
-                      </div>
-                    )}
-
-                    {confirmPassword && !doPasswordsMatch && (
-                      <div className="auth-error">Пароли не совпадают</div>
-                    )}
-                  </>
-                )}
-              </>
-            )}
-
-            {/* Форма подтверждения кода */}
-            {!isLoginMode && registrationStep === "confirmation" && (
-              <>
-                <p className="confirmation-text">
-                  На адрес {email} отправлен код подтверждения. Введите его
-                  ниже:
-                </p>
-                <input
-                  type="text"
-                  placeholder="Код подтверждения"
-                  value={confirmationCode}
-                  onChange={(e) => setConfirmationCode(e.target.value)}
-                  className="auth-input"
-                  disabled={isLoading}
-                />
-                <button
-                  type="button"
-                  className="auth-register-btn"
-                  onClick={goBackToRegistration}
-                  disabled={isLoading}
-                >
-                  Назад
-                </button>
-              </>
-            )}
-
-            {/* Кнопки отправки */}
+          <form className="auth-modal__form" onSubmit={handleSubmit}>
             {isLoginMode && (
-              <button
-                type="submit"
-                className="auth-submit-btn"
-                disabled={!isFormValid || isLoading}
-              >
-                {isLoading ? "Вход..." : "Войти"}
-              </button>
+              <LoginForm
+                email={email}
+                password={password}
+                isLoading={auth.isLoading}
+                isFormValid={validation.isFormValid}
+                onEmailChange={setEmail}
+                onPasswordChange={setPassword}
+                onSubmit={handleSubmit}
+              />
             )}
 
             {!isLoginMode && registrationStep === "form" && (
-              <button
-                type="submit"
-                className="auth-submit-btn"
-                disabled={!isFormValid || isLoading}
-              >
-                {isLoading ? "Регистрация..." : "Зарегистрироваться"}
-              </button>
+              <RegisterForm
+                email={email}
+                password={password}
+                confirmPassword={confirmPassword}
+                isLoading={auth.isLoading}
+                isFormValid={validation.isFormValid}
+                errors={validation.errors}
+                onEmailChange={setEmail}
+                onPasswordChange={setPassword}
+                onConfirmPasswordChange={setConfirmPassword}
+                onSubmit={handleSubmit}
+              />
             )}
 
             {!isLoginMode && registrationStep === "confirmation" && (
-              <button
-                type="submit"
-                className="auth-submit-btn"
-                disabled={!confirmationCode || isLoading}
-              >
-                {isLoading ? "Подтверждение..." : "Подтвердить"}
-              </button>
+              <ConfirmationForm
+                email={email}
+                confirmationCode={confirmationCode}
+                isLoading={auth.isLoading}
+                onConfirmationCodeChange={setConfirmationCode}
+                onSubmit={handleSubmit}
+                onGoBack={handleGoBackToRegistration}
+              />
             )}
 
-            {/* Переключение между входом и регистрацией (только на первом этапе) */}
-            {(isLoginMode || registrationStep === "form") && (
+            {showModeToggle && (
               <button
                 type="button"
-                className="auth-register-btn"
-                onClick={toggleMode}
-                disabled={isLoading}
+                className="auth-modal__secondary-btn"
+                onClick={handleToggleMode}
+                disabled={auth.isLoading}
               >
                 {isLoginMode ? "Создать аккаунт" : "Уже есть аккаунт? Войти"}
               </button>
             )}
 
-            {/* Соглашения (только на этапе формы) */}
-            {(isLoginMode || registrationStep === "form") && (
-              <label className="auth-checkbox">
-                <Icon name="checkbox" size="sm" />
-                <span className="checkbox-text">
-                  Нажимая «{isLoginMode ? "Войти" : "Зарегистрироваться"}», вы
-                  принимаете{" "}
-                  <a href="#" className="auth-link">
-                    пользовательское соглашение
-                  </a>{" "}
-                  и{" "}
-                  <a href="#" className="auth-link">
-                    политику конфиденциальности
-                  </a>
-                </span>
-                <div>
-                  <Icon name="checkbox" size="sm" />
-                  <span className="checkbox-text">
-                    Я соглашаюсь c обработкой моих персональных данных.
-                  </span>
-                </div>
-              </label>
-            )}
+            {showAgreements && <AgreementCheckbox isLoginMode={isLoginMode} />}
           </form>
         </div>
       </div>
