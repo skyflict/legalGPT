@@ -131,9 +131,12 @@
   box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
 }
 
-.user-phone {
+.user-email {
   flex: 1;
   text-align: left;
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 16px;
 }
 
 .dropdown-arrow {
@@ -185,12 +188,6 @@
 .dropdown-item:focus {
   outline: none;
   background: #f3f4f6;
-}
-
-.user-email {
-  font-weight: 600;
-  color: #1f2937;
-  font-size: 16px;
 }
 
 @media (max-width: 768px) {

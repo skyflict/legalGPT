@@ -21,11 +21,9 @@ const Header = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Функция для маскировки номера телефона
-  const formatPhoneNumber = (_email: string) => {
-    // Предполагаем, что email содержит номер телефона или используем как есть
-    // Для демонстрации создадим маскированный номер
-    return "8 916 666 ** **";
+  // Функция для отображения email пользователя
+  const formatUserEmail = (email: string) => {
+    return email || "Пользователь";
   };
 
   const handleDropdownToggle = () => {
@@ -75,8 +73,8 @@ const Header = ({
                   }`}
                   onClick={handleDropdownToggle}
                 >
-                  <span className="user-phone">
-                    {formatPhoneNumber(userEmail || "")}
+                  <span className="user-email">
+                    {formatUserEmail(userEmail || "")}
                   </span>
                   <span
                     className={`dropdown-arrow ${isDropdownOpen ? "open" : ""}`}
