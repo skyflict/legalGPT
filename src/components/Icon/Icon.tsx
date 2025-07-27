@@ -7,6 +7,7 @@ import logoNameSvg from "../../assets/logoName.svg";
 import lockSvg from "../../assets/lock.svg";
 import awardSvg from "../../assets/award.svg";
 import arrowSvg from "../../assets/arrow.svg";
+import arrowWhiteSvg from "../../assets/arrow-white.svg";
 import footerLogo from "../../assets/footerLogo.svg";
 import checkbox from "../../assets/checkbox.svg";
 import create from "../../assets/create.svg";
@@ -72,7 +73,8 @@ export type IconName =
   | "whiteLine"
   | "check"
   | "helpOutlined"
-  | "close";
+  | "close"
+  | "arrowWhite";
 
 // Размеры иконок
 export type IconSize = "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
@@ -111,6 +113,7 @@ const iconMap: Record<IconName, string> = {
   helpOutlined: helpOutlined,
   download: download,
   close: close,
+  arrowWhite: arrowWhiteSvg,
   "arrow-right": `<svg viewBox="0 0 24 24" fill="currentColor">
     <path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"/>
   </svg>`,
@@ -271,7 +274,8 @@ const Icon: React.FC<IconProps> = ({
     name === "check" ||
     name === "helpOutlined" ||
     name === "download" ||
-    name === "close"
+    name === "close" ||
+    name === "arrowWhite"
   ) {
     return (
       <img

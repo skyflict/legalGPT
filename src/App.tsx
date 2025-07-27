@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import { API_ENDPOINTS } from "./utils/api";
+import { API_ENDPOINTS, apiRequest } from "./utils/api";
 import Header from "./components/Header/Header";
 import Hero from "./components/Hero/Hero";
 import ContractTypes from "./components/ContractTypes/ContractTypes";
@@ -12,6 +12,13 @@ import AuthModal from "./components/AuthModal/AuthModal";
 import Sidebar from "./components/Sidebar/Sidebar";
 import Generation from "./components/Generation/Generation";
 
+interface UserData {
+  id: string;
+  email: string;
+  role: string;
+  balance: number;
+}
+
 function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState<"login" | "register">(
@@ -19,6 +26,7 @@ function App() {
   );
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState("");
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
@@ -27,8 +35,18 @@ function App() {
     if (token && savedEmail) {
       setIsLoggedIn(true);
       setUserEmail(savedEmail);
+      fetchUserData();
     }
   }, []);
+
+  const fetchUserData = async () => {
+    try {
+      const data = await apiRequest(API_ENDPOINTS.USER);
+      setUserData(data);
+    } catch (error) {
+      console.error("Ошибка при получении данных пользователя:", error);
+    }
+  };
 
   const handleOpenAuthModal = () => {
     setAuthModalMode("login");
@@ -44,12 +62,15 @@ function App() {
     setIsAuthModalOpen(false);
   };
 
-  const handleLogin = (email: string, _password: string) => {
+  const handleLogin = async (email: string, _password: string) => {
     setUserEmail(email);
     setIsLoggedIn(true);
     setIsAuthModalOpen(false);
 
     localStorage.setItem("userEmail", email);
+
+    // Получаем данные пользователя после входа
+    await fetchUserData();
   };
 
   const handleLogout = async () => {
@@ -70,6 +91,7 @@ function App() {
     } finally {
       setIsLoggedIn(false);
       setUserEmail("");
+      setUserData(null);
 
       localStorage.removeItem("authToken");
       localStorage.removeItem("userEmail");
@@ -87,7 +109,7 @@ function App() {
       />
 
       <div className={`app-layout ${isLoggedIn ? "with-sidebar" : ""}`}>
-        {isLoggedIn && <Sidebar isVisible={true} />}
+        {isLoggedIn && <Sidebar isVisible={true} userRole={userData?.role} />}
 
         <main className="main-content">
           {!isLoggedIn && (

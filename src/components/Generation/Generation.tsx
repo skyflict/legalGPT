@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Icon from "../Icon/Icon";
 import "./Generation.css";
+import { useDocumentGeneration } from "./hooks/useDocumentGeneration";
 
 // Компонент спиннера
 const Spinner = () => (
@@ -11,29 +12,29 @@ const Spinner = () => (
 
 const Generation = () => {
   const [query, setQuery] = useState("");
-  const [provider, setProvider] = useState("yandexgpt");
   const [isFocused, setIsFocused] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showContractType, setShowContractType] = useState(false);
-  const [showContractSelect, setShowContractSelect] = useState(false);
-  const [selectedContract, setSelectedContract] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isProviderDropdownOpen, setIsProviderDropdownOpen] = useState(false);
-  const [showStepTwo, setShowStepTwo] = useState(false);
-  const [stepTwoLoading, setStepTwoLoading] = useState(false);
-  const [showFinalResult, setShowFinalResult] = useState(false);
   const [showHelpText, setShowHelpText] = useState(true);
 
-  // Состояния для полей формы
-  const [fullName, setFullName] = useState("");
-  const [requestText, setRequestText] = useState("");
-  const [address, setAddress] = useState("");
+  // Состояния для полей формы пользователя
+  const [userFormData, setUserFormData] = useState<Record<string, any>>({});
+
+  // Хук для работы с генерацией документов
+  const documentGeneration = useDocumentGeneration();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const providerDropdownRef = useRef<HTMLDivElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
+
+  // Определяем текущее состояние UI на основе состояния генерации
+  const isLoading = documentGeneration.isLoading;
+  const showContractType =
+    documentGeneration.currentStep === "waiting_input" &&
+    documentGeneration.status?.stage === "DOC_TYPE_DEDUCED";
+  const showContractSelect = false; // Пока не используется в новой структуре
+  const showStepTwo = false; // Пока не используется в новой структуре
+  const showFinalResult = documentGeneration.currentStep === "completed";
 
   const handleQueryClick = (queryText: string) => {
     setQuery(queryText);
@@ -90,91 +91,101 @@ const Generation = () => {
     }
   };
 
-  const handleSend = () => {
-    console.log("Sending query:", query, "with provider:", provider);
-    setIsLoading(true);
-    setShowContractType(false);
+  const handleSend = async () => {
+    console.log("Sending query:", query);
 
     // Сбрасываем высоту textarea до минимальной
     if (textareaRef.current) {
       textareaRef.current.style.height = "52px";
     }
 
-    // Симуляция загрузки
-    setTimeout(() => {
-      setIsLoading(false);
-      setShowContractType(true);
-    }, 2000);
+    // Запускаем генерацию документа
+    await documentGeneration.startGeneration(query);
   };
 
   const handleCancel = () => {
     setQuery("");
-    setIsLoading(false);
-    setShowContractType(false);
-    setShowContractSelect(false);
-    setShowStepTwo(false);
-    setStepTwoLoading(false);
-    setShowFinalResult(false);
-    setSelectedContract("");
+    setUserFormData({});
     setIsDropdownOpen(false);
-    setIsProviderDropdownOpen(false);
     setIsFocused(false);
     setShowOverlay(false);
+    documentGeneration.reset();
     if (textareaRef.current) {
       textareaRef.current.blur();
     }
   };
 
-  const handleContractNo = () => {
-    setShowContractType(false);
-    setShowContractSelect(true);
+  const handleContractYes = () => {
+    // Отправляем подтверждение типа договора согласно схеме API
+    const defaultDocumentType =
+      documentGeneration.status?.required_user_input?.schema?.properties
+        ?.document_type?.default;
+    documentGeneration.submitUserInput({
+      event_type: "DOC_TYPE_CONFIRMED",
+      data: {
+        document_type:
+          defaultDocumentType || documentGeneration.status?.type || "dcp",
+      },
+    });
   };
 
-  const handleBackToContractType = () => {
-    setShowContractSelect(false);
-    setShowContractType(true);
-    setSelectedContract("");
+  const handleContractNo = () => {
+    // Пока что просто сбрасываем, так как доступен только ДКП
+    // В будущем здесь будет логика выбора другого типа договора
+    handleCancel();
+  };
+
+  const handleContractSelect = (contractType: string) => {
     setIsDropdownOpen(false);
+
+    // Отправляем выбранный тип договора
+    documentGeneration.submitUserInput({
+      event_type: "contract_type_selection",
+      contract_type: contractType,
+    });
+  };
+
+  const handleUserFormSubmit = () => {
+    // Отправляем пользовательские данные
+    documentGeneration.submitUserInput({
+      event_type: "user_data_input",
+      ...userFormData,
+    });
+  };
+
+  // Обработка изменений в полях пользовательской формы
+  const handleUserFormFieldChange = (fieldName: string, value: string) => {
+    setUserFormData((prev) => ({
+      ...prev,
+      [fieldName]: value,
+    }));
+  };
+
+  // Проверка валидности формы на основе схемы от бэкенда
+  const isUserFormValid = () => {
+    if (!documentGeneration.status?.required_user_input?.schema) return false;
+
+    const requiredFields =
+      documentGeneration.status.required_user_input.schema.required || [];
+    return requiredFields.every((field: string) => userFormData[field]?.trim());
   };
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const handleProviderDropdownToggle = () => {
-    setIsProviderDropdownOpen(!isProviderDropdownOpen);
+  const handleBackToContractType = () => {
+    // В новой логике возвращаемся к предыдущему шагу через отмену
+    handleCancel();
   };
 
-  const handleProviderSelect = (providerValue: string) => {
-    setProvider(providerValue);
-    setIsProviderDropdownOpen(false);
-  };
-
-  const handleContractSelect = (contractType: string) => {
-    setSelectedContract(contractType);
-    setIsDropdownOpen(false);
-
-    // Переход ко второму этапу
-    setShowContractSelect(false);
-    setStepTwoLoading(true);
-    setShowStepTwo(true);
-
-    // Симуляция загрузки
-    setTimeout(() => {
-      setStepTwoLoading(false);
-    }, 5000);
-  };
-
-  const handleContractYes = () => {
-    // Переход ко второму этапу
-    setShowContractType(false);
-    setStepTwoLoading(true);
-    setShowStepTwo(true);
-
-    // Симуляция загрузки
-    setTimeout(() => {
-      setStepTwoLoading(false);
-    }, 2000);
+  // Функция для преобразования типа договора в читаемое название
+  const getContractTypeName = (type?: string) => {
+    const typeMap: Record<string, string> = {
+      dcp: "Договор купли-продажи",
+      // Добавить другие типы когда появятся
+    };
+    return type ? typeMap[type] : undefined;
   };
 
   const contractTypes = [
@@ -184,17 +195,6 @@ const Generation = () => {
     "Договор оказания услуг",
     "Трудовой договор",
   ];
-
-  const providerOptions = [
-    { value: "yandexgpt", label: "YandexGPT" },
-    { value: "chatgpt", label: "ChatGPT" },
-    { value: "gigachat", label: "GigaChat" },
-  ];
-
-  const handleStepThreeNext = () => {
-    setShowStepTwo(false);
-    setShowFinalResult(true);
-  };
 
   const handleCloseHelpText = () => {
     setShowHelpText(false);
@@ -226,33 +226,25 @@ const Generation = () => {
       ) {
         setIsDropdownOpen(false);
       }
-      if (
-        providerDropdownRef.current &&
-        !providerDropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsProviderDropdownOpen(false);
-      }
 
       // Проверяем клики вне области ввода для скрытия overlay
       if (
         showOverlay &&
         inputWrapperRef.current &&
-        !inputWrapperRef.current.contains(event.target as Node) &&
-        providerDropdownRef.current &&
-        !providerDropdownRef.current.contains(event.target as Node)
+        !inputWrapperRef.current.contains(event.target as Node)
       ) {
         handleOverlayClick();
       }
     };
 
-    if (isDropdownOpen || isProviderDropdownOpen || showOverlay) {
+    if (isDropdownOpen || showOverlay) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isDropdownOpen, isProviderDropdownOpen, showOverlay]);
+  }, [isDropdownOpen, showOverlay]);
 
   // Также добавляем обработчик для события input (для вставки текста)
   const handleInput = () => {
@@ -265,21 +257,14 @@ const Generation = () => {
     }
   };
 
-  // Проверка заполненности обязательных полей
-  const isFormValid = fullName.trim() !== "" && requestText.trim() !== "";
+  // Очистка при размонтировании компонента
+  useEffect(() => {
+    return () => {
+      documentGeneration.reset();
+    };
+  }, []);
 
-  // Обработчики изменения полей формы
-  const handleFullNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFullName(e.target.value);
-  };
-
-  const handleRequestTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRequestText(e.target.value);
-  };
-
-  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAddress(e.target.value);
-  };
+  // Проверка заполненности обязательных полей (заменена на isUserFormValid выше)
 
   return (
     <section
@@ -395,44 +380,6 @@ const Generation = () => {
               </div>
             </div>
 
-            <div className="form-group">
-              <div className="custom-select-wrapper" ref={providerDropdownRef}>
-                <div
-                  className={`custom-select ${
-                    isProviderDropdownOpen ? "open" : ""
-                  }`}
-                  onClick={handleProviderDropdownToggle}
-                >
-                  <span className="select-value">
-                    {providerOptions.find((option) => option.value === provider)
-                      ?.label || "Выберите провайдера"}
-                  </span>
-                  <span
-                    className={`select-arrow ${
-                      isProviderDropdownOpen ? "open" : ""
-                    }`}
-                  >
-                    <Icon name="arrow" />
-                  </span>
-                </div>
-                {isProviderDropdownOpen && (
-                  <div className="custom-select-dropdown">
-                    {providerOptions.map((option) => (
-                      <div
-                        key={option.value}
-                        className={`select-option ${
-                          option.value === provider ? "selected" : ""
-                        }`}
-                        onClick={() => handleProviderSelect(option.value)}
-                      >
-                        {option.label}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-
             {showHelpText && (
               <div className="help-text">
                 <div className="help-text-content">
@@ -448,6 +395,35 @@ const Generation = () => {
                   aria-label="Закрыть"
                 >
                   <Icon name="close" width={16} height={16} />
+                </button>
+              </div>
+            )}
+
+            {/* Отображение ошибок */}
+            {documentGeneration.error && (
+              <div
+                className="error-message"
+                style={{
+                  color: "#ef4444",
+                  background: "rgba(239, 68, 68, 0.1)",
+                  padding: "12px 16px",
+                  borderRadius: "8px",
+                  margin: "16px 0",
+                  fontSize: "14px",
+                }}
+              >
+                {documentGeneration.error}
+                <button
+                  onClick={documentGeneration.clearError}
+                  style={{
+                    marginLeft: "8px",
+                    background: "none",
+                    border: "none",
+                    color: "#ef4444",
+                    cursor: "pointer",
+                  }}
+                >
+                  ✕
                 </button>
               </div>
             )}
@@ -472,7 +448,8 @@ const Generation = () => {
                     <Icon name="text" width={24} height={24} />
                   </div>
                   <span className="contract-type-name">
-                    Договор купли-продажи
+                    {getContractTypeName(documentGeneration.status?.type) ||
+                      "Договор купли-продажи"}
                   </span>
                 </div>
 
@@ -531,7 +508,9 @@ const Generation = () => {
                     }`}
                     onClick={handleDropdownToggle}
                   >
-                    <span>{selectedContract || "Не выбрано"}</span>
+                    <span>
+                      {documentGeneration.status?.type || "Не выбрано"}
+                    </span>
                     <Icon
                       name="arrow"
                       width={24}
@@ -548,7 +527,7 @@ const Generation = () => {
                         <div
                           key={index}
                           className={`dropdown-item ${
-                            selectedContract === contractType
+                            documentGeneration.status?.type === contractType
                               ? "dropdown-item--selected"
                               : ""
                           }`}
@@ -567,7 +546,7 @@ const Generation = () => {
           {/* Второй этап - проверка на соответствие законам */}
           {showStepTwo && (
             <div className="step-two-section">
-              {stepTwoLoading && (
+              {isLoading && (
                 <div className="step-number-container">
                   <div className="step-number-no-active">1</div>
                   <span>
@@ -582,7 +561,7 @@ const Generation = () => {
 
               <div className="step-two-content">
                 <div className="step-two-message">
-                  {stepTwoLoading ? (
+                  {isLoading ? (
                     <div className="step-two-loading">
                       <Spinner />
                       <span>Проверяем запрос на соответствие законам</span>
@@ -616,15 +595,25 @@ const Generation = () => {
                             type="text"
                             placeholder="ФИО"
                             className="form-field"
-                            value={fullName}
-                            onChange={handleFullNameChange}
+                            value={userFormData.fullName || ""}
+                            onChange={(e) =>
+                              handleUserFormFieldChange(
+                                "fullName",
+                                e.target.value
+                              )
+                            }
                           />
                           <input
                             type="text"
                             placeholder="Введите запрос"
                             className="form-field"
-                            value={requestText}
-                            onChange={handleRequestTextChange}
+                            value={userFormData.requestText || ""}
+                            onChange={(e) =>
+                              handleUserFormFieldChange(
+                                "requestText",
+                                e.target.value
+                              )
+                            }
                           />
                         </div>
 
@@ -637,16 +626,21 @@ const Generation = () => {
                             type="text"
                             placeholder="Адрес регистрации"
                             className="form-field"
-                            value={address}
-                            onChange={handleAddressChange}
+                            value={userFormData.address || ""}
+                            onChange={(e) =>
+                              handleUserFormFieldChange(
+                                "address",
+                                e.target.value
+                              )
+                            }
                           />
                         </div>
 
                         <div className="form-actions">
                           <button
                             className="action-button action-button--primary"
-                            onClick={handleStepThreeNext}
-                            disabled={!isFormValid}
+                            onClick={handleUserFormSubmit}
+                            disabled={!isUserFormValid()}
                           >
                             Далее
                           </button>
@@ -707,11 +701,24 @@ const Generation = () => {
                     <Icon name="text" width={24} height={24} />
                   </span>
                   <span className="document-name">
-                    Договор продажи недвижимости.doc
+                    {documentGeneration.status?.result?.document_name ||
+                      "Документ.doc"}
                   </span>
                 </div>
 
-                <button className="download-button">
+                <button
+                  className="download-button"
+                  onClick={() => {
+                    const downloadUrl =
+                      documentGeneration.status?.result?.download_url;
+                    if (downloadUrl) {
+                      window.open(downloadUrl, "_blank");
+                    } else {
+                      console.error("Ссылка для скачивания недоступна");
+                    }
+                  }}
+                  disabled={!documentGeneration.status?.result?.download_url}
+                >
                   <span>Скачать</span>
                   <Icon
                     name="download"

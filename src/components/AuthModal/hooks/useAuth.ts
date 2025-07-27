@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { API_ENDPOINTS } from "../../../utils/api";
+import { API_ENDPOINTS, apiRequest } from "../../../utils/api";
 
 interface UseAuthProps {
   onLogin: (email: string, password: string) => void;
@@ -45,6 +45,17 @@ export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
     }
   };
 
+  const fetchUserData = async () => {
+    try {
+      const userData = await apiRequest(API_ENDPOINTS.USER);
+      console.log("Данные пользователя:", userData);
+      return userData;
+    } catch (err) {
+      console.error("Ошибка при получении данных пользователя:", err);
+      return null;
+    }
+  };
+
   const handleLogin = async (email: string, password: string) => {
     setIsLoading(true);
     setError("");
@@ -64,6 +75,9 @@ export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
 
       const data: AuthResponse = await response.json();
       localStorage.setItem("authToken", data.token);
+
+      // Получаем данные пользователя после успешной авторизации
+      await fetchUserData();
 
       onLogin(email, password);
       onClose();
@@ -104,6 +118,9 @@ export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
 
       const data: AuthResponse = await response.json();
       localStorage.setItem("authToken", data.token);
+
+      // Получаем данные пользователя после успешного подтверждения регистрации
+      await fetchUserData();
 
       onLogin(email, password);
       onClose();

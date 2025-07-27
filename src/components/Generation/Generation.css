@@ -50,6 +50,8 @@
 
 .form-group {
   margin-bottom: 24px;
+  min-width: 824px;
+  border-radius: 28px !important;
 }
 
 .input-wrapper {

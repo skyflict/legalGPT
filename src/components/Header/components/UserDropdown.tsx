@@ -31,7 +31,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
       >
         <span className="user-email">{formatUserEmail(userEmail || "")}</span>
         <span className={`dropdown__arrow ${isDropdownOpen ? "open" : ""}`}>
-          <Icon name="arrow" />
+          <Icon name="arrowWhite" />
         </span>
       </button>
       {isDropdownOpen && (
