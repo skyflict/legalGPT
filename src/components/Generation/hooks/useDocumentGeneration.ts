@@ -2,7 +2,8 @@ import { useState, useCallback, useRef } from "react";
 import { API_ENDPOINTS, apiRequest, generateUUID } from "../../../utils/api";
 
 export interface RequiredUserInput {
-  next_stage: string;
+  event_type: string;
+  next_stage?: string;
   schema: {
     type: string;
     properties: any;
@@ -18,8 +19,10 @@ export interface DocumentStatus {
   type?: string;
   context: {
     query: string;
+    entities?: any;
   };
   required_user_input?: RequiredUserInput;
+  document_url?: string;
   created_at: string;
   modified_at: string;
   result?: any;
@@ -65,7 +68,6 @@ export const useDocumentGeneration = () => {
           setState((prev) => ({
             ...prev,
             status: response,
-            isLoading: false,
           }));
 
           // Если есть required_user_input, останавливаем поллинг и ждем ввода
@@ -73,14 +75,18 @@ export const useDocumentGeneration = () => {
             setState((prev) => ({
               ...prev,
               currentStep: "waiting_input",
-              isLoading: false,
+              isLoading: false, // Останавливаем загрузку, чтобы показать форму
             }));
             stopPolling();
             return;
           }
 
           // Если документ готов, останавливаем поллинг
-          if (response.stage === "COMPLETED" || response.stage === "FINISHED") {
+          if (
+            response.stage === "COMPLETED" ||
+            response.stage === "FINISHED" ||
+            response.stage === "DOC_GENERATED"
+          ) {
             setState((prev) => ({
               ...prev,
               currentStep: "completed",
@@ -89,6 +95,9 @@ export const useDocumentGeneration = () => {
             stopPolling();
             return;
           }
+
+          // Если документ еще обрабатывается, оставляем isLoading: true
+          // isLoading остается в том состоянии, в котором был
 
           // Если ошибка, останавливаем поллинг
           if (response.stage === "ERROR" || response.stage === "FAILED") {

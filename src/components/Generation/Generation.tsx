@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import Icon from "../Icon/Icon";
+import Loader from "../Loader/Loader";
 import "./Generation.css";
 import { useDocumentGeneration } from "./hooks/useDocumentGeneration";
 
@@ -31,10 +32,38 @@ const Generation = () => {
   const isLoading = documentGeneration.isLoading;
   const showContractType =
     documentGeneration.currentStep === "waiting_input" &&
-    documentGeneration.status?.stage === "DOC_TYPE_DEDUCED";
+    documentGeneration.status?.stage === "DOC_TYPE_DEDUCED" &&
+    !isLoading; // Не показываем форму если идет загрузка
   const showContractSelect = false; // Пока не используется в новой структуре
-  const showStepTwo = false; // Пока не используется в новой структуре
+  const showEntitiesForm =
+    documentGeneration.currentStep === "waiting_input" &&
+    documentGeneration.status?.stage === "ENTITIES_EXCTRACTED" &&
+    !isLoading; // Не показываем форму если идет загрузка
   const showFinalResult = documentGeneration.currentStep === "completed";
+
+  // Логика показа лоадера между шагами
+  const shouldShowLoader = isLoading && !showFinalResult;
+
+  const getLoaderMessage = () => {
+    const stage = documentGeneration.status?.stage;
+
+    switch (stage) {
+      case "DOC_TYPE_DEDUCING":
+        return "Определяем тип документа...";
+      case "ENTITIES_EXTRACTING":
+      case "ENTITIES_EXCTRACTED":
+        return "Извлекаем необходимые данные...";
+      case "DOC_GENERATING":
+      case "DOC_GENERATED":
+        return "Генерируем документ...";
+      case "PROCESSING":
+        return "Обрабатываем ваш запрос...";
+      case "VALIDATING":
+        return "Проверяем данные...";
+      default:
+        return isLoading ? "Обрабатываем ваш запрос..." : "";
+    }
+  };
 
   const handleQueryClick = (queryText: string) => {
     setQuery(queryText);
@@ -66,7 +95,7 @@ const Generation = () => {
       !isLoading &&
       !showContractType &&
       !showContractSelect &&
-      !showStepTwo &&
+      !showEntitiesForm &&
       !showFinalResult
     ) {
       setIsFocused(false);
@@ -80,7 +109,7 @@ const Generation = () => {
       !isLoading &&
       !showContractType &&
       !showContractSelect &&
-      !showStepTwo &&
+      !showEntitiesForm &&
       !showFinalResult
     ) {
       setIsFocused(false);
@@ -146,10 +175,13 @@ const Generation = () => {
   };
 
   const handleUserFormSubmit = () => {
-    // Отправляем пользовательские данные
+    // Отправляем пользовательские данные согласно схеме от сервера
+    const requiredInput = documentGeneration.status?.required_user_input as any;
+    const eventType = requiredInput?.event_type || "ENTITIES_PROVIDED";
+
     documentGeneration.submitUserInput({
-      event_type: "user_data_input",
-      ...userFormData,
+      event_type: eventType,
+      data: userFormData,
     });
   };
 
@@ -161,12 +193,36 @@ const Generation = () => {
     }));
   };
 
+  // Получение схемы полей от сервера
+  const getFormSchema = () => {
+    return documentGeneration.status?.required_user_input?.schema;
+  };
+
+  // Получение обязательных полей
+  const getRequiredFields = () => {
+    const schema = getFormSchema();
+    return schema?.required || [];
+  };
+
+  // Получение всех полей с их свойствами
+  const getAllFields = () => {
+    const schema = getFormSchema();
+    return schema?.properties || {};
+  };
+
+  // Получение дополнительных полей (не обязательных)
+  const getOptionalFields = () => {
+    const allFields = getAllFields();
+    const requiredFields = getRequiredFields();
+
+    return Object.keys(allFields).filter(
+      (fieldName) => !requiredFields.includes(fieldName)
+    );
+  };
+
   // Проверка валидности формы на основе схемы от бэкенда
   const isUserFormValid = () => {
-    if (!documentGeneration.status?.required_user_input?.schema) return false;
-
-    const requiredFields =
-      documentGeneration.status.required_user_input.schema.required || [];
+    const requiredFields = getRequiredFields();
     return requiredFields.every((field: string) => userFormData[field]?.trim());
   };
 
@@ -186,6 +242,18 @@ const Generation = () => {
       // Добавить другие типы когда появятся
     };
     return type ? typeMap[type] : undefined;
+  };
+
+  // Функция для извлечения имени документа из URL
+  const getDocumentName = () => {
+    const documentUrl = documentGeneration.status?.document_url;
+    if (documentUrl) {
+      const parts = documentUrl.split("/");
+      const fileName = parts[parts.length - 1];
+      // Декодируем URL-кодированные символы
+      return decodeURIComponent(fileName);
+    }
+    return "Документ.doc";
   };
 
   const contractTypes = [
@@ -257,6 +325,31 @@ const Generation = () => {
     }
   };
 
+  // Управление состоянием загрузки теперь происходит в хуке useDocumentGeneration
+
+  // Инициализация полей формы default значениями при получении схемы
+  useEffect(() => {
+    if (showEntitiesForm) {
+      const allFields = getAllFields();
+      const defaultValues: Record<string, any> = {};
+
+      Object.entries(allFields).forEach(
+        ([fieldName, fieldProps]: [string, any]) => {
+          if (fieldProps?.default) {
+            defaultValues[fieldName] = fieldProps.default;
+          }
+        }
+      );
+
+      if (Object.keys(defaultValues).length > 0) {
+        setUserFormData((prev) => ({
+          ...defaultValues,
+          ...prev, // Сохраняем уже введенные пользователем данные
+        }));
+      }
+    }
+  }, [showEntitiesForm]);
+
   // Очистка при размонтировании компонента
   useEffect(() => {
     return () => {
@@ -273,7 +366,7 @@ const Generation = () => {
         isLoading ||
         showContractType ||
         showContractSelect ||
-        showStepTwo ||
+        showEntitiesForm ||
         showFinalResult
           ? "generation--focused"
           : ""
@@ -282,7 +375,7 @@ const Generation = () => {
         !isLoading &&
         !showContractType &&
         !showContractSelect &&
-        !showStepTwo &&
+        !showEntitiesForm &&
         !showFinalResult
           ? "generation--overlay-visible"
           : ""
@@ -298,7 +391,7 @@ const Generation = () => {
                   isLoading ||
                   showContractType ||
                   showContractSelect ||
-                  showStepTwo ||
+                  showEntitiesForm ||
                   showFinalResult
                     ? "input-wrapper--focused"
                     : ""
@@ -309,7 +402,7 @@ const Generation = () => {
                   isLoading ||
                   showContractType ||
                   showContractSelect ||
-                  showStepTwo ||
+                  showEntitiesForm ||
                   showFinalResult) && <div className="input-placeholder" />}
                 <textarea
                   ref={textareaRef}
@@ -319,7 +412,7 @@ const Generation = () => {
                     isLoading ||
                     showContractType ||
                     showContractSelect ||
-                    showStepTwo ||
+                    showEntitiesForm ||
                     showFinalResult
                       ? "generation-input--focused"
                       : ""
@@ -338,7 +431,7 @@ const Generation = () => {
                     !isLoading &&
                     !showContractType &&
                     !showContractSelect &&
-                    !showStepTwo &&
+                    !showEntitiesForm &&
                     !showFinalResult && (
                       <button
                         className="action-btn action-btn--cancel"
@@ -349,7 +442,7 @@ const Generation = () => {
                     )}
                   {(showContractType ||
                     showContractSelect ||
-                    showStepTwo ||
+                    showEntitiesForm ||
                     showFinalResult) && (
                     <button
                       className="action-btn action-btn--cancel"
@@ -365,7 +458,7 @@ const Generation = () => {
                   ) : (
                     !showContractType &&
                     !showContractSelect &&
-                    !showStepTwo &&
+                    !showEntitiesForm &&
                     !showFinalResult && (
                       <button
                         className="action-btn action-btn--send"
@@ -543,8 +636,8 @@ const Generation = () => {
             </div>
           )}
 
-          {/* Второй этап - проверка на соответствие законам */}
-          {showStepTwo && (
+          {/* Блок ввода сущностей */}
+          {showEntitiesForm && (
             <div className="step-two-section">
               {isLoading && (
                 <div className="step-number-container">
@@ -564,7 +657,7 @@ const Generation = () => {
                   {isLoading ? (
                     <div className="step-two-loading">
                       <Spinner />
-                      <span>Проверяем запрос на соответствие законам</span>
+                      <span>Обрабатываем ваш запрос</span>
                     </div>
                   ) : (
                     <div className="step-three-form">
@@ -575,13 +668,7 @@ const Generation = () => {
                         <span>
                           <Icon name="whiteLine" width={139} height={4} />
                         </span>
-                        <div className="step-number-no-active">
-                          <Icon name="check" width={16} height={16} />
-                        </div>
-                        <span>
-                          <Icon name="whiteLine" width={139} height={4} />
-                        </span>
-                        <div className="step-number">3</div>
+                        <div className="step-number">2</div>
                       </div>
 
                       <div className="step-three-content">
@@ -591,50 +678,62 @@ const Generation = () => {
                         </div>
 
                         <div className="form-fields">
-                          <input
-                            type="text"
-                            placeholder="ФИО"
-                            className="form-field"
-                            value={userFormData.fullName || ""}
-                            onChange={(e) =>
-                              handleUserFormFieldChange(
-                                "fullName",
-                                e.target.value
-                              )
-                            }
-                          />
-                          <input
-                            type="text"
-                            placeholder="Введите запрос"
-                            className="form-field"
-                            value={userFormData.requestText || ""}
-                            onChange={(e) =>
-                              handleUserFormFieldChange(
-                                "requestText",
-                                e.target.value
-                              )
-                            }
-                          />
+                          {getRequiredFields().map((fieldName: string) => {
+                            const fieldProps = getAllFields()[fieldName];
+                            const defaultValue = fieldProps?.default || "";
+
+                            return (
+                              <input
+                                key={fieldName}
+                                type="text"
+                                placeholder={fieldName}
+                                className="form-field"
+                                value={userFormData[fieldName] || defaultValue}
+                                onChange={(e) =>
+                                  handleUserFormFieldChange(
+                                    fieldName,
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            );
+                          })}
                         </div>
 
-                        <div className="additional-data">
-                          <div className="additional-title">
-                            Дополнительные данные
-                            <Icon name="helpOutlined" width={16} height={16} />
+                        {getOptionalFields().length > 0 && (
+                          <div className="additional-data">
+                            <div className="additional-title">
+                              Дополнительные данные
+                              <Icon
+                                name="helpOutlined"
+                                width={16}
+                                height={16}
+                              />
+                            </div>
+                            {getOptionalFields().map((fieldName: string) => {
+                              const fieldProps = getAllFields()[fieldName];
+                              const defaultValue = fieldProps?.default || "";
+
+                              return (
+                                <input
+                                  key={fieldName}
+                                  type="text"
+                                  placeholder={fieldName}
+                                  className="form-field"
+                                  value={
+                                    userFormData[fieldName] || defaultValue
+                                  }
+                                  onChange={(e) =>
+                                    handleUserFormFieldChange(
+                                      fieldName,
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              );
+                            })}
                           </div>
-                          <input
-                            type="text"
-                            placeholder="Адрес регистрации"
-                            className="form-field"
-                            value={userFormData.address || ""}
-                            onChange={(e) =>
-                              handleUserFormFieldChange(
-                                "address",
-                                e.target.value
-                              )
-                            }
-                          />
-                        </div>
+                        )}
 
                         <div className="form-actions">
                           <button
@@ -700,24 +799,20 @@ const Generation = () => {
                   <span className="document-icon">
                     <Icon name="text" width={24} height={24} />
                   </span>
-                  <span className="document-name">
-                    {documentGeneration.status?.result?.document_name ||
-                      "Документ.doc"}
-                  </span>
+                  <span className="document-name">{getDocumentName()}</span>
                 </div>
 
                 <button
                   className="download-button"
                   onClick={() => {
-                    const downloadUrl =
-                      documentGeneration.status?.result?.download_url;
+                    const downloadUrl = documentGeneration.status?.document_url;
                     if (downloadUrl) {
                       window.open(downloadUrl, "_blank");
                     } else {
                       console.error("Ссылка для скачивания недоступна");
                     }
                   }}
-                  disabled={!documentGeneration.status?.result?.download_url}
+                  disabled={!documentGeneration.status?.document_url}
                 >
                   <span>Скачать</span>
                   <Icon
@@ -758,151 +853,137 @@ const Generation = () => {
             </div>
           )}
 
-          {/* Исходные блоки показываются только когда нет загрузки и не показан блок определения типа */}
-          {!isLoading &&
-            !showContractType &&
-            !showContractSelect &&
-            !showStepTwo &&
-            !showFinalResult && (
-              <>
-                <div className="example-section">
-                  <div className="example-title">Пример запроса:</div>
-                  <div className="example-text">
-                    Привет! Составь, пожалуйста, договор оказания услуг, по
-                    которому я, как индивидуальный предприниматель Максим
-                    Игоревич Смирнов, буду проводить уроки английского языка.
-                    Стоимость одного занятия — 3 000 рублей, продолжительность —
-                    60 минут (1 час), при этом точное время начала занятия будет
-                    определяться за 2 дня до занятия. Оплата моих услуг будет
-                    осуществляться безналичным способом после проведения занятия
-                  </div>
+          {/* Исходные блоки показываются только в начальном состоянии */}
+          {documentGeneration.currentStep === "idle" && (
+            <>
+              <div className="example-section">
+                <div className="example-title">Пример запроса:</div>
+                <div className="example-text">
+                  Привет! Составь, пожалуйста, договор оказания услуг, по
+                  которому я, как индивидуальный предприниматель Максим Игоревич
+                  Смирнов, буду проводить уроки английского языка. Стоимость
+                  одного занятия — 3 000 рублей, продолжительность — 60 минут (1
+                  час), при этом точное время начала занятия будет определяться
+                  за 2 дня до занятия. Оплата моих услуг будет осуществляться
+                  безналичным способом после проведения занятия
                 </div>
+              </div>
 
-                <div className="frequent-queries">
-                  <div className="frequent-title">Частые запросы:</div>
-                  <div className="queries-grid">
-                    <div className="query-button-wrapper">
-                      <div
-                        className="query-button"
-                        onClick={() => handleQueryInsert("Договор дарения")}
+              <div className="frequent-queries">
+                <div className="frequent-title">Частые запросы:</div>
+                <div className="queries-grid">
+                  <div className="query-button-wrapper">
+                    <div
+                      className="query-button"
+                      onClick={() => handleQueryInsert("Договор дарения")}
+                    >
+                      <span className="query-button-text">Договор дарения</span>
+                      <button
+                        className="apply-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleQueryClick("Договор дарения");
+                        }}
                       >
-                        <span className="query-button-text">
-                          Договор дарения
-                        </span>
-                        <button
-                          className="apply-button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleQueryClick("Договор дарения");
-                          }}
-                        >
-                          Применить
-                        </button>
-                      </div>
+                        Применить
+                      </button>
                     </div>
-                    <div className="query-button-wrapper">
-                      <div
-                        className="query-button"
-                        onClick={() => handleQueryInsert("Доверенность")}
+                  </div>
+                  <div className="query-button-wrapper">
+                    <div
+                      className="query-button"
+                      onClick={() => handleQueryInsert("Доверенность")}
+                    >
+                      <span className="query-button-text">Доверенность</span>
+                      <button
+                        className="apply-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleQueryClick("Доверенность");
+                        }}
                       >
-                        <span className="query-button-text">Доверенность</span>
-                        <button
-                          className="apply-button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleQueryClick("Доверенность");
-                          }}
-                        >
-                          Применить
-                        </button>
-                      </div>
+                        Применить
+                      </button>
                     </div>
-                    <div className="query-button-wrapper">
-                      <div
-                        className="query-button"
-                        onClick={() =>
-                          handleQueryInsert("Регистрация компании")
-                        }
+                  </div>
+                  <div className="query-button-wrapper">
+                    <div
+                      className="query-button"
+                      onClick={() => handleQueryInsert("Регистрация компании")}
+                    >
+                      <span className="query-button-text">
+                        Регистрация компании
+                      </span>
+                      <button
+                        className="apply-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleQueryClick("Регистрация компании");
+                        }}
                       >
-                        <span className="query-button-text">
-                          Регистрация компании
-                        </span>
-                        <button
-                          className="apply-button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleQueryClick("Регистрация компании");
-                          }}
-                        >
-                          Применить
-                        </button>
-                      </div>
+                        Применить
+                      </button>
                     </div>
-                    <div className="query-button-wrapper">
-                      <div
-                        className="query-button"
-                        onClick={() =>
-                          handleQueryInsert("Регистрация компании")
-                        }
+                  </div>
+                  <div className="query-button-wrapper">
+                    <div
+                      className="query-button"
+                      onClick={() => handleQueryInsert("Регистрация компании")}
+                    >
+                      <span className="query-button-text">
+                        Регистрация компании
+                      </span>
+                      <button
+                        className="apply-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleQueryClick("Регистрация компании");
+                        }}
                       >
-                        <span className="query-button-text">
-                          Регистрация компании
-                        </span>
-                        <button
-                          className="apply-button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleQueryClick("Регистрация компании");
-                          }}
-                        >
-                          Применить
-                        </button>
-                      </div>
+                        Применить
+                      </button>
                     </div>
-                    <div className="query-button-wrapper">
-                      <div
-                        className="query-button"
-                        onClick={() => handleQueryInsert("Продажа машины")}
+                  </div>
+                  <div className="query-button-wrapper">
+                    <div
+                      className="query-button"
+                      onClick={() => handleQueryInsert("Продажа машины")}
+                    >
+                      <span className="query-button-text">Продажа машины</span>
+                      <button
+                        className="apply-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleQueryClick("Продажа машины");
+                        }}
                       >
-                        <span className="query-button-text">
-                          Продажа машины
-                        </span>
-                        <button
-                          className="apply-button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleQueryClick("Продажа машины");
-                          }}
-                        >
-                          Применить
-                        </button>
-                      </div>
+                        Применить
+                      </button>
                     </div>
-                    <div className="query-button-wrapper">
-                      <div
-                        className="query-button"
-                        onClick={() =>
-                          handleQueryInsert("Продажа недвижимости")
-                        }
+                  </div>
+                  <div className="query-button-wrapper">
+                    <div
+                      className="query-button"
+                      onClick={() => handleQueryInsert("Продажа недвижимости")}
+                    >
+                      <span className="query-button-text">
+                        Продажа недвижимости
+                      </span>
+                      <button
+                        className="apply-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleQueryClick("Продажа недвижимости");
+                        }}
                       >
-                        <span className="query-button-text">
-                          Продажа недвижимости
-                        </span>
-                        <button
-                          className="apply-button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleQueryClick("Продажа недвижимости");
-                          }}
-                        >
-                          Применить
-                        </button>
-                      </div>
+                        Применить
+                      </button>
                     </div>
                   </div>
                 </div>
-              </>
-            )}
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -913,13 +994,16 @@ const Generation = () => {
           !isLoading &&
           !showContractType &&
           !showContractSelect &&
-          !showStepTwo &&
+          !showEntitiesForm &&
           !showFinalResult
             ? "generation-overlay--visible"
             : ""
         }`}
         onClick={handleOverlayClick}
       />
+
+      {/* Loader между шагами */}
+      <Loader isVisible={shouldShowLoader} message={getLoaderMessage()} />
     </section>
   );
 };

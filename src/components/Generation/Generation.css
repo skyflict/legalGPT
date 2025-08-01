@@ -887,6 +887,9 @@
 
 .additional-data {
   margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .additional-title {
