@@ -21,29 +21,24 @@ const Generation = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showHelpText, setShowHelpText] = useState(true);
 
-  // Данные формы пользователя управляются через хук ниже
-
-  // Хук для работы с генерацией документов
   const documentGeneration = useDocumentGeneration();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
 
-  // Определяем текущее состояние UI на основе состояния генерации
   const isLoading = documentGeneration.isLoading;
   const showContractType =
     documentGeneration.currentStep === "waiting_input" &&
     documentGeneration.status?.stage === "DOC_TYPE_DEDUCED" &&
-    !isLoading; // Не показываем форму если идет загрузка
-  const showContractSelect = false; // Пока не используется в новой структуре
+    !isLoading;
+  const showContractSelect = false;
   const showEntitiesForm =
     documentGeneration.currentStep === "waiting_input" &&
     documentGeneration.status?.stage === "ENTITIES_EXCTRACTED" &&
-    !isLoading; // Не показываем форму если идет загрузка
+    !isLoading;
   const showFinalResult = documentGeneration.currentStep === "completed";
 
-  // Логика показа лоадера между шагами
   const shouldShowLoader = isLoading && !showFinalResult;
   const loaderMessage = useLoaderMessage(
     isLoading,
@@ -64,8 +59,6 @@ const Generation = () => {
   const handleQueryInsert = (queryText: string) => {
     setQuery(queryText);
   };
-
-  // Ввод теперь обрабатывается внутри QueryInput через onChange={setQuery}
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -109,7 +102,6 @@ const Generation = () => {
 
   const handleCancel = () => {
     setQuery("");
-    // Очистка пользовательских данных формы выполняется в хуке useUserForm по месту использования
     setIsDropdownOpen(false);
     setIsFocused(false);
     setShowOverlay(false);
@@ -120,7 +112,6 @@ const Generation = () => {
   };
 
   const handleContractYes = () => {
-    // Отправляем подтверждение типа договора согласно схеме API
     const defaultDocumentType =
       documentGeneration.status?.required_user_input?.schema?.properties
         ?.document_type?.default;
@@ -134,15 +125,12 @@ const Generation = () => {
   };
 
   const handleContractNo = () => {
-    // Пока что просто сбрасываем, так как доступен только ДКП
-    // В будущем здесь будет логика выбора другого типа договора
     handleCancel();
   };
 
   const handleContractSelect = (contractType: string) => {
     setIsDropdownOpen(false);
 
-    // Отправляем выбранный тип договора
     documentGeneration.submitUserInput({
       event_type: "contract_type_selection",
       contract_type: contractType,
@@ -150,7 +138,6 @@ const Generation = () => {
   };
 
   const handleUserFormSubmit = () => {
-    // Отправляем пользовательские данные согласно схеме от сервера
     const requiredInput = documentGeneration.status?.required_user_input as any;
     const eventType = requiredInput?.event_type || "ENTITIES_PROVIDED";
 
@@ -160,9 +147,6 @@ const Generation = () => {
     });
   };
 
-  // Обработка изменений полей формы перенесена в EntitiesFormStep через пропсы
-
-  // Работа со схемой полей и состоянием формы
   const { requiredFields, optionalFields, allFields } = useFormSchema(
     documentGeneration.status as any
   );
@@ -172,18 +156,14 @@ const Generation = () => {
   );
   const formIsValid = useFormValidity(requiredFields, userFormValues);
 
-  // Проверка валидности формы через хук
-
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
   const handleBackToContractType = () => {
-    // В новой логике возвращаемся к предыдущему шагу через отмену
     handleCancel();
   };
 
-  // Функция для преобразования типа договора в читаемое название
   const getContractTypeName = (type?: string) => {
     const typeMap: Record<string, string> = {
       dcp: "Договор купли-продажи",
@@ -206,7 +186,6 @@ const Generation = () => {
     if (documentUrl) {
       const parts = documentUrl.split("/");
       const fileName = parts[parts.length - 1];
-      // Декодируем URL-кодированные символы
       return decodeURIComponent(fileName);
     }
     return "Документ.doc";
@@ -224,12 +203,8 @@ const Generation = () => {
     setShowHelpText(false);
   };
 
-  // Автосайзинг перенесён в QueryInput
-
-  // Закрытие dropdown при клике вне его
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      // Проверяем клики вне dropdown'ов
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
@@ -237,7 +212,6 @@ const Generation = () => {
         setIsDropdownOpen(false);
       }
 
-      // Проверяем клики вне области ввода для скрытия overlay
       if (
         showOverlay &&
         inputWrapperRef.current &&
@@ -256,20 +230,11 @@ const Generation = () => {
     };
   }, [isDropdownOpen, showOverlay]);
 
-  // Ввод обрабатывается в QueryInput
-
-  // Управление состоянием загрузки теперь происходит в хуке useDocumentGeneration
-
-  // Инициализация дефолтных значений формы перенесена в useUserForm
-
-  // Очистка при размонтировании компонента
   useEffect(() => {
     return () => {
       documentGeneration.reset();
     };
   }, []);
-
-  // Проверка заполненности обязательных полей (заменена на isUserFormValid выше)
 
   return (
     <section
@@ -327,7 +292,6 @@ const Generation = () => {
 
             <HelpText visible={showHelpText} onClose={handleCloseHelpText} />
 
-            {/* Отображение ошибок */}
             {documentGeneration.error && (
               <div
                 className="error-message"
@@ -357,7 +321,6 @@ const Generation = () => {
             )}
           </div>
 
-          {/* Блок определения типа договора */}
           {showContractType && (
             <div className="contract-type-section">
               <div className="step-number-container">
@@ -376,7 +339,6 @@ const Generation = () => {
             </div>
           )}
 
-          {/* Блок выбора типа договора */}
           {showContractSelect && (
             <div className="contract-select-section">
               <div className="step-number-container">
@@ -448,7 +410,6 @@ const Generation = () => {
             </div>
           )}
 
-          {/* Блок ввода сущностей */}
           {showEntitiesForm && (
             <div className="step-two-section">
               {isLoading && (
@@ -483,7 +444,6 @@ const Generation = () => {
             </div>
           )}
 
-          {/* Финальный результат */}
           {showFinalResult && (
             <div className="final-result-section">
               <div className="final-progress">
@@ -517,7 +477,6 @@ const Generation = () => {
             </div>
           )}
 
-          {/* Исходные блоки показываются только в начальном состоянии */}
           {documentGeneration.currentStep === "idle" && (
             <>
               <div className="example-section">
@@ -651,7 +610,6 @@ const Generation = () => {
         </div>
       </div>
 
-      {/* Overlay для затемнения фона */}
       <div
         className={`generation-overlay ${
           showOverlay &&
@@ -666,7 +624,6 @@ const Generation = () => {
         onClick={handleOverlayClick}
       />
 
-      {/* Loader между шагами */}
       <Loader isVisible={shouldShowLoader} message={loaderMessage} />
     </section>
   );

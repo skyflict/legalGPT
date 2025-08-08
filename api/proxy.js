@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
+    "GET, POST, PUT, PATCH, DELETE, OPTIONS"
   );
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
@@ -37,8 +37,12 @@ export default async function handler(req, res) {
       headers,
     };
 
-    if (req.method === "POST" || req.method === "PUT") {
-      fetchOptions.body = JSON.stringify(req.body);
+    // Пробрасываем body для методов, где оно есть
+    if (["POST", "PUT", "PATCH"].includes(req.method)) {
+      fetchOptions.body =
+        typeof req.body === "string"
+          ? req.body
+          : JSON.stringify(req.body ?? {});
     }
 
     const response = await fetch(apiUrl, fetchOptions);
