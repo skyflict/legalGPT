@@ -239,12 +239,26 @@ const Generation = () => {
   const getContractTypeName = (type?: string) => {
     const typeMap: Record<string, string> = {
       dcp: "Договор купли-продажи",
-      // Добавить другие типы когда появятся
+      arenda: "Договор аренды",
+      gift: "Договор дарения",
+      uslugi: "Договор оказания услуг",
+      zaym: "Договор займа",
+      agent: "Агентский договор",
+      naym: "Трудовой договор",
     };
     return type ? typeMap[type] : undefined;
   };
 
-  // Функция для извлечения имени документа из URL
+  const getResolvedDocumentType = (): string | undefined => {
+    const statusType = documentGeneration.status?.type;
+    if (statusType) return statusType;
+
+    const defaultType =
+      documentGeneration.status?.required_user_input?.schema?.properties
+        ?.document_type?.default;
+    return defaultType || undefined;
+  };
+
   const getDocumentName = () => {
     const documentUrl = documentGeneration.status?.document_url;
     if (documentUrl) {
@@ -541,8 +555,8 @@ const Generation = () => {
                     <Icon name="text" width={24} height={24} />
                   </div>
                   <span className="contract-type-name">
-                    {getContractTypeName(documentGeneration.status?.type) ||
-                      "Договор купли-продажи"}
+                    {getContractTypeName(getResolvedDocumentType()) ||
+                      "Неизвестный тип"}
                   </span>
                 </div>
 
@@ -681,21 +695,37 @@ const Generation = () => {
                           {getRequiredFields().map((fieldName: string) => {
                             const fieldProps = getAllFields()[fieldName];
                             const defaultValue = fieldProps?.default || "";
+                            const value =
+                              userFormData[fieldName] || defaultValue;
+                            const labelText = fieldProps?.title || fieldName;
 
                             return (
-                              <input
+                              <div
                                 key={fieldName}
-                                type="text"
-                                placeholder={fieldName}
-                                className="form-field"
-                                value={userFormData[fieldName] || defaultValue}
-                                onChange={(e) =>
-                                  handleUserFormFieldChange(
-                                    fieldName,
-                                    e.target.value
-                                  )
-                                }
-                              />
+                                className={`form-field-wrapper ${
+                                  value && String(value).trim() !== ""
+                                    ? "has-value"
+                                    : ""
+                                }`}
+                              >
+                                <input
+                                  type="text"
+                                  placeholder={labelText}
+                                  className="form-field"
+                                  value={value}
+                                  onChange={(e) =>
+                                    handleUserFormFieldChange(
+                                      fieldName,
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                                {value && String(value).trim() !== "" && (
+                                  <span className="floating-label">
+                                    {labelText}
+                                  </span>
+                                )}
+                              </div>
                             );
                           })}
                         </div>
@@ -713,23 +743,37 @@ const Generation = () => {
                             {getOptionalFields().map((fieldName: string) => {
                               const fieldProps = getAllFields()[fieldName];
                               const defaultValue = fieldProps?.default || "";
+                              const value =
+                                userFormData[fieldName] || defaultValue;
+                              const labelText = fieldProps?.title || fieldName;
 
                               return (
-                                <input
+                                <div
                                   key={fieldName}
-                                  type="text"
-                                  placeholder={fieldName}
-                                  className="form-field"
-                                  value={
-                                    userFormData[fieldName] || defaultValue
-                                  }
-                                  onChange={(e) =>
-                                    handleUserFormFieldChange(
-                                      fieldName,
-                                      e.target.value
-                                    )
-                                  }
-                                />
+                                  className={`form-field-wrapper ${
+                                    value && String(value).trim() !== ""
+                                      ? "has-value"
+                                      : ""
+                                  }`}
+                                >
+                                  <input
+                                    type="text"
+                                    placeholder={labelText}
+                                    className="form-field"
+                                    value={value}
+                                    onChange={(e) =>
+                                      handleUserFormFieldChange(
+                                        fieldName,
+                                        e.target.value
+                                      )
+                                    }
+                                  />
+                                  {value && String(value).trim() !== "" && (
+                                    <span className="floating-label">
+                                      {labelText}
+                                    </span>
+                                  )}
+                                </div>
                               );
                             })}
                           </div>
