@@ -11,6 +11,7 @@ import Footer from "./components/Footer/Footer";
 import AuthModal from "./components/AuthModal/AuthModal";
 import Sidebar from "./components/Sidebar/Sidebar";
 import Generation from "./components/Generation/Generation";
+import HistoryPage from "./components/History/HistoryPage";
 
 interface UserData {
   id: string;
@@ -18,6 +19,8 @@ interface UserData {
   role: string;
   balance: number;
 }
+
+type ViewName = "generation" | "history";
 
 function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -98,6 +101,8 @@ function App() {
     }
   };
 
+  const [currentView, setCurrentView] = useState<ViewName>("generation");
+
   return (
     <div className="app">
       <Header
@@ -109,7 +114,16 @@ function App() {
       />
 
       <div className={`app-layout ${isLoggedIn ? "with-sidebar" : ""}`}>
-        {isLoggedIn && <Sidebar isVisible={true} userRole={userData?.role} />}
+        {isLoggedIn && (
+          <Sidebar
+            isVisible={true}
+            userRole={userData?.role}
+            // пробрасываем смену вида через кастомное событие
+            onOpenHistory={() => setCurrentView("history")}
+            onOpenGeneration={() => setCurrentView("generation")}
+            active={currentView}
+          />
+        )}
 
         <main className="main-content">
           {!isLoggedIn && (
@@ -119,17 +133,22 @@ function App() {
             </div>
           )}
 
-          {isLoggedIn && <Generation />}
+          {isLoggedIn && currentView === "generation" && <Generation />}
+          {isLoggedIn && currentView === "history" && <HistoryPage />}
 
-          <Features
-            isLoggedIn={isLoggedIn}
-            onOpenAuthModal={handleOpenAuthModal}
-          />
-          <HowItWorks
-            isLoggedIn={isLoggedIn}
-            onOpenAuthModal={handleOpenAuthModal}
-          />
-          <FAQ />
+          {currentView !== "history" && (
+            <>
+              <Features
+                isLoggedIn={isLoggedIn}
+                onOpenAuthModal={handleOpenAuthModal}
+              />
+              <HowItWorks
+                isLoggedIn={isLoggedIn}
+                onOpenAuthModal={handleOpenAuthModal}
+              />
+              <FAQ />
+            </>
+          )}
         </main>
       </div>
 

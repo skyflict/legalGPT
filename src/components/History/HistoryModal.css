@@ -1,8 +1,6 @@
 .history-root {
   width: 824px;
   max-width: 100%;
-  max-height: 75vh;
-  overflow: auto;
 }
 .history-loading,
 .history-error,
@@ -77,6 +75,9 @@
   font-family: Unbounded;
   font-size: 12px;
   cursor: pointer;
+}
+.history-btn:not(.history-btn--secondary) img {
+  filter: brightness(0) invert(1);
 }
 .history-btn--secondary {
   background: rgba(26, 26, 26, 0.1);

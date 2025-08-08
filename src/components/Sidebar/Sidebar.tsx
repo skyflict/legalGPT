@@ -1,13 +1,17 @@
 import { useState } from "react";
 import Icon from "../Icon";
 import Modal from "../Modal";
-import HistoryModal from "../History/HistoryModal";
 import "./Sidebar.css";
 import { apiRequest, API_ENDPOINTS } from "../../utils/api";
+
+type ActiveTab = "generation" | "history";
 
 interface SidebarProps {
   isVisible: boolean;
   userRole?: string;
+  onOpenHistory?: () => void;
+  onOpenGeneration?: () => void;
+  active?: ActiveTab;
 }
 
 interface User {
@@ -17,10 +21,15 @@ interface User {
   balance: number;
 }
 
-const Sidebar = ({ isVisible, userRole }: SidebarProps) => {
+const Sidebar = ({
+  isVisible,
+  userRole,
+  onOpenHistory,
+  onOpenGeneration,
+  active,
+}: SidebarProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [bonusAmount, setBonusAmount] = useState<number>(0);
@@ -66,8 +75,8 @@ const Sidebar = ({ isVisible, userRole }: SidebarProps) => {
     }
   };
 
-  const handleHistoryClick = async () => {
-    setIsHistoryOpen(true);
+  const handleHistoryClick = () => {
+    onOpenHistory?.();
   };
 
   const handleUserSelect = (user: User) => {
@@ -113,7 +122,10 @@ const Sidebar = ({ isVisible, userRole }: SidebarProps) => {
       <aside className="sidebar-embedded">
         <div className="sidebar-content">
           <nav className="sidebar-nav">
-            <button className="nav-item active" onClick={handleItemClick}>
+            <button
+              className={`nav-item ${active === "generation" ? "active" : ""}`}
+              onClick={() => onOpenGeneration?.()}
+            >
               <Icon name="create" size="md" title="Создать" />
               <span className="nav-text">Создать</span>
             </button>
@@ -125,7 +137,10 @@ const Sidebar = ({ isVisible, userRole }: SidebarProps) => {
               <Icon name="help" size="md" title="Помощь юриста" />
               <span className="nav-text">Помощь юриста</span>
             </button>
-            <button className="nav-item" onClick={handleHistoryClick}>
+            <button
+              className={`nav-item ${active === "history" ? "active" : ""}`}
+              onClick={handleHistoryClick}
+            >
               <Icon name="history" size="md" title="История" />
               <span className="nav-text">История</span>
             </button>
@@ -147,11 +162,6 @@ const Sidebar = ({ isVisible, userRole }: SidebarProps) => {
       >
         <div className="modal-content"></div>
       </Modal>
-
-      <HistoryModal
-        isOpen={isHistoryOpen}
-        onClose={() => setIsHistoryOpen(false)}
-      />
 
       <Modal
         isOpen={isAdminModalOpen}
