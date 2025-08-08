@@ -1,15 +1,18 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import Icon from "../Icon/Icon";
 import Loader from "../Loader/Loader";
 import "./Generation.css";
 import { useDocumentGeneration } from "./hooks/useDocumentGeneration";
-
-// Компонент спиннера
-const Spinner = () => (
-  <div className="spinner">
-    <div className="spinner-circle"></div>
-  </div>
-);
+import QueryInput from "./components/QueryInput/QueryInput";
+import HelpText from "./components/HelpText/HelpText";
+import ContractTypeStep from "./components/ContractTypeStep/ContractTypeStep";
+import EntitiesFormStep from "./components/EntitiesFormStep/EntitiesFormStep";
+import FinalResultStep from "./components/FinalResultStep/FinalResultStep";
+import Spinner from "./components/Spinner/Spinner";
+import { useResolvedDocumentType } from "./hooks/useResolvedDocumentType";
+import { useFormSchema } from "./hooks/useFormSchema";
+import { useUserForm, useFormValidity } from "./hooks/useUserForm";
+import { useLoaderMessage } from "./hooks/useLoaderMessage";
 
 const Generation = () => {
   const [query, setQuery] = useState("");
@@ -18,8 +21,7 @@ const Generation = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showHelpText, setShowHelpText] = useState(true);
 
-  // Состояния для полей формы пользователя
-  const [userFormData, setUserFormData] = useState<Record<string, any>>({});
+  // Данные формы пользователя управляются через хук ниже
 
   // Хук для работы с генерацией документов
   const documentGeneration = useDocumentGeneration();
@@ -43,27 +45,10 @@ const Generation = () => {
 
   // Логика показа лоадера между шагами
   const shouldShowLoader = isLoading && !showFinalResult;
-
-  const getLoaderMessage = () => {
-    const stage = documentGeneration.status?.stage;
-
-    switch (stage) {
-      case "DOC_TYPE_DEDUCING":
-        return "Определяем тип документа...";
-      case "ENTITIES_EXTRACTING":
-      case "ENTITIES_EXCTRACTED":
-        return "Извлекаем необходимые данные...";
-      case "DOC_GENERATING":
-      case "DOC_GENERATED":
-        return "Генерируем документ...";
-      case "PROCESSING":
-        return "Обрабатываем ваш запрос...";
-      case "VALIDATING":
-        return "Проверяем данные...";
-      default:
-        return isLoading ? "Обрабатываем ваш запрос..." : "";
-    }
-  };
+  const loaderMessage = useLoaderMessage(
+    isLoading,
+    documentGeneration.status as any
+  );
 
   const handleQueryClick = (queryText: string) => {
     setQuery(queryText);
@@ -80,9 +65,7 @@ const Generation = () => {
     setQuery(queryText);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setQuery(e.target.value);
-  };
+  // Ввод теперь обрабатывается внутри QueryInput через onChange={setQuery}
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -121,20 +104,12 @@ const Generation = () => {
   };
 
   const handleSend = async () => {
-    console.log("Sending query:", query);
-
-    // Сбрасываем высоту textarea до минимальной
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "52px";
-    }
-
-    // Запускаем генерацию документа
     await documentGeneration.startGeneration(query);
   };
 
   const handleCancel = () => {
     setQuery("");
-    setUserFormData({});
+    // Очистка пользовательских данных формы выполняется в хуке useUserForm по месту использования
     setIsDropdownOpen(false);
     setIsFocused(false);
     setShowOverlay(false);
@@ -181,50 +156,23 @@ const Generation = () => {
 
     documentGeneration.submitUserInput({
       event_type: eventType,
-      data: userFormData,
+      data: userFormValues,
     });
   };
 
-  // Обработка изменений в полях пользовательской формы
-  const handleUserFormFieldChange = (fieldName: string, value: string) => {
-    setUserFormData((prev) => ({
-      ...prev,
-      [fieldName]: value,
-    }));
-  };
+  // Обработка изменений полей формы перенесена в EntitiesFormStep через пропсы
 
-  // Получение схемы полей от сервера
-  const getFormSchema = () => {
-    return documentGeneration.status?.required_user_input?.schema;
-  };
+  // Работа со схемой полей и состоянием формы
+  const { requiredFields, optionalFields, allFields } = useFormSchema(
+    documentGeneration.status as any
+  );
+  const { values: userFormValues, setField: setUserFormField } = useUserForm(
+    allFields as any,
+    showEntitiesForm
+  );
+  const formIsValid = useFormValidity(requiredFields, userFormValues);
 
-  // Получение обязательных полей
-  const getRequiredFields = () => {
-    const schema = getFormSchema();
-    return schema?.required || [];
-  };
-
-  // Получение всех полей с их свойствами
-  const getAllFields = () => {
-    const schema = getFormSchema();
-    return schema?.properties || {};
-  };
-
-  // Получение дополнительных полей (не обязательных)
-  const getOptionalFields = () => {
-    const allFields = getAllFields();
-    const requiredFields = getRequiredFields();
-
-    return Object.keys(allFields).filter(
-      (fieldName) => !requiredFields.includes(fieldName)
-    );
-  };
-
-  // Проверка валидности формы на основе схемы от бэкенда
-  const isUserFormValid = () => {
-    const requiredFields = getRequiredFields();
-    return requiredFields.every((field: string) => userFormData[field]?.trim());
-  };
+  // Проверка валидности формы через хук
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -249,15 +197,9 @@ const Generation = () => {
     return type ? typeMap[type] : undefined;
   };
 
-  const getResolvedDocumentType = (): string | undefined => {
-    const statusType = documentGeneration.status?.type;
-    if (statusType) return statusType;
-
-    const defaultType =
-      documentGeneration.status?.required_user_input?.schema?.properties
-        ?.document_type?.default;
-    return defaultType || undefined;
-  };
+  const resolvedDocType = useResolvedDocumentType(
+    documentGeneration.status as any
+  );
 
   const getDocumentName = () => {
     const documentUrl = documentGeneration.status?.document_url;
@@ -282,21 +224,7 @@ const Generation = () => {
     setShowHelpText(false);
   };
 
-  // Автоматическое растягивание textarea
-  useEffect(() => {
-    if (textareaRef.current) {
-      // Сбрасываем высоту для правильного расчета scrollHeight
-      textareaRef.current.style.height = "auto";
-
-      // Устанавливаем минимальную высоту
-      const minHeight = 52;
-      const scrollHeight = textareaRef.current.scrollHeight;
-
-      // Устанавливаем высоту равную содержимому, но не меньше минимальной
-      textareaRef.current.style.height =
-        Math.max(minHeight, scrollHeight) + "px";
-    }
-  }, [query]);
+  // Автосайзинг перенесён в QueryInput
 
   // Закрытие dropdown при клике вне его
   useEffect(() => {
@@ -328,41 +256,11 @@ const Generation = () => {
     };
   }, [isDropdownOpen, showOverlay]);
 
-  // Также добавляем обработчик для события input (для вставки текста)
-  const handleInput = () => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      const minHeight = 52;
-      const scrollHeight = textareaRef.current.scrollHeight;
-      textareaRef.current.style.height =
-        Math.max(minHeight, scrollHeight) + "px";
-    }
-  };
+  // Ввод обрабатывается в QueryInput
 
   // Управление состоянием загрузки теперь происходит в хуке useDocumentGeneration
 
-  // Инициализация полей формы default значениями при получении схемы
-  useEffect(() => {
-    if (showEntitiesForm) {
-      const allFields = getAllFields();
-      const defaultValues: Record<string, any> = {};
-
-      Object.entries(allFields).forEach(
-        ([fieldName, fieldProps]: [string, any]) => {
-          if (fieldProps?.default) {
-            defaultValues[fieldName] = fieldProps.default;
-          }
-        }
-      );
-
-      if (Object.keys(defaultValues).length > 0) {
-        setUserFormData((prev) => ({
-          ...defaultValues,
-          ...prev, // Сохраняем уже введенные пользователем данные
-        }));
-      }
-    }
-  }, [showEntitiesForm]);
+  // Инициализация дефолтных значений формы перенесена в useUserForm
 
   // Очистка при размонтировании компонента
   useEffect(() => {
@@ -399,112 +297,35 @@ const Generation = () => {
         <div className="generation-content">
           <div className="generation-form">
             <div className="form-group">
-              <div
-                className={`input-wrapper ${
+              <QueryInput
+                value={query}
+                isBusy={isLoading}
+                isFocused={
                   isFocused ||
                   isLoading ||
                   showContractType ||
                   showContractSelect ||
                   showEntitiesForm ||
                   showFinalResult
-                    ? "input-wrapper--focused"
-                    : ""
-                }`}
-                ref={inputWrapperRef}
-              >
-                {(isFocused ||
-                  isLoading ||
-                  showContractType ||
-                  showContractSelect ||
-                  showEntitiesForm ||
-                  showFinalResult) && <div className="input-placeholder" />}
-                <textarea
-                  ref={textareaRef}
-                  id="query"
-                  className={`generation-input ${
-                    isFocused ||
-                    isLoading ||
-                    showContractType ||
-                    showContractSelect ||
-                    showEntitiesForm ||
-                    showFinalResult
-                      ? "generation-input--focused"
-                      : ""
-                  }`}
-                  placeholder="Введите запрос"
-                  value={query}
-                  onChange={handleInputChange}
-                  onInput={handleInput}
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  rows={1}
-                  readOnly={isLoading}
-                />
-                <div className="input-actions">
-                  {query.length > 0 &&
-                    !isLoading &&
-                    !showContractType &&
-                    !showContractSelect &&
-                    !showEntitiesForm &&
-                    !showFinalResult && (
-                      <button
-                        className="action-btn action-btn--cancel"
-                        onClick={handleCancel}
-                      >
-                        <Icon name="cancel" size="sm" />
-                      </button>
-                    )}
-                  {(showContractType ||
-                    showContractSelect ||
-                    showEntitiesForm ||
-                    showFinalResult) && (
-                    <button
-                      className="action-btn action-btn--cancel"
-                      onClick={handleCancel}
-                    >
-                      <Icon name="cancel" size="sm" />
-                    </button>
-                  )}
-                  {isLoading ? (
-                    <div className="action-btn action-btn--loading">
-                      <Spinner />
-                    </div>
-                  ) : (
-                    !showContractType &&
-                    !showContractSelect &&
-                    !showEntitiesForm &&
-                    !showFinalResult && (
-                      <button
-                        className="action-btn action-btn--send"
-                        onClick={handleSend}
-                        disabled={query.length === 0}
-                      >
-                        <Icon name="send" size="sm" />
-                      </button>
-                    )
-                  )}
-                </div>
-              </div>
+                }
+                showOverlay={
+                  showOverlay &&
+                  !isLoading &&
+                  !showContractType &&
+                  !showContractSelect &&
+                  !showEntitiesForm &&
+                  !showFinalResult
+                }
+                onChange={setQuery}
+                onSend={handleSend}
+                onCancel={handleCancel}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                onOverlayClick={handleOverlayClick}
+              />
             </div>
 
-            {showHelpText && (
-              <div className="help-text">
-                <div className="help-text-content">
-                  Если у вас остались юридические вопросы, вы всегда можете{" "}
-                  <a href="#" className="help-link">
-                    обратиться
-                  </a>{" "}
-                  к нашим юристам за помощью
-                </div>
-                <button
-                  className="help-text-close"
-                  onClick={handleCloseHelpText}
-                  aria-label="Закрыть"
-                >
-                  <Icon name="close" width={16} height={16} />
-                </button>
-              </div>
-            )}
+            <HelpText visible={showHelpText} onClose={handleCloseHelpText} />
 
             {/* Отображение ошибок */}
             {documentGeneration.error && (
@@ -545,36 +366,13 @@ const Generation = () => {
                   <Icon name="whiteLine" width={139} height={4} />
                 </span>
               </div>
-
-              <div className="contract-question">
-                <div className="contract-question-title">
-                  Правильно ли определен тип договора?
-                </div>
-                <div className="contract-type-card">
-                  <div className="contract-type-icon">
-                    <Icon name="text" width={24} height={24} />
-                  </div>
-                  <span className="contract-type-name">
-                    {getContractTypeName(getResolvedDocumentType()) ||
-                      "Неизвестный тип"}
-                  </span>
-                </div>
-
-                <div className="contract-buttons">
-                  <button
-                    className="contract-btn contract-btn--yes"
-                    onClick={handleContractYes}
-                  >
-                    Да
-                  </button>
-                  <button
-                    className="contract-btn contract-btn--no"
-                    onClick={handleContractNo}
-                  >
-                    Нет
-                  </button>
-                </div>
-              </div>
+              <ContractTypeStep
+                typeName={
+                  getContractTypeName(resolvedDocType) || "Неизвестный тип"
+                }
+                onConfirm={handleContractYes}
+                onReject={handleContractNo}
+              />
             </div>
           )}
 
@@ -666,144 +464,22 @@ const Generation = () => {
                 </div>
               )}
 
-              <div className="step-two-content">
-                <div className="step-two-message">
-                  {isLoading ? (
-                    <div className="step-two-loading">
-                      <Spinner />
-                      <span>Обрабатываем ваш запрос</span>
-                    </div>
-                  ) : (
-                    <div className="step-three-form">
-                      <div className="step-progress">
-                        <div className="step-number-no-active">
-                          <Icon name="check" width={16} height={16} />
-                        </div>
-                        <span>
-                          <Icon name="whiteLine" width={139} height={4} />
-                        </span>
-                        <div className="step-number">2</div>
-                      </div>
-
-                      <div className="step-three-content">
-                        <div className="step-three-title">
-                          Введите обязательные недостающие данные
-                          <Icon name="helpOutlined" width={16} height={16} />
-                        </div>
-
-                        <div className="form-fields">
-                          {getRequiredFields().map((fieldName: string) => {
-                            const fieldProps = getAllFields()[fieldName];
-                            const defaultValue = fieldProps?.default || "";
-                            const value =
-                              userFormData[fieldName] || defaultValue;
-                            const labelText = fieldProps?.title || fieldName;
-
-                            return (
-                              <div
-                                key={fieldName}
-                                className={`form-field-wrapper ${
-                                  value && String(value).trim() !== ""
-                                    ? "has-value"
-                                    : ""
-                                }`}
-                              >
-                                <input
-                                  type="text"
-                                  placeholder={labelText}
-                                  className="form-field"
-                                  value={value}
-                                  onChange={(e) =>
-                                    handleUserFormFieldChange(
-                                      fieldName,
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                                {value && String(value).trim() !== "" && (
-                                  <span className="floating-label">
-                                    {labelText}
-                                  </span>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        {getOptionalFields().length > 0 && (
-                          <div className="additional-data">
-                            <div className="additional-title">
-                              Дополнительные данные
-                              <Icon
-                                name="helpOutlined"
-                                width={16}
-                                height={16}
-                              />
-                            </div>
-                            {getOptionalFields().map((fieldName: string) => {
-                              const fieldProps = getAllFields()[fieldName];
-                              const defaultValue = fieldProps?.default || "";
-                              const value =
-                                userFormData[fieldName] || defaultValue;
-                              const labelText = fieldProps?.title || fieldName;
-
-                              return (
-                                <div
-                                  key={fieldName}
-                                  className={`form-field-wrapper ${
-                                    value && String(value).trim() !== ""
-                                      ? "has-value"
-                                      : ""
-                                  }`}
-                                >
-                                  <input
-                                    type="text"
-                                    placeholder={labelText}
-                                    className="form-field"
-                                    value={value}
-                                    onChange={(e) =>
-                                      handleUserFormFieldChange(
-                                        fieldName,
-                                        e.target.value
-                                      )
-                                    }
-                                  />
-                                  {value && String(value).trim() !== "" && (
-                                    <span className="floating-label">
-                                      {labelText}
-                                    </span>
-                                  )}
-                                </div>
-                              );
-                            })}
-                          </div>
-                        )}
-
-                        <div className="form-actions">
-                          <button
-                            className="action-button action-button--primary"
-                            onClick={handleUserFormSubmit}
-                            disabled={!isUserFormValid()}
-                          >
-                            Далее
-                          </button>
-                        </div>
-
-                        <div className="privacy-notice">
-                          <Icon name="lock" width={16} height={16} />
-                          <div>
-                            <div>Ваши данные надёжно защищены.</div>
-                            <div>
-                              С правилами передачи данных можете ознакомиться{" "}
-                              <a href="#">здесь</a>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+              {isLoading ? (
+                <div className="step-two-loading">
+                  <Spinner />
+                  <span>Обрабатываем ваш запрос</span>
                 </div>
-              </div>
+              ) : (
+                <EntitiesFormStep
+                  requiredFields={requiredFields}
+                  optionalFields={optionalFields}
+                  allFields={allFields as any}
+                  values={userFormValues as any}
+                  onChange={(f, v) => setUserFormField(f, v)}
+                  onSubmit={handleUserFormSubmit}
+                  isValid={formIsValid}
+                />
+              )}
             </div>
           )}
 
@@ -834,66 +510,10 @@ const Generation = () => {
                 </div>
               </div>
 
-              <div className="final-content">
-                <div className="final-title">
-                  Документ сгенерирован и добавлен в историю:
-                </div>
-
-                <div className="document-card">
-                  <span className="document-icon">
-                    <Icon name="text" width={24} height={24} />
-                  </span>
-                  <span className="document-name">{getDocumentName()}</span>
-                </div>
-
-                <button
-                  className="download-button"
-                  onClick={() => {
-                    const downloadUrl = documentGeneration.status?.document_url;
-                    if (downloadUrl) {
-                      window.open(downloadUrl, "_blank");
-                    } else {
-                      console.error("Ссылка для скачивания недоступна");
-                    }
-                  }}
-                  disabled={!documentGeneration.status?.document_url}
-                >
-                  <span>Скачать</span>
-                  <Icon
-                    name="download"
-                    width={24}
-                    height={24}
-                    className="download-icon"
-                  />
-                </button>
-
-                <div className="consultation-section">
-                  <div className="consultation-content">
-                    <div className="consultation-text">
-                      <div className="consultation-title">
-                        Провести консультацию у юриста
-                      </div>
-                      <div className="consultation-description">
-                        Если вам нужна профессиональная поддержка при дальнейшей
-                        работе с договором или у вас остались юридические
-                        вопросы, то наш специалист всегда готов вам помочь. Если
-                        вас не устроит помощь специалиста, мы вернём вам токены
-                      </div>
-
-                      <button className="consultation-button">
-                        Записаться
-                      </button>
-
-                      <div className="consultation-note">
-                        При записи на консультацию на вашем счёту будет
-                        заморожено 99 коинов для оплаты консультации
-                      </div>
-                    </div>
-
-                    <div className="consultation-image" />
-                  </div>
-                </div>
-              </div>
+              <FinalResultStep
+                documentName={getDocumentName()}
+                downloadUrl={documentGeneration.status?.document_url}
+              />
             </div>
           )}
 
@@ -1047,7 +667,7 @@ const Generation = () => {
       />
 
       {/* Loader между шагами */}
-      <Loader isVisible={shouldShowLoader} message={getLoaderMessage()} />
+      <Loader isVisible={shouldShowLoader} message={loaderMessage} />
     </section>
   );
 };

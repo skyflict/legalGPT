@@ -48,7 +48,6 @@ export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
   const fetchUserData = async () => {
     try {
       const userData = await apiRequest(API_ENDPOINTS.USER);
-      console.log("Данные пользователя:", userData);
       return userData;
     } catch (err) {
       console.error("Ошибка при получении данных пользователя:", err);

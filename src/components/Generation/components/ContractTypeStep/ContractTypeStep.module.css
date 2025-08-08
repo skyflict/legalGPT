@@ -1,0 +1,31 @@
+.root {
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  margin: 24px 0;
+}
+
+.iconBox {
+  border-radius: var(--Corner-Medium, 12px);
+  background: #fff;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.name {
+  color: var(--Text-Primary, #1a1a1a);
+  font-family: Unbounded;
+  font-size: 16px;
+  font-weight: 400;
+  margin-left: 16px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}

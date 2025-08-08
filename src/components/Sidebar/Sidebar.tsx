@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Icon from "../Icon";
 import Modal from "../Modal";
+import HistoryModal from "../History/HistoryModal";
 import "./Sidebar.css";
 import { apiRequest, API_ENDPOINTS } from "../../utils/api";
 
@@ -19,6 +20,7 @@ interface User {
 const Sidebar = ({ isVisible, userRole }: SidebarProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [bonusAmount, setBonusAmount] = useState<number>(0);
@@ -28,7 +30,6 @@ const Sidebar = ({ isVisible, userRole }: SidebarProps) => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const handleItemClick = () => {
-    console.log("Sidebar button clicked!");
     setIsModalOpen(true);
   };
 
@@ -63,6 +64,10 @@ const Sidebar = ({ isVisible, userRole }: SidebarProps) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleHistoryClick = async () => {
+    setIsHistoryOpen(true);
   };
 
   const handleUserSelect = (user: User) => {
@@ -120,7 +125,7 @@ const Sidebar = ({ isVisible, userRole }: SidebarProps) => {
               <Icon name="help" size="md" title="Помощь юриста" />
               <span className="nav-text">Помощь юриста</span>
             </button>
-            <button className="nav-item" onClick={handleItemClick}>
+            <button className="nav-item" onClick={handleHistoryClick}>
               <Icon name="history" size="md" title="История" />
               <span className="nav-text">История</span>
             </button>
@@ -142,6 +147,11 @@ const Sidebar = ({ isVisible, userRole }: SidebarProps) => {
       >
         <div className="modal-content"></div>
       </Modal>
+
+      <HistoryModal
+        isOpen={isHistoryOpen}
+        onClose={() => setIsHistoryOpen(false)}
+      />
 
       <Modal
         isOpen={isAdminModalOpen}

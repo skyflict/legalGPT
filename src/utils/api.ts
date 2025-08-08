@@ -37,6 +37,7 @@ export const API_ENDPOINTS = {
   LOGOUT: createApiUrl("v1/logout"),
   USER: createApiUrl("v1/user"),
   DOCUMENT_CREATE: createApiUrl("v1/document"),
+  DOCUMENT_LIST: createApiUrl("v1/document"),
   DOCUMENT_GET: (id: string) => createApiUrl(`v1/document/${id}`),
   DOCUMENT_UPDATE: (id: string) => createApiUrl(`v1/document/${id}`),
   ADMIN_USERS: createApiUrl("v1/admin/users"),
