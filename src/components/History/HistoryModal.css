@@ -30,16 +30,26 @@
 .history-icon {
   width: 44px;
   height: 44px;
-  background: #fff;
+  background: #f3f4f6; /* светло-серый фон */
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+.history-icon .icon,
+.history-btn--icon .icon {
+  filter: none; /* не инвертируем */
+}
 .history-title {
   font-family: Unbounded;
   font-size: 16px;
   color: #1a1a1a;
+}
+.history-title--clickable {
+  cursor: pointer;
+}
+.history-title--clickable:hover {
+  text-decoration: underline;
 }
 .history-meta {
   display: flex;
@@ -64,8 +74,9 @@
   gap: 8px;
 }
 .history-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   padding: 10px 16px;
   border: none;
@@ -76,12 +87,42 @@
   font-size: 12px;
   cursor: pointer;
 }
-.history-btn:not(.history-btn--secondary) img {
-  filter: brightness(0) invert(1);
+.history-btn--icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 12px;
+  background: #e5e7eb; /* серый фон */
+  color: #000; /* чёрная иконка */
+}
+.history-btn--icon img,
+.history-btn--icon .icon {
+  filter: none; /* не инвертируем */
 }
 .history-btn--secondary {
   background: rgba(26, 26, 26, 0.1);
   color: #1b1b1b;
+}
+/* Кнопка "Текст запроса" */
+.history-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border: none;
+  background: #f3f4f6;
+  color: #0f172a;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: Inter;
+  font-size: 12px;
+}
+.history-toggle .toggle-icon {
+  transition: transform 0.2s ease;
+}
+.history-toggle .toggle-icon.open {
+  transform: rotate(180deg);
 }
 .history-details {
   margin-top: 12px;

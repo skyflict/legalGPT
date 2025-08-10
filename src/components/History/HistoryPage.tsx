@@ -75,6 +75,10 @@ const HistoryPage = () => {
 
   const rows = useMemo(() => items, [items]);
 
+  const toggleRow = (id: string) => {
+    setExpandedId((prev) => (prev === id ? null : id));
+  };
+
   return (
     <section
       className="history-root"
@@ -85,8 +89,17 @@ const HistoryPage = () => {
         overflow: "auto",
       }}
     >
-      <h2 className="modal-title" style={{ marginBottom: 16 }}>
-        История документов
+      <h2
+        className="modal-title"
+        style={{
+          marginBottom: 16,
+          fontFamily: "Unbounded",
+          fontSize: 24,
+          fontWeight: 300,
+          textAlign: "left",
+        }}
+      >
+        Ваши договоры
       </h2>
       {isLoading && <div className="history-loading">Загрузка...</div>}
       {error && <div className="history-error">{error}</div>}
@@ -100,10 +113,6 @@ const HistoryPage = () => {
             const typeTitle = (doc.type && typeNameMap[doc.type]) || "Документ";
             const stageTitle = stageNameMap[doc.stage] || doc.stage;
             const queryText = doc.context?.query || "";
-            const queryShort =
-              queryText.length > 100
-                ? queryText.slice(0, 100) + "…"
-                : queryText;
             const isExpanded = expandedId === doc.id;
             return (
               <div className="history-item" key={doc.id}>
@@ -121,27 +130,32 @@ const HistoryPage = () => {
                           {formatDate(doc.created_at)}
                         </span>
                       </div>
-                      {queryShort && (
-                        <div className="history-query">{queryShort}</div>
-                      )}
+                      <button
+                        className="history-toggle"
+                        onClick={() => toggleRow(doc.id)}
+                        aria-expanded={isExpanded}
+                      >
+                        <span className="toggle-text">Текст запроса</span>
+                        <Icon
+                          name="chevron-down"
+                          width={16}
+                          height={16}
+                          className={`toggle-icon ${isExpanded ? "open" : ""}`}
+                        />
+                      </button>
                     </div>
                   </div>
                   <div className="history-actions">
                     {doc.document_url && (
                       <button
-                        className="history-btn"
+                        className="history-btn history-btn--icon"
                         onClick={() => window.open(doc.document_url, "_blank")}
+                        aria-label="Скачать"
+                        title="Скачать"
                       >
-                        <span>Скачать</span>
                         <Icon name="download" width={20} height={20} />
                       </button>
                     )}
-                    <button
-                      className="history-btn history-btn--secondary"
-                      onClick={() => setExpandedId(isExpanded ? null : doc.id)}
-                    >
-                      {isExpanded ? "Скрыть" : "Подробнее"}
-                    </button>
                   </div>
                 </div>
 
