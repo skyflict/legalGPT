@@ -134,6 +134,11 @@ $transition: 0.3s ease;
     color: $text-inverted;
     margin-top: 24px;
 
+    &.final {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
     &:disabled {
       background: #9ca3af;
       color: #6b7280;
