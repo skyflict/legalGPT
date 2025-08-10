@@ -8,6 +8,7 @@ interface LoginFormProps {
   onEmailChange: (email: string) => void;
   onPasswordChange: (password: string) => void;
   onSubmit: (e: React.FormEvent) => void;
+  onForgotPassword?: () => void;
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({
@@ -18,6 +19,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   onEmailChange,
   onPasswordChange,
   onSubmit,
+  onForgotPassword,
 }) => {
   return (
     <>
@@ -38,6 +40,24 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         className="auth-modal__input"
         disabled={isLoading}
       />
+
+      {onForgotPassword && (
+        <button
+          type="button"
+          className="auth-modal__link"
+          onClick={onForgotPassword}
+          disabled={isLoading}
+          style={{
+            alignSelf: "flex-start",
+            background: "none",
+            border: "none",
+            padding: 0,
+            cursor: "pointer",
+          }}
+        >
+          Забыли пароль?
+        </button>
+      )}
 
       <button
         type="submit"

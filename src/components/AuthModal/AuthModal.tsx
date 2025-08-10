@@ -15,6 +15,7 @@ interface AuthModalProps {
 }
 
 type RegistrationStep = "form" | "confirmation";
+type ResetStep = "none" | "email" | "code" | "new_password" | "success";
 
 export const AuthModal: React.FC<AuthModalProps> = ({
   isOpen,
@@ -29,6 +30,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [confirmationCode, setConfirmationCode] = useState("");
+  const [resetStep, setResetStep] = useState<ResetStep>("none");
+  const [newPassword, setNewPassword] = useState("");
+  const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
 
   const auth = useAuth({ onLogin, onClose });
   const validation = useFormValidation({
@@ -49,16 +53,39 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setConfirmPassword("");
     setConfirmationCode("");
     setRegistrationStep("form");
+    setResetStep("none");
+    setNewPassword("");
+    setNewPasswordConfirm("");
     auth.clearError();
+    if ("clearResetFlow" in auth && typeof auth.clearResetFlow === "function") {
+      auth.clearResetFlow();
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (isLoginMode) {
+    if (isLoginMode && resetStep === "none") {
       if (validation.isFormValid) {
         await auth.handleLogin(email, password);
         resetForm();
+      }
+    } else if (isLoginMode && resetStep === "email") {
+      if (email) {
+        const res = await auth.handleStartPasswordReset(email);
+        if (res.success) setResetStep("code");
+      }
+    } else if (isLoginMode && resetStep === "code") {
+      if (confirmationCode && /^\d+$/.test(confirmationCode)) {
+        const res = await auth.handleValidateResetCode(
+          parseInt(confirmationCode, 10)
+        );
+        if (res.success) setResetStep("new_password");
+      }
+    } else if (isLoginMode && resetStep === "new_password") {
+      if (newPassword && newPassword === newPasswordConfirm) {
+        const res = await auth.handleSetNewPassword(newPassword);
+        if (res.success) setResetStep("success");
       }
     } else {
       if (registrationStep === "form" && validation.isFormValid) {
@@ -90,6 +117,26 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     auth.clearError();
   };
 
+  const handleForgotPassword = () => {
+    setResetStep("email");
+    auth.clearError();
+  };
+
+  const handleBackFromReset = () => {
+    if (resetStep === "code") setResetStep("email");
+    else if (resetStep === "new_password") setResetStep("code");
+    else setResetStep("none");
+    auth.clearError();
+    if (resetStep === "none") {
+      if (
+        "clearResetFlow" in auth &&
+        typeof auth.clearResetFlow === "function"
+      ) {
+        auth.clearResetFlow();
+      }
+    }
+  };
+
   const handleClose = () => {
     onClose();
     resetForm();
@@ -98,14 +145,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   if (!isOpen) return null;
 
   const getTitle = () => {
-    if (isLoginMode) return "Вход в личный кабинет";
+    if (isLoginMode) {
+      if (resetStep === "email") return "Восстановление пароля";
+      if (resetStep === "code") return "Подтверждение восстановления";
+      if (resetStep === "new_password") return "Новый пароль";
+      if (resetStep === "success") return "Пароль изменён";
+      return "Вход в личный кабинет";
+    }
     if (registrationStep === "form") return "Регистрация";
     return "Подтверждение регистрации";
   };
 
-  const showModeToggle = isLoginMode || registrationStep === "form";
+  const showModeToggle =
+    (isLoginMode && resetStep === "none") || registrationStep === "form";
 
-  const showAgreements = isLoginMode || registrationStep === "form";
+  const showAgreements =
+    (isLoginMode && resetStep === "none") || registrationStep === "form";
 
   return (
     <div className="auth-modal-overlay" onClick={handleClose}>
@@ -123,7 +178,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {auth.error && <div className="auth-modal__error">{auth.error}</div>}
 
           <form className="auth-modal__form" onSubmit={handleSubmit}>
-            {isLoginMode && (
+            {isLoginMode && resetStep === "none" && (
               <LoginForm
                 email={email}
                 password={password}
@@ -132,7 +187,144 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 onEmailChange={setEmail}
                 onPasswordChange={setPassword}
                 onSubmit={handleSubmit}
+                onForgotPassword={handleForgotPassword}
               />
+            )}
+
+            {isLoginMode && resetStep === "email" && (
+              <>
+                <input
+                  type="email"
+                  placeholder="Адрес электронной почты"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="auth-modal__input"
+                  disabled={auth.isLoading}
+                />
+
+                <button
+                  type="button"
+                  className="auth-modal__secondary-btn"
+                  onClick={handleBackFromReset}
+                  disabled={auth.isLoading}
+                >
+                  Назад
+                </button>
+
+                <button
+                  type="submit"
+                  className="auth-modal__submit-btn"
+                  disabled={!email || auth.isLoading}
+                  onClick={handleSubmit}
+                >
+                  {auth.isLoading ? "Отправка..." : "Отправить код"}
+                </button>
+              </>
+            )}
+
+            {isLoginMode && resetStep === "code" && (
+              <>
+                <p className="auth-modal__confirmation-text">
+                  На адрес {email} отправлен код подтверждения. Введите его
+                  ниже:
+                </p>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  placeholder="Код подтверждения"
+                  value={confirmationCode}
+                  onChange={(e) => {
+                    const digitsOnly = e.target.value.replace(/\D/g, "");
+                    setConfirmationCode(digitsOnly);
+                  }}
+                  className="auth-modal__input"
+                  disabled={auth.isLoading}
+                />
+
+                <button
+                  type="button"
+                  className="auth-modal__secondary-btn"
+                  onClick={handleBackFromReset}
+                  disabled={auth.isLoading}
+                >
+                  Назад
+                </button>
+
+                <button
+                  type="submit"
+                  className="auth-modal__submit-btn"
+                  disabled={!confirmationCode || auth.isLoading}
+                  onClick={handleSubmit}
+                >
+                  {auth.isLoading ? "Проверка..." : "Подтвердить"}
+                </button>
+              </>
+            )}
+
+            {isLoginMode && resetStep === "new_password" && (
+              <>
+                <input
+                  type="password"
+                  placeholder="Новый пароль"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="auth-modal__input"
+                  disabled={auth.isLoading}
+                />
+                <input
+                  type="password"
+                  placeholder="Повторите новый пароль"
+                  value={newPasswordConfirm}
+                  onChange={(e) => setNewPasswordConfirm(e.target.value)}
+                  className="auth-modal__input"
+                  disabled={auth.isLoading}
+                />
+
+                {newPassword &&
+                  newPasswordConfirm &&
+                  newPassword !== newPasswordConfirm && (
+                    <div className="auth-modal__error">Пароли не совпадают</div>
+                  )}
+
+                <button
+                  type="button"
+                  className="auth-modal__secondary-btn"
+                  onClick={handleBackFromReset}
+                  disabled={auth.isLoading}
+                >
+                  Назад
+                </button>
+
+                <button
+                  type="submit"
+                  className="auth-modal__submit-btn"
+                  disabled={
+                    !newPassword ||
+                    !newPasswordConfirm ||
+                    newPassword !== newPasswordConfirm ||
+                    auth.isLoading
+                  }
+                  onClick={handleSubmit}
+                >
+                  {auth.isLoading ? "Сохранение..." : "Сохранить пароль"}
+                </button>
+              </>
+            )}
+
+            {isLoginMode && resetStep === "success" && (
+              <>
+                <p className="auth-modal__confirmation-text">
+                  Пароль успешно изменен, войдите с новыми данными
+                </p>
+                <button
+                  type="button"
+                  className="auth-modal__submit-btn"
+                  onClick={() => setResetStep("none")}
+                >
+                  Перейти ко входу
+                </button>
+              </>
             )}
 
             {!isLoginMode && registrationStep === "form" && (

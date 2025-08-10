@@ -43,6 +43,10 @@ export const API_ENDPOINTS = {
   ADMIN_USERS: createApiUrl("v1/admin/users"),
   ADMIN_USER_BALANCE: (userId: string) =>
     createApiUrl(`v1/admin/users/${userId}/balance`),
+  // Password reset flow
+  RESET_PASSWORD: createApiUrl("v1/reset-password"),
+  RESET_PASSWORD_VALIDATE_CODE: createApiUrl("v1/reset-password/validate-code"),
+  SET_PASSWORD: createApiUrl("v1/set-password"),
 } as const;
 
 // Утилита для выполнения API запросов с авторизацией
