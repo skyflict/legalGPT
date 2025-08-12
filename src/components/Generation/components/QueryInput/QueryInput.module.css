@@ -4,11 +4,9 @@
   align-items: flex-end;
 }
 
+/* placeholder shim больше не нужен */
 .placeholderShim {
-  width: 647px;
-  height: 52px;
-  visibility: hidden;
-  pointer-events: none;
+  display: none;
 }
 
 .textarea {
@@ -31,14 +29,7 @@
 }
 
 .textareaFocused {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 647px;
-  min-height: 52px;
-  height: auto;
   background: white;
-  z-index: 1003;
   padding: 16px 100px 16px 12px;
   resize: vertical;
 }

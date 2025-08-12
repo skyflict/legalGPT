@@ -56,9 +56,7 @@ const Generation = () => {
     }, 0);
   };
 
-  const handleQueryInsert = (queryText: string) => {
-    setQuery(queryText);
-  };
+  // Убрали кнопку "Применить"; клика по карточке достаточно
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -80,8 +78,9 @@ const Generation = () => {
   };
 
   const handleOverlayClick = () => {
+    // При клике вне инпута сбрасываем состояние наведения/фокуса,
+    // если не запущены другие шаги генерации
     if (
-      query.length === 0 &&
       !isLoading &&
       !showContractType &&
       !showContractSelect &&
@@ -498,109 +497,55 @@ const Generation = () => {
                   <div className="query-button-wrapper">
                     <div
                       className="query-button"
-                      onClick={() => handleQueryInsert("Договор дарения")}
+                      onClick={() => handleQueryClick("Договор дарения")}
                     >
                       <span className="query-button-text">Договор дарения</span>
-                      <button
-                        className="apply-button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleQueryClick("Договор дарения");
-                        }}
-                      >
-                        Применить
-                      </button>
                     </div>
                   </div>
                   <div className="query-button-wrapper">
                     <div
                       className="query-button"
-                      onClick={() => handleQueryInsert("Доверенность")}
+                      onClick={() => handleQueryClick("Доверенность")}
                     >
                       <span className="query-button-text">Доверенность</span>
-                      <button
-                        className="apply-button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleQueryClick("Доверенность");
-                        }}
-                      >
-                        Применить
-                      </button>
                     </div>
                   </div>
                   <div className="query-button-wrapper">
                     <div
                       className="query-button"
-                      onClick={() => handleQueryInsert("Регистрация компании")}
+                      onClick={() => handleQueryClick("Регистрация компании")}
                     >
                       <span className="query-button-text">
                         Регистрация компании
                       </span>
-                      <button
-                        className="apply-button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleQueryClick("Регистрация компании");
-                        }}
-                      >
-                        Применить
-                      </button>
                     </div>
                   </div>
                   <div className="query-button-wrapper">
                     <div
                       className="query-button"
-                      onClick={() => handleQueryInsert("Регистрация компании")}
+                      onClick={() => handleQueryClick("Регистрация компании")}
                     >
                       <span className="query-button-text">
                         Регистрация компании
                       </span>
-                      <button
-                        className="apply-button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleQueryClick("Регистрация компании");
-                        }}
-                      >
-                        Применить
-                      </button>
                     </div>
                   </div>
                   <div className="query-button-wrapper">
                     <div
                       className="query-button"
-                      onClick={() => handleQueryInsert("Продажа машины")}
+                      onClick={() => handleQueryClick("Продажа машины")}
                     >
                       <span className="query-button-text">Продажа машины</span>
-                      <button
-                        className="apply-button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleQueryClick("Продажа машины");
-                        }}
-                      >
-                        Применить
-                      </button>
                     </div>
                   </div>
                   <div className="query-button-wrapper">
                     <div
                       className="query-button"
-                      onClick={() => handleQueryInsert("Продажа недвижимости")}
+                      onClick={() => handleQueryClick("Продажа недвижимости")}
                     >
                       <span className="query-button-text">
                         Продажа недвижимости
                       </span>
-                      <button
-                        className="apply-button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleQueryClick("Продажа недвижимости");
-                        }}
-                      >
-                        Применить
-                      </button>
                     </div>
                   </div>
                 </div>

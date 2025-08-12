@@ -1,5 +1,6 @@
 .features {
   padding: 64px 0;
+  padding-bottom: 0px;
 }
 
 .features-header {
@@ -23,7 +24,6 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 24px;
-  margin-bottom: 60px;
 }
 
 .feature-card {

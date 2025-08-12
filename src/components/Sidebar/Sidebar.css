@@ -9,6 +9,7 @@
   z-index: 1010;
   flex-shrink: 0;
   pointer-events: auto;
+  font-family: Jura;
 }
 
 .sidebar-content {
@@ -34,7 +35,7 @@
   cursor: pointer;
   font-size: 16px;
   font-weight: 500;
-  color: #6b7280;
+  color: #1a1a1a;
   transition: all 0.3s ease;
   text-align: left;
   width: 100%;
@@ -45,10 +46,14 @@
 }
 
 .nav-item:hover {
-  background: #f8faff;
+  background: none;
   color: #1613ef;
-  transform: translateX(4px);
-  box-shadow: 0 2px 8px rgba(22, 19, 239, 0.15);
+}
+
+/* Подсветка иконки при hover */
+.nav-item:hover .icon {
+  filter: invert(14%) sepia(86%) saturate(7481%) hue-rotate(247deg)
+    brightness(101%) contrast(113%);
 }
 
 .nav-item:active {
@@ -56,23 +61,30 @@
   transition: all 0.1s ease;
 }
 
+/* Показываем контур только при клавиатурной навигации */
 .nav-item:focus {
+  outline: none;
+}
+.nav-item:focus-visible {
   outline: 2px solid #1613ef;
   outline-offset: 2px;
 }
 
 .nav-item.active {
   border-radius: 16px;
-  background: rgba(22, 19, 239, 0.1);
+  background: rgba(22, 19, 239, 0.12);
   color: var(--Brand, #1613ef);
   min-width: 185px;
   height: 44px;
 }
 
 .nav-item.active:hover {
-  background: rgba(22, 19, 239, 0.15);
-  transform: translateX(4px);
-  box-shadow: 0 4px 12px rgba(22, 19, 239, 0.25);
+  background: rgba(22, 19, 239, 0.18);
+}
+
+.nav-item.active .icon {
+  filter: invert(14%) sepia(86%) saturate(7481%) hue-rotate(247deg)
+    brightness(101%) contrast(113%);
 }
 
 .nav-item.active:active {

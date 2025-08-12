@@ -13,11 +13,7 @@ const FEEDBACK_FORM_URL = import.meta.env.VITE_FEEDBACK_FORM_URL || "#";
 const FinalResultStep: React.FC<Props> = ({ documentName, downloadUrl }) => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIsFeedbackOpen(true);
-    }, 1000);
-  }, []);
+  // Модалка фидбека открывается после нажатия на скачивание
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -41,6 +37,7 @@ const FinalResultStep: React.FC<Props> = ({ documentName, downloadUrl }) => {
         onClick={() => {
           if (downloadUrl) {
             window.open(downloadUrl, "_blank");
+            setIsFeedbackOpen(true);
           }
         }}
         disabled={!downloadUrl}

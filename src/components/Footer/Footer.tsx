@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="container">
         <div className="footer-content">
           <div className="footer-logo">
-            <Icon name="footerLogo" width={280} height={44} />
+            <Icon name="footerLogo" width="auto" height={44} />
           </div>
 
           <div className="footer-links">

@@ -53,7 +53,6 @@ const QueryInput: React.FC<QueryInputProps> = ({
 
   return (
     <div className={styles.wrapper} ref={wrapperRef}>
-      {(isFocused || isBusy) && <div className={styles.placeholderShim} />}
       <textarea
         ref={textareaRef}
         className={`${styles.textarea} ${

@@ -70,7 +70,32 @@ export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
       });
 
       if (!response.ok) {
-        throw new Error("Неверный email или пароль");
+        // Пытаемся распарсить тело ошибки от бэкенда, чтобы отдать понятное сообщение
+        let friendlyError = "Неверный email или пароль";
+        try {
+          const errorBody = (await response.clone().json()) as {
+            code?: number;
+            message?: string;
+          };
+          if (
+            errorBody?.code === 16 ||
+            (typeof errorBody?.message === "string" &&
+              /Invalid Password/i.test(errorBody.message))
+          ) {
+            friendlyError = "Неверный пароль";
+          }
+        } catch {
+          // Если пришёл не-JSON, пробуем текст
+          try {
+            const text = await response.text();
+            if (/Invalid Password/i.test(text)) {
+              friendlyError = "Неверный пароль";
+            }
+          } catch {
+            // игнорируем
+          }
+        }
+        throw new Error(friendlyError);
       }
 
       const data: AuthResponse = await response.json();

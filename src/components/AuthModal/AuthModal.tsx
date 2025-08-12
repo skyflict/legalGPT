@@ -33,6 +33,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [resetStep, setResetStep] = useState<ResetStep>("none");
   const [newPassword, setNewPassword] = useState("");
   const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
+  const [agreedTerms, setAgreedTerms] = useState(false);
+  const [agreedPersonal, setAgreedPersonal] = useState(false);
 
   const auth = useAuth({ onLogin, onClose });
   const validation = useFormValidation({
@@ -56,6 +58,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setResetStep("none");
     setNewPassword("");
     setNewPasswordConfirm("");
+    setAgreedTerms(false);
+    setAgreedPersonal(false);
     auth.clearError();
     if ("clearResetFlow" in auth && typeof auth.clearResetFlow === "function") {
       auth.clearResetFlow();
@@ -67,8 +71,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     if (isLoginMode && resetStep === "none") {
       if (validation.isFormValid) {
-        await auth.handleLogin(email, password);
-        resetForm();
+        const res = await auth.handleLogin(email, password);
+        if (res.success) {
+          resetForm();
+        }
       }
     } else if (isLoginMode && resetStep === "email") {
       if (email) {
@@ -160,7 +166,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     (isLoginMode && resetStep === "none") || registrationStep === "form";
 
   const showAgreements =
-    (isLoginMode && resetStep === "none") || registrationStep === "form";
+    (isLoginMode && resetStep === "none") ||
+    (!isLoginMode && registrationStep === "form");
+
+  const isAgreementsAccepted =
+    !showAgreements || (agreedTerms && agreedPersonal);
 
   return (
     <div className="auth-modal-overlay" onClick={handleClose}>
@@ -183,7 +193,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 email={email}
                 password={password}
                 isLoading={auth.isLoading}
-                isFormValid={validation.isFormValid}
+                isFormValid={validation.isFormValid && isAgreementsAccepted}
                 onEmailChange={setEmail}
                 onPasswordChange={setPassword}
                 onSubmit={handleSubmit}
@@ -333,7 +343,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 password={password}
                 confirmPassword={confirmPassword}
                 isLoading={auth.isLoading}
-                isFormValid={validation.isFormValid}
+                isFormValid={validation.isFormValid && isAgreementsAccepted}
                 errors={validation.errors}
                 onEmailChange={setEmail}
                 onPasswordChange={setPassword}
@@ -364,7 +374,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               </button>
             )}
 
-            {showAgreements && <AgreementCheckbox isLoginMode={isLoginMode} />}
+            {showAgreements && (
+              <AgreementCheckbox
+                isLoginMode={isLoginMode}
+                agreedTerms={agreedTerms}
+                agreedPersonal={agreedPersonal}
+                onChangeTerms={setAgreedTerms}
+                onChangePersonal={setAgreedPersonal}
+              />
+            )}
           </form>
         </div>
       </div>

@@ -50,7 +50,7 @@
 
 .form-group {
   margin-bottom: 24px;
-  min-width: 824px;
+  min-width: 916px;
   border-radius: 28px !important;
 }
 
@@ -666,7 +666,7 @@
   font-size: 14px;
   font-weight: 400;
   padding: 24px;
-  width: 824px;
+  width: 916px;
   height: 148px;
   border-radius: var(--Corner-Extra-large, 28px);
   background: rgba(255, 255, 255, 0.5);
@@ -689,7 +689,7 @@
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
   gap: 24px;
-  min-width: 824px;
+  min-width: 916px;
   margin-top: 16px;
 }
 
@@ -731,38 +731,11 @@
 }
 
 .query-button-wrapper:hover .query-button-text {
-  transform: translateY(-8px);
+  transform: translateY(0);
+  color: #1613ef;
 }
 
-.apply-button {
-  position: absolute;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%) translateY(10px) scale(0.8);
-  background: #2e2bff;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  padding: 6px 16px;
-  font-family: Unbounded;
-  font-size: 10px;
-  font-weight: 400;
-  cursor: pointer;
-  opacity: 0;
-  transition: all 0.3s ease;
-  z-index: 10;
-  white-space: nowrap;
-}
-
-.query-button-wrapper:hover .apply-button {
-  opacity: 1;
-  transform: translateX(-50%) translateY(5px) scale(1);
-}
-
-.apply-button:hover {
-  background: #1e1bcc;
-  transform: translateX(-50%) translateY(-1px) scale(1.05);
-}
+/* Кнопка "Применить" удалена по новой логике */
 
 @media (max-width: 768px) {
   .generation {

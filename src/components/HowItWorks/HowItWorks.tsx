@@ -58,11 +58,11 @@ const HowItWorks = ({
             </div>
           </div>
 
-          <div className="how-it-works-step-image" />
+          <div className="how-it-works-step-image-3" />
         </div>
 
         <div className="how-it-works-steps">
-          <div className="how-it-works-step-image" />
+          <div className="how-it-works-step-image-4" />
 
           <div className="how-it-works-step-3">
             <div className="how-it-works-step-number">4</div>

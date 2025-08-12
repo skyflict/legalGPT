@@ -6,7 +6,7 @@ interface LogoProps {
   height?: number;
 }
 
-export const Logo: React.FC<LogoProps> = ({ width = 280, height = 44 }) => {
+export const Logo: React.FC<LogoProps> = ({ width = "auto", height = 44 }) => {
   return (
     <div className="logo">
       <Icon name="logoName" width={width} height={height} />
