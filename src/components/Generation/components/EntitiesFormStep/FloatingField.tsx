@@ -6,6 +6,7 @@ type Props = {
   placeholder?: string;
   onChange: (value: string) => void;
   className?: string;
+  description?: string;
 };
 
 const FloatingField: React.FC<Props> = ({
@@ -14,6 +15,7 @@ const FloatingField: React.FC<Props> = ({
   placeholder,
   onChange,
   className,
+  description,
 }) => {
   const hasValue = value && String(value).trim() !== "";
   return (
@@ -30,6 +32,19 @@ const FloatingField: React.FC<Props> = ({
         onChange={(e) => onChange(e.target.value)}
       />
       {hasValue && <span className="floating-label">{label}</span>}
+      {description && (
+        <div
+          className="field-hint"
+          style={{
+            color: "#6b7280",
+            fontFamily: "Inter",
+            fontSize: 12,
+            marginTop: 6,
+          }}
+        >
+          {description}
+        </div>
+      )}
     </div>
   );
 };

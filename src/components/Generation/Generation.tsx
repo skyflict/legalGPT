@@ -146,7 +146,7 @@ const Generation = () => {
     });
   };
 
-  const { requiredFields, optionalFields, allFields } = useFormSchema(
+  const { requiredFields, optionalFields, allFields, groups } = useFormSchema(
     documentGeneration.status as any
   );
   const { values: userFormValues, setField: setUserFormField } = useUserForm(
@@ -438,6 +438,7 @@ const Generation = () => {
                   onChange={(f, v) => setUserFormField(f, v)}
                   onSubmit={handleUserFormSubmit}
                   isValid={formIsValid}
+                  groups={groups as any}
                 />
               )}
             </div>
