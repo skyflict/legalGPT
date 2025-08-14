@@ -45,7 +45,7 @@ const EntitiesFormStep: React.FC<Props> = ({
           <div className="step-three-content">
             <div className="step-three-title">
               Введите обязательные недостающие данные
-              <Icon name="helpOutlined" width={16} height={16} />
+              {/* <Icon name="helpOutlined" width={16} height={16} /> */}
             </div>
 
             {groups.length > 0 ? (
@@ -202,7 +202,7 @@ const EntitiesFormStep: React.FC<Props> = ({
               <div className="additional-data">
                 <div className="additional-title">
                   Дополнительные данные
-                  <Icon name="helpOutlined" width={16} height={16} />
+                  {/* <Icon name="helpOutlined" width={16} height={16} /> */}
                 </div>
                 <div className={styles.additional}>
                   {optionalFields.map((fieldName) => {

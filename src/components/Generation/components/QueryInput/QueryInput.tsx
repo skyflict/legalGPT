@@ -63,6 +63,14 @@ const QueryInput: React.FC<QueryInputProps> = ({
         onChange={(e) => onChange(e.target.value)}
         onFocus={onFocus}
         onBlur={onBlur}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            if (!isBusy && value.trim().length > 0) {
+              onSend();
+            }
+          }
+        }}
         onInput={() => {
           const el = textareaRef.current;
           if (!el) return;

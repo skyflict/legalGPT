@@ -41,3 +41,11 @@
   background: rgba(107, 114, 128, 0.1);
   color: #374151;
 }
+
+@media (max-width: 1550px) {
+  .root {
+    margin-left: 0;
+    margin-top: 16px;
+    width: 100%;
+  }
+}

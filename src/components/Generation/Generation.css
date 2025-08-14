@@ -48,6 +48,27 @@
   display: flex;
 }
 
+/* Адаптив: складываем инпут и HelpText в колонку, чтобы HelpText всегда был виден */
+@media (max-width: 1550px) {
+  .generation-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-group {
+    min-width: 0;
+  }
+
+  /* HelpText — второй элемент внутри .generation-form */
+  .generation-form > :nth-child(2) {
+    margin-left: 0 !important;
+    margin-top: 0px;
+    margin-bottom: 24px;
+    width: 916px !important;
+    height: 52px;
+  }
+}
+
 .form-group {
   margin-bottom: 24px;
   min-width: 916px;

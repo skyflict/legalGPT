@@ -43,6 +43,7 @@ body {
   padding-right: 24px;
   align-items: flex-start;
   margin: 0 auto;
+  padding-right: 0;
 }
 
 .main-content {
