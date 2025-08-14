@@ -6,6 +6,7 @@ import { LoginForm } from "./components/LoginForm";
 import { RegisterForm } from "./components/RegisterForm";
 import { ConfirmationForm } from "./components/ConfirmationForm";
 import { AgreementCheckbox } from "./components/AgreementCheckbox";
+import Icon from "../Icon/Icon";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -152,18 +153,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   const getTitle = () => {
     if (isLoginMode) {
-      if (resetStep === "email") return "Восстановление пароля";
-      if (resetStep === "code") return "Подтверждение восстановления";
-      if (resetStep === "new_password") return "Новый пароль";
+      if (resetStep === "email")
+        return "Введите email, указанный при регистрации";
+      if (resetStep === "code") return "Восстановление аккаунта";
+      if (resetStep === "new_password") return "Создайте новый пароль";
       if (resetStep === "success") return "Пароль изменён";
       return "Вход в личный кабинет";
     }
     if (registrationStep === "form") return "Регистрация";
-    return "Подтверждение регистрации";
+    return "Подтвердите аккаунт";
   };
-
-  const showModeToggle =
-    (isLoginMode && resetStep === "none") || registrationStep === "form";
 
   const showAgreements =
     (isLoginMode && resetStep === "none") ||
@@ -178,6 +177,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         className="auth-modal__container"
         onClick={(e) => e.stopPropagation()}
       >
+        {isLoginMode && resetStep !== "email" && (
+          <button
+            className="auth-modal__back"
+            onClick={handleBackFromReset}
+            aria-label="Назад"
+          >
+            <Icon
+              name="arrow"
+              width={24}
+              height={24}
+              className="auth-modal__back-icon"
+            />
+          </button>
+        )}
         <button className="auth-modal__close" onClick={handleClose}>
           ×
         </button>
@@ -213,21 +226,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 />
 
                 <button
-                  type="button"
-                  className="auth-modal__secondary-btn"
-                  onClick={handleBackFromReset}
-                  disabled={auth.isLoading}
-                >
-                  Назад
-                </button>
-
-                <button
                   type="submit"
                   className="auth-modal__submit-btn"
                   disabled={!email || auth.isLoading}
                   onClick={handleSubmit}
                 >
-                  {auth.isLoading ? "Отправка..." : "Отправить код"}
+                  {auth.isLoading ? "Отправка..." : "Далее"}
                 </button>
               </>
             )}
@@ -235,8 +239,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             {isLoginMode && resetStep === "code" && (
               <>
                 <p className="auth-modal__confirmation-text">
-                  На адрес {email} отправлен код подтверждения. Введите его
-                  ниже:
+                  Введите код, отправленный на ваш email, который вы указали
+                  ранее
                 </p>
                 <input
                   type="text"
@@ -253,21 +257,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 />
 
                 <button
-                  type="button"
-                  className="auth-modal__secondary-btn"
-                  onClick={handleBackFromReset}
-                  disabled={auth.isLoading}
-                >
-                  Назад
-                </button>
-
-                <button
                   type="submit"
                   className="auth-modal__submit-btn"
                   disabled={!confirmationCode || auth.isLoading}
                   onClick={handleSubmit}
                 >
-                  {auth.isLoading ? "Проверка..." : "Подтвердить"}
+                  {auth.isLoading ? "Проверка..." : "Продолжить"}
                 </button>
               </>
             )}
@@ -298,15 +293,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   )}
 
                 <button
-                  type="button"
-                  className="auth-modal__secondary-btn"
-                  onClick={handleBackFromReset}
-                  disabled={auth.isLoading}
-                >
-                  Назад
-                </button>
-
-                <button
                   type="submit"
                   className="auth-modal__submit-btn"
                   disabled={
@@ -317,7 +303,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   }
                   onClick={handleSubmit}
                 >
-                  {auth.isLoading ? "Сохранение..." : "Сохранить пароль"}
+                  {auth.isLoading ? "Сохранение..." : "Сохранить"}
                 </button>
               </>
             )}
@@ -363,14 +349,34 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               />
             )}
 
-            {showModeToggle && (
+            {isLoginMode && resetStep === "none" && (
               <button
                 type="button"
                 className="auth-modal__secondary-btn"
                 onClick={handleToggleMode}
                 disabled={auth.isLoading}
               >
-                {isLoginMode ? "Создать аккаунт" : "Уже есть аккаунт? Войти"}
+                {"Создать аккаунт"}
+              </button>
+            )}
+
+            {isLoginMode && resetStep === "none" && (
+              <button
+                type="button"
+                className="auth-modal__link"
+                onClick={handleForgotPassword}
+                disabled={auth.isLoading}
+                style={{
+                  alignSelf: "center",
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                  textDecoration: "none",
+                  marginTop: 8,
+                }}
+              >
+                Забыли пароль?
               </button>
             )}
 

@@ -22,12 +22,12 @@ export const useFormValidation = ({
     const errors: ValidationErrors = {};
 
     // Валидация пароля
-    const isPasswordValid = password.length >= 6;
+    const isPasswordValid = password.length >= 8;
     const doPasswordsMatch = password === confirmPassword;
 
     // Добавляем ошибки только если пользователь начал вводить
     if (password && !isPasswordValid) {
-      errors.password = "Пароль должен содержать минимум 6 символов";
+      errors.password = "Пароль должен содержать не менее 8 символов";
     }
 
     if (!isLoginMode && confirmPassword && !doPasswordsMatch) {

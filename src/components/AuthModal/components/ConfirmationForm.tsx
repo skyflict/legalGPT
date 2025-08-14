@@ -20,7 +20,7 @@ export const ConfirmationForm: React.FC<ConfirmationFormProps> = ({
   return (
     <>
       <p className="auth-modal__confirmation-text">
-        На адрес {email} отправлен код подтверждения. Введите его ниже:
+        Введите код, отправленный на ваш email, который вы указали ранее
       </p>
 
       <input
@@ -47,7 +47,7 @@ export const ConfirmationForm: React.FC<ConfirmationFormProps> = ({
         disabled={!confirmationCode || isLoading}
         onClick={onSubmit}
       >
-        {isLoading ? "Подтверждение..." : "Подтвердить"}
+        {isLoading ? "Проверка..." : "Продолжить"}
       </button>
     </>
   );

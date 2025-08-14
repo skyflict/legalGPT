@@ -56,10 +56,13 @@ export const Header: React.FC<HeaderProps> = ({
                 {userData && (
                   <div className="user-balance">
                     <button className="user-dropdown__trigger">
-                      <span className="user-email">
+                      <span
+                        className="user-email"
+                        style={{ cursor: "default" }}
+                      >
                         Баланс: {userData.balance} LC
                       </span>
-                      <span className="dropdown__arrow">
+                      {/* <span className="dropdown__arrow">
                         <svg
                           width="16"
                           height="16"
@@ -75,7 +78,7 @@ export const Header: React.FC<HeaderProps> = ({
                             strokeLinejoin="round"
                           />
                         </svg>
-                      </span>
+                      </span> */}
                     </button>
                   </div>
                 )}

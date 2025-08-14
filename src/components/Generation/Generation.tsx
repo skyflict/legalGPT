@@ -337,7 +337,7 @@ const Generation = () => {
               />
             </div>
 
-            <HelpText visible={showHelpText} onClose={handleCloseHelpText} />
+            {/* <HelpText visible={showHelpText} onClose={handleCloseHelpText} /> */}
 
             {documentGeneration.error && (
               <div

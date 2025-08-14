@@ -19,7 +19,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   onEmailChange,
   onPasswordChange,
   onSubmit,
-  onForgotPassword,
+  onForgotPassword: _onForgotPassword,
 }) => {
   return (
     <>
@@ -40,25 +40,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         className="auth-modal__input"
         disabled={isLoading}
       />
-
-      {onForgotPassword && (
-        <button
-          type="button"
-          className="auth-modal__link"
-          onClick={onForgotPassword}
-          disabled={isLoading}
-          style={{
-            alignSelf: "flex-start",
-            background: "none",
-            border: "none",
-            padding: 0,
-            cursor: "pointer",
-          }}
-        >
-          Забыли пароль?
-        </button>
-      )}
-
       <button
         type="submit"
         className="auth-modal__submit-btn"

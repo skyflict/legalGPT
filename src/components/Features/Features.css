@@ -1,11 +1,6 @@
-.features {
-  padding: 64px 0;
-  padding-bottom: 0px;
-}
-
 .features-header {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 40px;
 }
 
 .features-title {
@@ -53,6 +48,7 @@
   font-family: Inter;
   font-size: 14px;
   font-weight: 400;
+  margin-top: 16px;
 }
 
 .features-footer {

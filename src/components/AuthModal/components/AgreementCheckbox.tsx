@@ -16,7 +16,7 @@ export const AgreementCheckbox: React.FC<AgreementCheckboxProps> = ({
   onChangeTerms,
   onChangePersonal,
 }) => {
-  const actionLabel = isLoginMode ? "Войти" : "Зарегистрироваться";
+  const actionLabel = isLoginMode ? "Войти" : "Создать аккаунт";
   const termsId = isLoginMode ? "login-terms" : "register-terms";
   const personalId = isLoginMode ? "login-personal" : "register-personal";
 
@@ -65,7 +65,7 @@ export const AgreementCheckbox: React.FC<AgreementCheckboxProps> = ({
           )}
         </span>
         <span className="auth-modal__checkbox-text">
-          Я соглашаюсь c обработкой моих персональных данных.
+          Я соглашаюсь c обработкой моих персональных данных
         </span>
       </label>
     </div>

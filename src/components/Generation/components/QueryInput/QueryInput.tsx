@@ -63,8 +63,8 @@ const QueryInput: React.FC<QueryInputProps> = ({
         placeholder="Введите запрос"
         value={value}
         onChange={(e) => !disabled && onChange(e.target.value)}
-        onFocus={!disabled ? onFocus : undefined}
-        onBlur={!disabled ? onBlur : undefined}
+        // onFocus={!disabled ? onFocus : undefined}
+        // onBlur={!disabled ? onBlur : undefined}
         onKeyDown={(e) => {
           if (disabled) return;
           if (e.key === "Enter" && !e.shiftKey) {

@@ -40,7 +40,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         className="auth-modal__input"
         disabled={isLoading}
       />
-
       <input
         type="password"
         placeholder="Пароль"
@@ -50,6 +49,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         disabled={isLoading}
       />
 
+      {password && password.length < 8 && (
+        <div className="auth-modal__password-requirements">
+          Пароль должен содержать не менее <br />8 символов
+        </div>
+      )}
+
       <input
         type="password"
         placeholder="Повторите пароль"
@@ -58,23 +63,20 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         className="auth-modal__input"
         disabled={isLoading}
       />
-
       {/* Показываем ошибки валидации */}
       {errors.password && (
         <div className="auth-modal__error">{errors.password}</div>
       )}
-
       {errors.confirmPassword && (
         <div className="auth-modal__error">{errors.confirmPassword}</div>
       )}
-
       <button
         type="submit"
         className="auth-modal__submit-btn"
         disabled={!isFormValid || isLoading}
         onClick={onSubmit}
       >
-        {isLoading ? "Регистрация..." : "Зарегистрироваться"}
+        {isLoading ? "Регистрация..." : "Создать аккаунт"}
       </button>
     </>
   );

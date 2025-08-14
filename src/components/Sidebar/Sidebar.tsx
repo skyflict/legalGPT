@@ -129,14 +129,14 @@ const Sidebar = ({
               <Icon name="create" size="md" title="Создать" />
               <span className="nav-text">Создать</span>
             </button>
-            <button className="nav-item" onClick={handleItemClick}>
+            {/* <button className="nav-item" onClick={handleItemClick}>
               <Icon name="text" size="md" title="Шаблоны" />
               <span className="nav-text">Шаблоны</span>
-            </button>
-            <button className="nav-item" onClick={handleItemClick}>
+            </button> */}
+            {/* <button className="nav-item" onClick={handleItemClick}>
               <Icon name="help" size="md" title="Помощь юриста" />
               <span className="nav-text">Помощь юриста</span>
-            </button>
+            </button> */}
             <button
               className={`nav-item ${active === "history" ? "active" : ""}`}
               onClick={handleHistoryClick}
