@@ -8,6 +8,7 @@ type QueryInputProps = {
   isBusy: boolean;
   isFocused: boolean;
   showOverlay: boolean;
+  disabled?: boolean;
   onChange: (value: string) => void;
   onSend: () => void;
   onCancel: () => void;
@@ -21,6 +22,7 @@ const QueryInput: React.FC<QueryInputProps> = ({
   isBusy,
   isFocused,
   showOverlay,
+  disabled = false,
   onChange,
   onSend,
   onCancel,
@@ -57,13 +59,14 @@ const QueryInput: React.FC<QueryInputProps> = ({
         ref={textareaRef}
         className={`${styles.textarea} ${
           isFocused || isBusy ? styles.textareaFocused : ""
-        }`}
+        } ${disabled ? styles.textareaDisabled : ""}`}
         placeholder="Введите запрос"
         value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onFocus={onFocus}
-        onBlur={onBlur}
+        onChange={(e) => !disabled && onChange(e.target.value)}
+        onFocus={!disabled ? onFocus : undefined}
+        onBlur={!disabled ? onBlur : undefined}
         onKeyDown={(e) => {
+          if (disabled) return;
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
             if (!isBusy && value.trim().length > 0) {
@@ -72,6 +75,7 @@ const QueryInput: React.FC<QueryInputProps> = ({
           }
         }}
         onInput={() => {
+          if (disabled) return;
           const el = textareaRef.current;
           if (!el) return;
           el.style.height = "auto";
@@ -79,11 +83,12 @@ const QueryInput: React.FC<QueryInputProps> = ({
           el.style.height = Math.max(minHeight, el.scrollHeight) + "px";
         }}
         rows={1}
-        readOnly={isBusy}
+        readOnly={isBusy || disabled}
+        disabled={disabled}
       />
       <div className={styles.actions}>
-        {value.length > 0 && !isBusy && (
-          <button className={styles.btn} onClick={onCancel}>
+        {value.length > 0 && !isBusy && !disabled && (
+          <button className={styles.btn} onClick={onCancel} disabled={disabled}>
             <Icon name="cancel" size="sm" />
           </button>
         )}
@@ -92,13 +97,15 @@ const QueryInput: React.FC<QueryInputProps> = ({
             <Spinner />
           </div>
         ) : (
-          <button
-            className={styles.btn}
-            onClick={onSend}
-            disabled={value.length === 0}
-          >
-            <Icon name="send" size="sm" />
-          </button>
+          !disabled && (
+            <button
+              className={styles.btn}
+              onClick={onSend}
+              disabled={disabled || value.length === 0}
+            >
+              <Icon name="send" size="sm" />
+            </button>
+          )
         )}
       </div>
     </div>

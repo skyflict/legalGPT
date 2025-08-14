@@ -311,6 +311,7 @@ const Generation = () => {
               <QueryInput
                 value={query}
                 isBusy={isLoading}
+                disabled={documentGeneration.currentStep !== "idle"}
                 isFocused={
                   isFocused ||
                   isLoading ||
@@ -526,6 +527,32 @@ const Generation = () => {
 
           {documentGeneration.currentStep === "idle" && (
             <>
+              <div className="contract-types-section">
+                <div className="example-title">
+                  С какими типами договоров мы работаем:
+                </div>
+                <div className="queries-grid">
+                  {[
+                    "Агентский договор",
+                    "Договор аренды",
+                    "Договор купли-продажи",
+                    "Договор дарения",
+                    "Договор найма жилого помещения",
+                    "Договор хранения",
+                    "Договор оказания услуг",
+                    "Договор займа",
+                  ].map((contractType, index) => (
+                    <div className="query-button-wrapper" key={index}>
+                      <div className="contract-type-item">
+                        <span className="query-button-text">
+                          {contractType}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <div className="example-section">
                 <div className="example-title">Пример запроса:</div>
                 <div className="example-text">

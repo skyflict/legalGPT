@@ -35,6 +35,12 @@
   resize: vertical;
 }
 
+.textareaDisabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: rgba(241, 245, 249, 0.8);
+}
+
 .actions {
   position: absolute;
   right: 8px;
