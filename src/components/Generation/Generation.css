@@ -761,22 +761,23 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 16px 12px;
   border-radius: var(--Corner-Extra-large, 28px);
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(10px);
   color: #000;
   font-family: Unbounded;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
   text-align: center;
-  height: 84px;
+  height: 60px;
   position: relative;
   overflow: hidden;
 }
 
 .contract-types-section {
-  margin-bottom: 32px;
+  margin-top: 32px;
+  margin-bottom: -16px;
 }
 
 /* Кнопка "Применить" удалена по новой логике */

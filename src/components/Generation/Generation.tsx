@@ -527,6 +527,35 @@ const Generation = () => {
 
           {documentGeneration.currentStep === "idle" && (
             <>
+              <div className="example-section">
+                <div className="example-title">Пример запроса:</div>
+                <div className="example-text">
+                  Привет! Составь, пожалуйста, договор оказания услуг, по
+                  которому я, как индивидуальный предприниматель Максим Игоревич
+                  Смирнов, буду проводить уроки английского языка. Стоимость
+                  одного занятия — 3 000 рублей, продолжительность — 60 минут (1
+                  час), при этом точное время начала занятия будет определяться
+                  за 2 дня до занятия. Оплата моих услуг будет осуществляться
+                  безналичным способом после проведения занятия
+                </div>
+              </div>
+
+              <div className="frequent-queries">
+                <div className="frequent-title">Шаблоны запросов:</div>
+                <div className="queries-grid">
+                  {frequentQueries.map((q) => (
+                    <div className="query-button-wrapper" key={q.title}>
+                      <div
+                        className="query-button"
+                        onClick={() => handleQueryClick(q.prompt)}
+                      >
+                        <span className="query-button-text">{q.title}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <div className="contract-types-section">
                 <div className="example-title">
                   С какими типами договоров мы работаем:
@@ -547,35 +576,6 @@ const Generation = () => {
                         <span className="query-button-text">
                           {contractType}
                         </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="example-section">
-                <div className="example-title">Пример запроса:</div>
-                <div className="example-text">
-                  Привет! Составь, пожалуйста, договор оказания услуг, по
-                  которому я, как индивидуальный предприниматель Максим Игоревич
-                  Смирнов, буду проводить уроки английского языка. Стоимость
-                  одного занятия — 3 000 рублей, продолжительность — 60 минут (1
-                  час), при этом точное время начала занятия будет определяться
-                  за 2 дня до занятия. Оплата моих услуг будет осуществляться
-                  безналичным способом после проведения занятия
-                </div>
-              </div>
-
-              <div className="frequent-queries">
-                <div className="frequent-title">Частые запросы:</div>
-                <div className="queries-grid">
-                  {frequentQueries.map((q) => (
-                    <div className="query-button-wrapper" key={q.title}>
-                      <div
-                        className="query-button"
-                        onClick={() => handleQueryClick(q.prompt)}
-                      >
-                        <span className="query-button-text">{q.title}</span>
                       </div>
                     </div>
                   ))}
