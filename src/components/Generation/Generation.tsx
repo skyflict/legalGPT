@@ -13,6 +13,7 @@ import { useResolvedDocumentType } from "./hooks/useResolvedDocumentType";
 import { useFormSchema } from "./hooks/useFormSchema";
 import { useUserForm, useFormValidity } from "./hooks/useUserForm";
 import { useLoaderMessage } from "./hooks/useLoaderMessage";
+import Modal from "../Modal";
 
 const Generation = () => {
   const [query, setQuery] = useState("");
@@ -44,6 +45,19 @@ const Generation = () => {
     isLoading,
     documentGeneration.status as any
   );
+
+  const isLawViolated = documentGeneration.status?.stage === "LAW_VIOLATED";
+
+  const handleCloseLawViolatedModal = () => {
+    // Возврат на главную: сбрасываем состояние генерации и форму
+    documentGeneration.reset();
+    setQuery("");
+    setIsFocused(false);
+    setShowOverlay(false);
+    try {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch {}
+  };
 
   const handleQueryClick = (queryText: string) => {
     setQuery(queryText);
@@ -560,6 +574,32 @@ const Generation = () => {
       />
 
       <Loader isVisible={shouldShowLoader} message={loaderMessage} />
+
+      <Modal
+        isOpen={!!isLawViolated}
+        onClose={handleCloseLawViolatedModal}
+        title="Генерация отменена"
+      >
+        <div>
+          <p>
+            Генерация отменена, запрос нарушает требования законодательства.
+          </p>
+          <div
+            style={{
+              marginTop: 16,
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
+            <button
+              onClick={handleCloseLawViolatedModal}
+              className="modal-primary-btn"
+            >
+              На главную
+            </button>
+          </div>
+        </div>
+      </Modal>
     </section>
   );
 };

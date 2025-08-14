@@ -96,6 +96,17 @@ export const useDocumentGeneration = () => {
             return;
           }
 
+          // Если запрос нарушает законодательство — останавливаемся
+          if (response.stage === "LAW_VIOLATED") {
+            setState((prev) => ({
+              ...prev,
+              currentStep: "error",
+              isLoading: false,
+            }));
+            stopPolling();
+            return;
+          }
+
           // Если документ еще обрабатывается, оставляем isLoading: true
           // isLoading остается в том состоянии, в котором был
 
