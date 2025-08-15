@@ -4,7 +4,6 @@ import Loader from "../Loader/Loader";
 import "./Generation.css";
 import { useDocumentGeneration } from "./hooks/useDocumentGeneration";
 import QueryInput from "./components/QueryInput/QueryInput";
-import HelpText from "./components/HelpText/HelpText";
 import ContractTypeStep from "./components/ContractTypeStep/ContractTypeStep";
 import EntitiesFormStep from "./components/EntitiesFormStep/EntitiesFormStep";
 import FinalResultStep from "./components/FinalResultStep/FinalResultStep";
@@ -20,7 +19,7 @@ const Generation = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [showHelpText, setShowHelpText] = useState(true);
+  // const [showHelpText, setShowHelpText] = useState(true);
 
   const documentGeneration = useDocumentGeneration();
 
@@ -245,9 +244,9 @@ const Generation = () => {
     },
   ];
 
-  const handleCloseHelpText = () => {
-    setShowHelpText(false);
-  };
+  // const handleCloseHelpText = () => {
+  //   setShowHelpText(false);
+  // };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

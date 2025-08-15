@@ -26,8 +26,6 @@ const QueryInput: React.FC<QueryInputProps> = ({
   onChange,
   onSend,
   onCancel,
-  onFocus,
-  onBlur,
   onOverlayClick,
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);

@@ -10,7 +10,6 @@ interface ConfirmationFormProps {
 }
 
 export const ConfirmationForm: React.FC<ConfirmationFormProps> = ({
-  email,
   confirmationCode,
   isLoading,
   onConfirmationCodeChange,

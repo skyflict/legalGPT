@@ -38,9 +38,9 @@ const Sidebar = ({
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const handleItemClick = () => {
-    setIsModalOpen(true);
-  };
+  // const handleItemClick = () => {
+  //   setIsModalOpen(true);
+  // };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
