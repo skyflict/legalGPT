@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Icon from "../../../Icon/Icon";
 import FloatingField from "./FloatingField";
 import styles from "./EntitiesFormStep.module.css";
@@ -28,6 +28,13 @@ const EntitiesFormStep: React.FC<Props> = ({
   isValid,
   groups = [],
 }) => {
+  const [openOptionalGroups, setOpenOptionalGroups] = useState<
+    Record<string, boolean>
+  >({});
+
+  const toggleOptionalGroup = (name: string) => {
+    setOpenOptionalGroups((prev) => ({ ...prev, [name]: !prev[name] }));
+  };
   return (
     <div className="step-two-content">
       <div className="step-two-message">
@@ -50,9 +57,6 @@ const EntitiesFormStep: React.FC<Props> = ({
 
             {groups.length > 0 ? (
               <>
-                <div className="additional-title" style={{ marginBottom: 8 }}>
-                  Обязательные данные
-                </div>
                 <div className={styles.fields}>
                   {(() => {
                     const grouped = new Set(
@@ -112,9 +116,19 @@ const EntitiesFormStep: React.FC<Props> = ({
                     );
                   })}
                 </div>
-
-                <div className="additional-title" style={{ marginTop: 8 }}>
+                <div
+                  className="additional-title"
+                  style={{
+                    marginTop: 8,
+                    borderTop: "1px solid #000",
+                    paddingTop: 16,
+                  }}
+                >
                   Дополнительные данные
+                </div>
+                <div className="additional-description">
+                  Это необязательно, но позволяет более детально зафиксировать
+                  положения договора, отражающие ваши запросы
                 </div>
                 <div className={styles.fields}>
                   {/* Сначала необязательные поля вне групп */}
@@ -152,26 +166,48 @@ const EntitiesFormStep: React.FC<Props> = ({
                       <div
                         key={`opt-${group.name}`}
                         className="additional-data"
+                        style={{
+                          fontSize: "14px",
+                          borderBottom: "1px solid #000",
+                          paddingTop: 16,
+                        }}
                       >
-                        <div className="additional-title">{group.name}</div>
-                        <div className={styles.additional}>
-                          {optionalInGroup.map((fieldName) => {
-                            const fieldProps = allFields[fieldName] || {};
-                            const defaultValue = fieldProps.default || "";
-                            const value = values[fieldName] ?? defaultValue;
-                            const labelText = fieldProps.title || fieldName;
-                            return (
-                              <FloatingField
-                                key={fieldName}
-                                label={labelText}
-                                value={value}
-                                placeholder={labelText}
-                                onChange={(v) => onChange(fieldName, v)}
-                                description={fieldProps.description}
-                              />
-                            );
-                          })}
-                        </div>
+                        <button
+                          type="button"
+                          className={styles.spoilerHeader}
+                          onClick={() => toggleOptionalGroup(group.name)}
+                          aria-expanded={!!openOptionalGroups[group.name]}
+                        >
+                          <span className="additional-title">{group.name}</span>
+                          <Icon
+                            name="arrow"
+                            width={16}
+                            height={16}
+                            className={`${styles.spoilerIcon} ${
+                              openOptionalGroups[group.name] ? styles.open : ""
+                            }`}
+                          />
+                        </button>
+                        {openOptionalGroups[group.name] && (
+                          <div className={styles.additional}>
+                            {optionalInGroup.map((fieldName) => {
+                              const fieldProps = allFields[fieldName] || {};
+                              const defaultValue = fieldProps.default || "";
+                              const value = values[fieldName] ?? defaultValue;
+                              const labelText = fieldProps.title || fieldName;
+                              return (
+                                <FloatingField
+                                  key={fieldName}
+                                  label={labelText}
+                                  value={value}
+                                  placeholder={labelText}
+                                  onChange={(v) => onChange(fieldName, v)}
+                                  description={fieldProps.description}
+                                />
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
                     );
                   })}

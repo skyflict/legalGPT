@@ -164,9 +164,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     return "Подтвердите аккаунт";
   };
 
-  const showAgreements =
-    (isLoginMode && resetStep === "none") ||
-    (!isLoginMode && registrationStep === "form");
+  const showAgreements = !isLoginMode && registrationStep === "form";
 
   const isAgreementsAccepted =
     !showAgreements || (agreedTerms && agreedPersonal);
@@ -177,7 +175,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         className="auth-modal__container"
         onClick={(e) => e.stopPropagation()}
       >
-        {isLoginMode && resetStep !== "email" && (
+        {isLoginMode && resetStep !== "none" && (
           <button
             className="auth-modal__back"
             onClick={handleBackFromReset}

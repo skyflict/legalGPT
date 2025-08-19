@@ -17,7 +17,7 @@
 .generation::after {
   content: "";
   position: absolute;
-  top: 50%;
+  top: 30vh;
   right: 0;
   transform: translateY(-50%);
   background-image: url("../../assets/building.png");
@@ -233,7 +233,7 @@
   left: 0;
   right: 0;
   background: white;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #000;
   border-radius: 16px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   z-index: 1000;
@@ -526,7 +526,7 @@
   width: 100%;
   padding: 16px 20px;
   background: white;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #000;
   border-radius: 16px;
   cursor: pointer;
   font-family: Unbounded;
@@ -559,7 +559,7 @@
   left: 0;
   right: 0;
   background: white;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #000;
   border-radius: 16px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   z-index: 1000;
@@ -879,26 +879,13 @@
   width: 100%;
 }
 
-.form-field-wrapper .floating-label {
-  position: absolute;
-  top: -9px;
-  left: 14px;
-  background: #fff;
-  color: #6b7280;
+.form-field-label {
+  display: block;
+  color: var(--Text-Primary, #1a1a1a);
   font-family: Inter;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
-  padding: 0 6px;
-  border-radius: 8px;
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(6px);
-  transition: all 0.15s ease;
-}
-
-.form-field-wrapper.has-value .floating-label {
-  opacity: 1;
-  transform: translateY(0);
+  margin-bottom: 8px;
 }
 
 .form-field {
@@ -909,11 +896,15 @@
   font-size: 16px;
   font-weight: 400;
   color: var(--Text-Primary, #1a1a1a);
-  background: white;
+  background: rgba(255, 255, 255, 0.6);
   transition: border-color 0.2s ease;
-
-  width: 824px;
   width: 100%;
+}
+
+/* Разделители между вопросами (полями) */
+.form-field-wrapper + .form-field-wrapper {
+  border-top: 1px solid #000;
+  padding-top: 20px;
 }
 
 .form-field::placeholder {
@@ -927,7 +918,6 @@
 }
 
 .additional-data {
-  margin-bottom: 32px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -942,6 +932,14 @@
   font-size: 16px;
   font-weight: 400;
   margin-bottom: 16px;
+}
+
+.additional-description {
+  color: var(--Text-Primary, #1a1a1a);
+  font-family: Inter;
+  font-size: 14px;
+  font-weight: 400;
+  margin-bottom: 24px;
 }
 
 .form-actions {

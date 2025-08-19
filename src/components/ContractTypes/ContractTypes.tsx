@@ -5,26 +5,14 @@ import Icon from "../Icon/Icon";
 
 const ContractTypes = () => {
   const contractTypes = [
-    {
-      id: 1,
-      title: "Договор дарения",
-      isActive: false,
-    },
-    {
-      id: 2,
-      title: "Договор аренды",
-      isActive: true,
-    },
-    {
-      id: 3,
-      title: "Договор купли-продажи",
-      isActive: false,
-    },
-    {
-      id: 4,
-      title: "Договор оказания услуг",
-      isActive: false,
-    },
+    { id: 1, title: "Агентский договор", isActive: false },
+    { id: 2, title: "Договор аренды", isActive: true },
+    { id: 3, title: "Договор купли-продажи", isActive: false },
+    { id: 4, title: "Договор дарения", isActive: false },
+    { id: 5, title: "Договор найма жилого помещения", isActive: false },
+    { id: 6, title: "Договор хранения", isActive: false },
+    { id: 7, title: "Договор оказания услуг", isActive: false },
+    { id: 8, title: "Договор займа", isActive: false },
   ];
 
   return (

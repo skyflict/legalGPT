@@ -17,13 +17,9 @@ const FloatingField: React.FC<Props> = ({
   className,
   description,
 }) => {
-  const hasValue = value && String(value).trim() !== "";
   return (
-    <div
-      className={`form-field-wrapper ${hasValue ? "has-value" : ""} ${
-        className || ""
-      }`.trim()}
-    >
+    <div className={`form-field-wrapper ${className || ""}`.trim()}>
+      <label className="form-field-label">{label}</label>
       <input
         type="text"
         placeholder={placeholder ?? label}
@@ -31,7 +27,6 @@ const FloatingField: React.FC<Props> = ({
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />
-      {hasValue && <span className="floating-label">{label}</span>}
       {description && (
         <div
           className="field-hint"
