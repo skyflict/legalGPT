@@ -52,13 +52,14 @@
 
 .footer-link {
   color: #fff;
+  opacity: 0.9;
   font-family: Unbounded;
   font-size: 16px;
   font-weight: 300;
 }
 
 .footer-link:hover {
-  color: #a78bfa;
+  opacity: 1;
 }
 
 .footer-bottom {

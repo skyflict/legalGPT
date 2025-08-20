@@ -33,7 +33,7 @@ const ContractTypes = () => {
               textColor="#000"
               backgroundColor="rgba(255, 255, 255, 0.70)"
               borderRadius={16}
-              style={{ cursor: "default" }}
+              style={{ cursor: "default", border: "none" }}
             >
               <Icon
                 name="award"

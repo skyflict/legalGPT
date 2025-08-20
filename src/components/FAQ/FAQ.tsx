@@ -22,7 +22,7 @@ const FAQ = () => {
       id: 2,
       question: "Сколько стоит генерация?",
       answer:
-        "Для расчета внутри нашего сервиса используются условная внутренняя валюта, которая приобретается за рубли. Курс равняется [•] за 1000 условных единиц одна генерация стоит [•]",
+        "Для расчета внутри нашего сервиса используются условная внутренняя валюта, которая приобретается за рубли. Одна генерация стоит 10 LC.",
     },
     {
       id: 3,
@@ -77,9 +77,15 @@ const FAQ = () => {
                     <span>{item.question}</span>
                     <Icon name="arrow" className="faq-icon" />
                   </button>
-                  {openItem === item.id && (
-                    <div className="faq-answer">{item.answer}</div>
-                  )}
+                  <div
+                    className={`faq-answer ${
+                      openItem === item.id
+                        ? "faq-answer--open"
+                        : "faq-answer--closed"
+                    }`}
+                  >
+                    <div className="faq-answer-content">{item.answer}</div>
+                  </div>
                 </div>
               ))}
             </div>

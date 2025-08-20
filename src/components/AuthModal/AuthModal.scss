@@ -33,7 +33,7 @@ $transition: 0.3s ease;
   &:focus {
     outline: none;
     border-color: $primary-color;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    box-shadow: 0 0 0 2px #2e2bff;
   }
 
   &::placeholder {
@@ -184,16 +184,17 @@ $transition: 0.3s ease;
 
   &__secondary-btn {
     @include button-base;
-    background: #e5e7eb;
-    color: #1b1b1b;
+    background: rgba(26, 26, 26, 0.08);
+    color: rgba(0, 0, 0, 0.5);
 
     &:hover:not(:disabled) {
-      background: #d1d5db;
+      background: rgba(26, 26, 26, 0.12);
       transform: translateY(-2px);
     }
 
     &:disabled {
-      opacity: 0.6;
+      background: rgba(26, 26, 26, 0.2);
+      color: rgba(0, 0, 0, 0.5);
       cursor: not-allowed;
     }
   }
@@ -261,6 +262,7 @@ $transition: 0.3s ease;
 
   &__link {
     text-decoration: underline;
+    font-size: 14px;
 
     &:hover {
       color: #3730a3;

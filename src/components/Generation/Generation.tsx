@@ -16,7 +16,6 @@ import Modal from "../Modal";
 
 const Generation = () => {
   const [query, setQuery] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   // const [showHelpText, setShowHelpText] = useState(true);
@@ -51,7 +50,6 @@ const Generation = () => {
     // Возврат на главную: сбрасываем состояние генерации и форму
     documentGeneration.reset();
     setQuery("");
-    setIsFocused(false);
     setShowOverlay(false);
     try {
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -60,19 +58,11 @@ const Generation = () => {
 
   const handleQueryClick = (queryText: string) => {
     setQuery(queryText);
-    setIsFocused(true);
-    setShowOverlay(true);
-    setTimeout(() => {
-      if (textareaRef.current) {
-        textareaRef.current.focus();
-      }
-    }, 0);
   };
 
   // Убрали кнопку "Применить"; клика по карточке достаточно
 
   const handleFocus = () => {
-    setIsFocused(true);
     setShowOverlay(true);
   };
 
@@ -85,7 +75,6 @@ const Generation = () => {
       !showEntitiesForm &&
       !showFinalResult
     ) {
-      setIsFocused(false);
       setShowOverlay(false);
     }
   };
@@ -100,7 +89,6 @@ const Generation = () => {
       !showEntitiesForm &&
       !showFinalResult
     ) {
-      setIsFocused(false);
       setShowOverlay(false);
       if (textareaRef.current) {
         textareaRef.current.blur();
@@ -115,7 +103,6 @@ const Generation = () => {
   const handleCancel = () => {
     setQuery("");
     setIsDropdownOpen(false);
-    setIsFocused(false);
     setShowOverlay(false);
     documentGeneration.reset();
     if (textareaRef.current) {
@@ -288,7 +275,6 @@ const Generation = () => {
   return (
     <section
       className={`generation ${
-        isFocused ||
         isLoading ||
         showContractType ||
         showContractSelect ||
@@ -316,7 +302,6 @@ const Generation = () => {
                 isBusy={isLoading}
                 disabled={documentGeneration.currentStep !== "idle"}
                 isFocused={
-                  isFocused ||
                   isLoading ||
                   showContractType ||
                   showContractSelect ||

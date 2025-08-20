@@ -3,7 +3,13 @@ import Icon from "../../../Icon/Icon";
 import FloatingField from "./FloatingField";
 import styles from "./EntitiesFormStep.module.css";
 
-type FieldProps = { title?: string; default?: string; description?: string };
+type FieldProps = {
+  title?: string;
+  default?: string;
+  description?: string;
+  enum?: string[];
+  enumTitles?: Record<string, string>;
+};
 
 type Group = { name: string; properties: string[] };
 
@@ -34,6 +40,17 @@ const EntitiesFormStep: React.FC<Props> = ({
 
   const toggleOptionalGroup = (name: string) => {
     setOpenOptionalGroups((prev) => ({ ...prev, [name]: !prev[name] }));
+  };
+
+  const getEnumOptions = (fieldProps: FieldProps) => {
+    if (!fieldProps.enum || fieldProps.enum.length === 0) {
+      return undefined;
+    }
+
+    return fieldProps.enum.map((enumValue) => ({
+      value: enumValue,
+      title: fieldProps.enumTitles?.[enumValue] || enumValue,
+    }));
   };
   return (
     <div className="step-two-content">
@@ -78,6 +95,7 @@ const EntitiesFormStep: React.FC<Props> = ({
                           placeholder={labelText}
                           onChange={(v) => onChange(fieldName, v)}
                           description={fieldProps.description}
+                          enumOptions={getEnumOptions(fieldProps)}
                         />
                       );
                     });
@@ -108,6 +126,7 @@ const EntitiesFormStep: React.FC<Props> = ({
                                 placeholder={labelText}
                                 onChange={(v) => onChange(fieldName, v)}
                                 description={fieldProps.description}
+                                enumOptions={getEnumOptions(fieldProps)}
                               />
                             );
                           })}
@@ -152,6 +171,7 @@ const EntitiesFormStep: React.FC<Props> = ({
                           placeholder={labelText}
                           onChange={(v) => onChange(fieldName, v)}
                           description={fieldProps.description}
+                          enumOptions={getEnumOptions(fieldProps)}
                         />
                       );
                     });
@@ -203,6 +223,7 @@ const EntitiesFormStep: React.FC<Props> = ({
                                   placeholder={labelText}
                                   onChange={(v) => onChange(fieldName, v)}
                                   description={fieldProps.description}
+                                  enumOptions={getEnumOptions(fieldProps)}
                                 />
                               );
                             })}
@@ -228,6 +249,7 @@ const EntitiesFormStep: React.FC<Props> = ({
                       placeholder={labelText}
                       onChange={(v) => onChange(fieldName, v)}
                       description={fieldProps.description}
+                      enumOptions={getEnumOptions(fieldProps)}
                     />
                   );
                 })}
@@ -254,6 +276,7 @@ const EntitiesFormStep: React.FC<Props> = ({
                         placeholder={labelText}
                         onChange={(v) => onChange(fieldName, v)}
                         description={fieldProps.description}
+                        enumOptions={getEnumOptions(fieldProps)}
                       />
                     );
                   })}

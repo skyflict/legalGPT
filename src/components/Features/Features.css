@@ -1,6 +1,7 @@
 .features-header {
   text-align: center;
   margin-bottom: 40px;
+  margin-top: 40px;
 }
 
 .features-title {
@@ -54,6 +55,18 @@
 .features-footer {
   text-align: center;
   margin-top: 40px;
+}
+
+.features-footer-btn {
+  font-family: Unbounded;
+  font-size: 14px;
+  font-weight: 400;
+  border-radius: 28px;
+
+  &:hover {
+    background-color: #2e2bff !important;
+    color: #fff !important;
+  }
 }
 
 @media (max-width: 1024px) {
