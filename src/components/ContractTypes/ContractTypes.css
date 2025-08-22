@@ -58,11 +58,27 @@
 
 .contract-grid {
   display: flex;
-  justify-content: space-between;
   gap: 40px;
-  width: auto;
+  width: calc(100% * 2);
   margin-left: 10px;
   margin-right: 10px;
+  animation: scroll-horizontal 30s linear infinite;
+  will-change: transform;
+}
+
+.contract-types .container {
+  max-width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+@keyframes scroll-horizontal {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 .contract-card {
@@ -72,11 +88,26 @@
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(10px);
   flex: 1;
+  min-width: 380px;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.contract-card:hover ~ .contract-grid,
+.contract-card:hover {
+  animation-play-state: paused;
+}
+
+.contract-card:hover .contract-title {
+  color: #2e2bff;
+}
+
+.contract-grid:hover {
+  animation-play-state: paused;
 }
 
 .contract-title {
@@ -110,11 +141,18 @@
   .contract-grid {
     flex-direction: column;
     gap: 16px;
+    width: 100%;
+    animation: none;
   }
 
   .contract-card {
     padding: 24px;
     white-space: normal;
+    min-width: unset;
+  }
+
+  .contract-card.duplicate {
+    display: none;
   }
 
   .contract-title {

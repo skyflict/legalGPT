@@ -54,6 +54,16 @@ const ContractTypes = () => {
               <span className="contract-title">{contract.title}</span>
             </div>
           ))}
+          {contractTypes.map((contract) => (
+            <div
+              key={`duplicate-${contract.id}`}
+              className={`contract-card duplicate ${
+                contract.isActive ? "active" : ""
+              }`}
+            >
+              <span className="contract-title">{contract.title}</span>
+            </div>
+          ))}
         </div>
       </div>
     </section>
