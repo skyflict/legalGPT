@@ -51,7 +51,6 @@ export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
       const userData = await apiRequest(API_ENDPOINTS.USER);
       return userData;
     } catch (err) {
-      console.error("Ошибка при получении данных пользователя:", err);
       return null;
     }
   };
@@ -101,7 +100,6 @@ export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
       const data: AuthResponse = await response.json();
       localStorage.setItem("authToken", data.token);
 
-      // Получаем данные пользователя после успешной авторизации
       await fetchUserData();
 
       onLogin(email, password);
@@ -144,7 +142,6 @@ export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
       const data: AuthResponse = await response.json();
       localStorage.setItem("authToken", data.token);
 
-      // Получаем данные пользователя после успешного подтверждения регистрации
       await fetchUserData();
 
       onLogin(email, password);
