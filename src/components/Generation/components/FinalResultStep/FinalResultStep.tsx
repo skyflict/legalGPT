@@ -8,7 +8,8 @@ type Props = {
   downloadUrl?: string;
 };
 
-const FEEDBACK_FORM_URL = import.meta.env.VITE_FEEDBACK_FORM_URL || "#";
+const FEEDBACK_FORM_URL =
+  "https://forms.yandex.ru/cloud/68bab2914936399c60c1bac5/?page=1";
 
 const FinalResultStep: React.FC<Props> = ({ documentName, downloadUrl }) => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
