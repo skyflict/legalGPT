@@ -1,33 +1,28 @@
-const isDevelopment = import.meta.env.DEV;
-const isLocalhost =
-  window.location.hostname === "localhost" ||
-  window.location.hostname === "127.0.0.1";
+// Конфигурация API
+const getApiBaseUrl = (): string => {
+  const customUrl = import.meta.env.VITE_API_BASE_URL;
+  if (customUrl) {
+    return customUrl;
+  }
 
-export const getApiBaseUrl = (): string => {
-  const baseUrl = (() => {
-    if (isDevelopment && isLocalhost) {
-      return "/api";
-    }
-
-    return "/api/proxy?path=";
-  })();
-
-  return baseUrl;
+  // Дефолтный URL API
+  return "http://api.neuroyurist.ru:8000";
 };
 
 export const createApiUrl = (endpoint: string): string => {
   const baseUrl = getApiBaseUrl();
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint.slice(1) : endpoint;
+  return `${baseUrl}/${cleanEndpoint}`;
+};
 
-  let finalUrl: string;
+// Утилита для получения информации о текущей конфигурации API
+export const getApiInfo = () => {
+  const baseUrl = getApiBaseUrl();
 
-  if (baseUrl.includes("proxy?path=")) {
-    finalUrl = `${baseUrl}${cleanEndpoint}`;
-  } else {
-    finalUrl = `${baseUrl}/${cleanEndpoint}`;
-  }
-
-  return finalUrl;
+  return {
+    baseUrl,
+    sampleUrl: createApiUrl("v1/user"),
+  };
 };
 
 export const API_ENDPOINTS = {
@@ -240,4 +235,5 @@ if (typeof window !== "undefined") {
   (window as any).parseJWTToken = parseJWTToken;
   (window as any).isCurrentTokenExpired = isCurrentTokenExpired;
   (window as any).logoutAndCleanup = logoutAndCleanup;
+  (window as any).getApiInfo = getApiInfo;
 }

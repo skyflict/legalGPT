@@ -75,10 +75,10 @@ src/
 
 - **TypeScript**: Строгая типизация, конфигурация в tsconfig.json
 - **ESLint**: Конфигурация в eslint.config.js
-- **Vite**: Конфигурация с прокси для API в vite.config.ts
+- **Vite**: Быстрая сборка и разработка
 - **Sass**: Поддержка .scss файлов
 
 ### Deployment
 
-- Приложение деплоится на Vercel (см. vercel.json)
-- API запросы проксируются через serverless функции Vercel
+- API запросы идут напрямую к серверу http://api.neuroyurist.ru:8000
+- Для изменения URL API используйте переменную окружения VITE_API_BASE_URL
