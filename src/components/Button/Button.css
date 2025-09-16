@@ -319,6 +319,15 @@
 }
 
 /* Адаптивность */
+@media (max-width: 1024px) {
+  .btn--lg,
+  .btn--xl {
+    font-size: 15px;
+    padding: 12px 20px;
+    min-height: 44px;
+  }
+}
+
 @media (max-width: 768px) {
   .btn--responsive {
     width: 100%;
@@ -327,9 +336,21 @@
 
   .btn--lg,
   .btn--xl {
-    font-size: 16px;
-    padding: 12px 20px;
-    min-height: 48px;
+    font-size: 14px;
+    padding: 10px 18px;
+    min-height: 40px;
+  }
+  
+  .btn--md {
+    font-size: 13px;
+    padding: 8px 14px;
+    min-height: 36px;
+  }
+  
+  .btn--sm {
+    font-size: 12px;
+    padding: 6px 10px;
+    min-height: 28px;
   }
 }
 

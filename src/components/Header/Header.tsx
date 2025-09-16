@@ -11,6 +11,7 @@ interface HeaderProps {
   isLoggedIn?: boolean;
   userEmail?: string;
   onLogout?: () => void;
+  onToggleSidebar?: () => void;
 }
 
 interface UserData {
@@ -26,6 +27,7 @@ export const Header: React.FC<HeaderProps> = ({
   isLoggedIn = false,
   userEmail,
   onLogout,
+  onToggleSidebar,
 }) => {
   const [userData, setUserData] = useState<UserData | null>(null);
 
@@ -48,7 +50,18 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="header">
       <div className="container">
         <div className="header__content">
-          <Logo />
+          <div className="header__left">
+            {isLoggedIn && (
+              <button 
+                className="sidebar-toggle"
+                onClick={onToggleSidebar}
+                aria-label="Переключить сайдбар"
+              >
+                <span className="hamburger"></span>
+              </button>
+            )}
+            <Logo />
+          </div>
 
           <div className="header__actions">
             {isLoggedIn ? (

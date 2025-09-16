@@ -73,6 +73,11 @@
   margin-bottom: 24px;
   min-width: 916px;
   border-radius: 28px !important;
+
+  @media (max-width: 768px) {
+    min-width: 100%;
+    margin-top: 24px;
+  }
 }
 
 .input-wrapper {
@@ -688,6 +693,11 @@
   border-radius: var(--Corner-Extra-large, 28px);
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(10px);
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .frequent-queries {
@@ -709,6 +719,12 @@
   min-width: 916px;
   margin-top: 16px;
   margin-bottom: 64px;
+
+  @media (max-width: 768px) {
+    min-width: 100%;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .query-button-wrapper {
@@ -735,6 +751,10 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    height: 100%;
+  }
 }
 
 .query-button:hover {
@@ -779,20 +799,12 @@
 /* Кнопка "Применить" удалена по новой логике */
 
 @media (max-width: 768px) {
-  .generation {
-    padding: 40px 0;
-  }
-
   .generation::after {
     display: none;
   }
 
   .generation-content {
     max-width: 100%;
-  }
-
-  .generation-form {
-    padding: 24px;
   }
 
   .queries-grid {
@@ -843,6 +855,10 @@
 .step-three-form {
   width: 824px !important;
   width: 100%;
+
+  @media (max-width: 768px) {
+    width: 100% !important;
+  }
 }
 
 .step-progress {
@@ -1008,6 +1024,10 @@
   align-items: center;
   gap: 10px;
   margin-bottom: 24px;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 }
 
 .final-step {

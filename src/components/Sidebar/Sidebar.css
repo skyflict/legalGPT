@@ -237,3 +237,25 @@
   background-color: #9ca3af;
   cursor: not-allowed;
 }
+
+/* Мобильные стили */
+@media (max-width: 1024px) {
+  .sidebar-embedded {
+    position: fixed;
+    top: 9px;
+    left: -250px;
+    width: 250px;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid #e5e7eb;
+    z-index: 10000;
+    transition: left 0.3s ease;
+    padding-top: 80px;
+    margin-right: 0;
+  }
+
+  .sidebar-embedded.visible {
+    left: 0;
+  }
+}

@@ -75,14 +75,12 @@ const HowItWorks = ({
         {!isLoggedIn && (
           <Button
             variant="custom"
-            width={890}
-            height={68}
             textColor="#2E2BFF"
             backgroundColor="#FFF"
             borderRadius={16}
             noBorder
             glowing={true}
-            className="features-footer-btn"
+            className="how-it-works-footer-btn"
             onClick={onOpenAuthModal}
           >
             Попробовать

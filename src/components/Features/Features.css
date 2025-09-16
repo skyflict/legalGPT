@@ -28,6 +28,8 @@
   padding: 24px;
   width: 444px;
   height: 126px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .feature-icon {
@@ -62,6 +64,11 @@
   font-size: 14px;
   font-weight: 400;
   border-radius: 28px;
+  width: 100%;
+  max-width: 890px;
+  height: 68px;
+  padding: 16px 32px;
+  box-sizing: border-box;
 
   &:hover {
     background-color: #2e2bff !important;
@@ -70,40 +77,74 @@
 }
 
 @media (max-width: 1024px) {
-  .features-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-  }
-}
-
-@media (max-width: 768px) {
   .features {
-    padding: 50px 0;
-  }
-
-  .features-title {
-    font-size: 28px;
+    padding: 40px 16px;
   }
 
   .features-grid {
     grid-template-columns: 1fr;
     gap: 20px;
-    margin-bottom: 40px;
   }
 
   .feature-card {
-    padding: 24px 20px;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    padding: 20px;
+  }
+
+  .features-title {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .features-footer-btn {
+    max-width: 100%;
+    height: 56px;
+    font-size: 14px;
+    padding: 14px 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .features {
+    padding: 0px 12px;
+  }
+
+  .features-title {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 30px;
+  }
+
+  .feature-card {
+    padding: 20px;
+    width: 100%;
+    height: auto;
+    min-height: 120px;
   }
 
   .feature-icon {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
 
   .feature-title {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .feature-description {
     font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .features-footer-btn {
+    height: 68px;
+    font-size: 14px;
+    padding: 12px 24px;
   }
 }

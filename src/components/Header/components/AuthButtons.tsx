@@ -35,7 +35,7 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
         borderRadius={16}
         noBorder
         onClick={onOpenRegisterModal}
-        className="header__btn"
+        className="header__btn header__register-btn"
       >
         Регистрация
       </Button>

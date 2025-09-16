@@ -115,11 +115,15 @@ const Sidebar = ({
     }
   };
 
-  if (!isVisible) return null;
+  // На мобильных устройствах всегда рендерим, но управляем видимостью через CSS
+  // На десктопе используем старую логику
+  const shouldRender = window.innerWidth > 1024 ? isVisible : true;
+
+  if (!shouldRender) return null;
 
   return (
     <>
-      <aside className="sidebar-embedded">
+      <aside className={`sidebar-embedded ${isVisible ? "visible" : ""}`}>
         <div className="sidebar-content">
           <nav className="sidebar-nav">
             <button

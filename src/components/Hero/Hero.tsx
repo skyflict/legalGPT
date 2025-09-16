@@ -27,8 +27,6 @@ const Hero = ({ onOpenAuthModal }: HeroProps) => {
 
             <Button
               variant="custom"
-              width={171}
-              height={43}
               textColor="#FFF"
               backgroundColor="#2E2BFF"
               borderRadius={16}

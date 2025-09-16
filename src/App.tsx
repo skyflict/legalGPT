@@ -102,6 +102,12 @@ function App() {
   };
 
   const [currentView, setCurrentView] = useState<ViewName>("generation");
+  // На мобильных устройствах сайдбар скрыт по умолчанию
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 1024);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   return (
     <div className="app">
@@ -111,12 +117,13 @@ function App() {
         isLoggedIn={isLoggedIn}
         userEmail={userEmail}
         onLogout={handleLogout}
+        onToggleSidebar={toggleSidebar}
       />
 
       <div className={`app-layout ${isLoggedIn ? "with-sidebar" : ""}`}>
         {isLoggedIn && (
           <Sidebar
-            isVisible={true}
+            isVisible={isSidebarOpen}
             userRole={userData?.role}
             // пробрасываем смену вида через кастомное событие
             onOpenHistory={() => setCurrentView("history")}

@@ -53,8 +53,6 @@ const Features = ({ isLoggedIn = false, onOpenAuthModal }: FeaturesProps) => {
           <div className="features-footer">
             <Button
               variant="custom"
-              width={890}
-              height={68}
               textColor="#2E2BFF"
               backgroundColor="#FFF"
               borderRadius={16}

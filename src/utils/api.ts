@@ -6,7 +6,7 @@ const getApiBaseUrl = (): string => {
   }
 
   // Дефолтный URL API
-  return "http://api.neuroyurist.ru:8000";
+  return "https://api.neuroyurist.ru";
 };
 
 export const createApiUrl = (endpoint: string): string => {
