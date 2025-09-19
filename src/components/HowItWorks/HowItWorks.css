@@ -243,6 +243,7 @@
     grid-template-columns: 1fr;
     gap: 20px;
     margin-bottom: 40px;
+    justify-items: center;
   }
 
   .section-title {
@@ -253,6 +254,17 @@
   .example-request {
     padding: 16px;
     min-height: 120px;
+  }
+
+  .how-it-works-image {
+    width: 100%;
+    max-width: 400px;
+    height: 188px;
+    margin-top: 24px;
+    margin-left: auto;
+    margin-right: auto;
+    background-position: center;
+    background-size: contain;
   }
 
   .step-item {
