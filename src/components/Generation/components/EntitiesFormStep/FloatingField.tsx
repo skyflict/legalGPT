@@ -14,6 +14,7 @@ type Props = {
   className?: string;
   description?: string;
   enumOptions?: EnumOption[];
+  examples?: string[];
 };
 
 const FloatingField: React.FC<Props> = ({
@@ -24,8 +25,10 @@ const FloatingField: React.FC<Props> = ({
   className,
   description,
   enumOptions,
+  examples,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -62,11 +65,83 @@ const FloatingField: React.FC<Props> = ({
     return selectedOption ? selectedOption.title : value || "Не выбрано";
   };
 
+  const getPlaceholderWithExamples = () => {
+    if (examples && examples.length > 0) {
+      return `Например: ${examples.join(", ")}`;
+    }
+    return placeholder ?? label;
+  };
+
   if (enumOptions && enumOptions.length > 0) {
     // Render dropdown for enum fields
     return (
       <div className={`form-field-wrapper ${className || ""}`.trim()}>
-        <label className="form-field-label">{label}</label>
+        <div
+          className="form-field-label-container"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            marginBottom: "8px",
+          }}
+        >
+          <label className="form-field-label" style={{ margin: 0 }}>
+            {label}
+          </label>
+          {description && (
+            <div
+              style={{
+                position: "relative",
+                display: "inline-block",
+              }}
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+            >
+              <Icon
+                name="help"
+                width={16}
+                height={16}
+                style={{ cursor: "help" }}
+              />
+              {showTooltip && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    backgroundColor: "#1f2937",
+                    color: "white",
+                    padding: "8px 12px",
+                    borderRadius: "6px",
+                    fontSize: "12px",
+                    whiteSpace: "nowrap",
+                    maxWidth: "300px",
+                    whiteSpace: "normal",
+                    zIndex: 1000,
+                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                    marginTop: "4px",
+                  }}
+                >
+                  {description}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "-4px",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      width: 0,
+                      height: 0,
+                      borderLeft: "4px solid transparent",
+                      borderRight: "4px solid transparent",
+                      borderBottom: "4px solid #1f2937",
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          )}
+        </div>
         <div
           className="form-field-dropdown"
           ref={dropdownRef}
@@ -176,20 +251,6 @@ const FloatingField: React.FC<Props> = ({
             </div>
           )}
         </div>
-
-        {description && (
-          <div
-            className="field-hint"
-            style={{
-              color: "#6b7280",
-              fontFamily: "Inter",
-              fontSize: 12,
-              marginTop: 6,
-            }}
-          >
-            {description}
-          </div>
-        )}
       </div>
     );
   }
@@ -197,27 +258,76 @@ const FloatingField: React.FC<Props> = ({
   // Render regular input for non-enum fields
   return (
     <div className={`form-field-wrapper ${className || ""}`.trim()}>
-      <label className="form-field-label">{label}</label>
+      <div
+        className="form-field-label-container"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          marginBottom: "8px",
+        }}
+      >
+        <label className="form-field-label" style={{ margin: 0 }}>
+          {label}
+        </label>
+        {description && (
+          <div
+            style={{ position: "relative", display: "inline-block" }}
+            onMouseEnter={() => setShowTooltip(true)}
+            onMouseLeave={() => setShowTooltip(false)}
+          >
+            <Icon
+              name="help"
+              width={16}
+              height={16}
+              style={{ cursor: "help" }}
+            />
+            {showTooltip && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  backgroundColor: "#1f2937",
+                  color: "white",
+                  padding: "8px 12px",
+                  borderRadius: "6px",
+                  fontSize: "12px",
+                  whiteSpace: "nowrap",
+                  maxWidth: "300px",
+                  whiteSpace: "normal",
+                  zIndex: 1000,
+                  boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                  marginTop: "4px",
+                }}
+              >
+                {description}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "-4px",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    width: 0,
+                    height: 0,
+                    borderLeft: "4px solid transparent",
+                    borderRight: "4px solid transparent",
+                    borderBottom: "4px solid #1f2937",
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        )}
+      </div>
       <input
         type="text"
-        placeholder={placeholder ?? label}
+        placeholder={getPlaceholderWithExamples()}
         className="form-field"
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />
-      {description && (
-        <div
-          className="field-hint"
-          style={{
-            color: "#6b7280",
-            fontFamily: "Inter",
-            fontSize: 12,
-            marginTop: 6,
-          }}
-        >
-          {description}
-        </div>
-      )}
     </div>
   );
 };

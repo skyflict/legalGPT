@@ -9,6 +9,7 @@ type FieldProps = {
   description?: string;
   enum?: string[];
   enumTitles?: Record<string, string>;
+  examples?: string[];
 };
 
 type Group = { name: string; properties: string[] };
@@ -96,6 +97,7 @@ const EntitiesFormStep: React.FC<Props> = ({
                           onChange={(v) => onChange(fieldName, v)}
                           description={fieldProps.description}
                           enumOptions={getEnumOptions(fieldProps)}
+                          examples={fieldProps.examples}
                         />
                       );
                     });
@@ -127,6 +129,7 @@ const EntitiesFormStep: React.FC<Props> = ({
                                 onChange={(v) => onChange(fieldName, v)}
                                 description={fieldProps.description}
                                 enumOptions={getEnumOptions(fieldProps)}
+                                examples={fieldProps.examples}
                               />
                             );
                           })}
@@ -172,6 +175,7 @@ const EntitiesFormStep: React.FC<Props> = ({
                           onChange={(v) => onChange(fieldName, v)}
                           description={fieldProps.description}
                           enumOptions={getEnumOptions(fieldProps)}
+                          examples={fieldProps.examples}
                         />
                       );
                     });
@@ -224,6 +228,7 @@ const EntitiesFormStep: React.FC<Props> = ({
                                   onChange={(v) => onChange(fieldName, v)}
                                   description={fieldProps.description}
                                   enumOptions={getEnumOptions(fieldProps)}
+                                  examples={fieldProps.examples}
                                 />
                               );
                             })}
@@ -250,6 +255,7 @@ const EntitiesFormStep: React.FC<Props> = ({
                       onChange={(v) => onChange(fieldName, v)}
                       description={fieldProps.description}
                       enumOptions={getEnumOptions(fieldProps)}
+                      examples={fieldProps.examples}
                     />
                   );
                 })}
@@ -277,6 +283,7 @@ const EntitiesFormStep: React.FC<Props> = ({
                         onChange={(v) => onChange(fieldName, v)}
                         description={fieldProps.description}
                         enumOptions={getEnumOptions(fieldProps)}
+                        examples={fieldProps.examples}
                       />
                     );
                   })}
