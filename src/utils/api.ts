@@ -35,6 +35,7 @@ export const API_ENDPOINTS = {
   DOCUMENT_LIST: createApiUrl("v1/document"),
   DOCUMENT_GET: (id: string) => createApiUrl(`v1/document/${id}`),
   DOCUMENT_UPDATE: (id: string) => createApiUrl(`v1/document/${id}`),
+  DOCUMENT_TYPE: createApiUrl("v1/document-type"),
   ADMIN_USERS: createApiUrl("v1/admin/users"),
   ADMIN_USER_BALANCE: (userId: string) =>
     createApiUrl(`v1/admin/users/${userId}/balance`),
@@ -229,6 +230,18 @@ export const generateUUID = (): string => {
   });
 };
 
+// Функция для тестирования GET /v1/document-type
+export const testDocumentTypeApi = async () => {
+  try {
+    const response = await apiRequest(API_ENDPOINTS.DOCUMENT_TYPE);
+
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 if (typeof window !== "undefined") {
   (window as any).testParseToken = testParseToken;
   (window as any).logCurrentTokenInfo = logCurrentTokenInfo;
@@ -236,4 +249,5 @@ if (typeof window !== "undefined") {
   (window as any).isCurrentTokenExpired = isCurrentTokenExpired;
   (window as any).logoutAndCleanup = logoutAndCleanup;
   (window as any).getApiInfo = getApiInfo;
+  (window as any).testDocumentTypeApi = testDocumentTypeApi;
 }

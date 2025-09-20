@@ -12,6 +12,7 @@ import { useResolvedDocumentType } from "./hooks/useResolvedDocumentType";
 import { useFormSchema } from "./hooks/useFormSchema";
 import { useUserForm, useFormValidity } from "./hooks/useUserForm";
 import { useLoaderMessage } from "./hooks/useLoaderMessage";
+import { useDocumentTypes } from "./hooks/useDocumentTypes";
 import Modal from "../Modal";
 
 const Generation = () => {
@@ -21,9 +22,12 @@ const Generation = () => {
   const [openTemplates, setOpenTemplates] = useState<Record<string, boolean>>(
     {}
   );
+  const [showManualContractSelect, setShowManualContractSelect] =
+    useState(false);
   // const [showHelpText, setShowHelpText] = useState(true);
 
   const documentGeneration = useDocumentGeneration();
+  const { documentTypes, getDocumentTypeById } = useDocumentTypes();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -33,8 +37,9 @@ const Generation = () => {
   const showContractType =
     documentGeneration.currentStep === "waiting_input" &&
     documentGeneration.status?.stage === "DOC_TYPE_DEDUCED" &&
-    !isLoading;
-  const showContractSelect = false;
+    !isLoading &&
+    !showManualContractSelect;
+  const showContractSelect = showManualContractSelect;
   const showEntitiesForm =
     documentGeneration.currentStep === "waiting_input" &&
     documentGeneration.status?.stage === "ENTITIES_EXCTRACTED" &&
@@ -107,6 +112,7 @@ const Generation = () => {
     setQuery("");
     setIsDropdownOpen(false);
     setShowOverlay(false);
+    setShowManualContractSelect(false);
     documentGeneration.reset();
     if (textareaRef.current) {
       textareaRef.current.blur();
@@ -127,16 +133,22 @@ const Generation = () => {
   };
 
   const handleContractNo = () => {
-    handleCancel();
+    setShowManualContractSelect(true);
   };
 
-  const handleContractSelect = (contractType: string) => {
+  const handleContractSelect = (contractId: string) => {
     setIsDropdownOpen(false);
+    setShowManualContractSelect(false);
 
-    documentGeneration.submitUserInput({
-      event_type: "contract_type_selection",
-      contract_type: contractType,
-    });
+    const selectedType = getDocumentTypeById(contractId);
+    if (selectedType) {
+      documentGeneration.submitUserInput({
+        event_type: "DOC_TYPE_CONFIRMED",
+        data: {
+          document_type: selectedType.id,
+        },
+      });
+    }
   };
 
   const handleUserFormSubmit = () => {
@@ -163,7 +175,8 @@ const Generation = () => {
   };
 
   const handleBackToContractType = () => {
-    handleCancel();
+    setShowManualContractSelect(false);
+    setIsDropdownOpen(false);
   };
 
   const toggleTemplate = (title: string) => {
@@ -171,17 +184,9 @@ const Generation = () => {
   };
 
   const getContractTypeName = (type?: string) => {
-    const typeMap: Record<string, string> = {
-      dcp: "Договор купли-продажи",
-      arenda: "Договор аренды",
-      gift: "Договор дарения",
-      uslugi: "Договор оказания услуг",
-      zaym: "Договор займа",
-      agent: "Агентский договор",
-      naym: "Договор найма жилого помещения",
-      storage: "Договор хранения",
-    };
-    return type ? typeMap[type] : undefined;
+    if (!type) return undefined;
+    const documentType = getDocumentTypeById(type);
+    return documentType?.name;
   };
 
   const resolvedDocType = useResolvedDocumentType(
@@ -198,16 +203,8 @@ const Generation = () => {
     return "Документ.doc";
   };
 
-  const contractTypes = [
-    "Агентский договор",
-    "Договор аренды",
-    "Договор купли-продажи",
-    "Договор дарения",
-    "Договор найма жилого помещения",
-    "Договор хранения",
-    "Договор оказания услуг",
-    "Договор займа",
-  ];
+  // Используем данные из API вместо статического массива
+  const contractTypes = documentTypes;
 
   const frequentQueries = [
     {
@@ -418,7 +415,8 @@ const Generation = () => {
                     onClick={handleDropdownToggle}
                   >
                     <span>
-                      {documentGeneration.status?.type || "Не выбрано"}
+                      {getContractTypeName(documentGeneration.status?.type) ||
+                        "Не выбрано"}
                     </span>
                     <Icon
                       name="arrow"
@@ -432,17 +430,17 @@ const Generation = () => {
 
                   {isDropdownOpen && (
                     <div className="dropdown-menu">
-                      {contractTypes.map((contractType, index) => (
+                      {contractTypes.map((contractType) => (
                         <div
-                          key={index}
+                          key={contractType.id}
                           className={`dropdown-item ${
-                            documentGeneration.status?.type === contractType
+                            documentGeneration.status?.type === contractType.id
                               ? "dropdown-item--selected"
                               : ""
                           }`}
-                          onClick={() => handleContractSelect(contractType)}
+                          onClick={() => handleContractSelect(contractType.id)}
                         >
-                          {contractType}
+                          {contractType.name}
                         </div>
                       ))}
                     </div>
