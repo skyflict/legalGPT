@@ -65,14 +65,13 @@ function App() {
     setIsAuthModalOpen(false);
   };
 
-  const handleLogin = async (email: string, _password: string) => {
+  const handleLogin = async (email: string) => {
     setUserEmail(email);
     setIsLoggedIn(true);
     setIsAuthModalOpen(false);
 
     localStorage.setItem("userEmail", email);
 
-    // Получаем данные пользователя после входа
     await fetchUserData();
   };
 
@@ -102,8 +101,22 @@ function App() {
   };
 
   const [currentView, setCurrentView] = useState<ViewName>("generation");
-  // На мобильных устройствах сайдбар скрыт по умолчанию
-  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 1024);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 1024) {
+        setIsSidebarOpen(true);
+      } else {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);

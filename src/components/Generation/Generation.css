@@ -704,13 +704,157 @@
   margin-top: 24px;
 }
 
-.frequent-title {
-  color: var(--Text-Primary, #1a1a1a);
+.frequent-queries-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.frequent-queries-image {
+  width: 279px;
+  height: 430px;
+  border-radius: var(--Corner-Extra-large, 28px);
+  background: url("../../assets/time.webp") white center 44px /
+    calc(100% - 100px) no-repeat;
+  backdrop-filter: blur(10px);
+  margin-top: 40px;
+}
+
+.frequent-queries-image {
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.frequent-queries-title {
   font-family: Unbounded;
   font-size: 16px;
   font-weight: 400;
+  margin-bottom: 16px;
 }
 
+.frequent-queries-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.frequent-queries-item {
+  width: 605px;
+  max-width: 100%;
+  padding: 16px 24px;
+  border-radius: var(--Corner-Large, 16px);
+  border: 1px solid #e5e7eb;
+  background: var(--BG-White, #fff);
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.frequent-queries-item:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.frequent-queries-question {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  color: var(--Text-Primary, #1a1a1a);
+  font-family: Unbounded;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+
+  &:hover {
+    color: #2e2bff;
+  }
+}
+
+.frequent-queries-icon {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: rotate(0deg);
+}
+
+.frequent-queries-question.active .frequent-queries-icon {
+  transform: rotate(180deg);
+}
+
+.frequent-queries-answer {
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.frequent-queries-answer--closed {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+}
+
+.frequent-queries-answer--open {
+  max-height: 600px;
+  opacity: 1;
+  margin-top: 16px;
+}
+
+.frequent-queries-answer-content {
+  color: var(--Text-Primary, #1a1a1a);
+  font-family: Inter;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 140%;
+  padding: 0 0 4px 0;
+  transform: translateY(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.1s,
+    opacity 0.3s ease 0.1s;
+}
+
+.frequent-queries-answer--closed .frequent-queries-answer-content {
+  transform: translateY(-10px);
+  transition-delay: 0s;
+}
+
+.frequent-queries-answer p {
+  color: #6b7280;
+  line-height: 1.6;
+  font-size: 15px;
+  white-space: pre-line;
+}
+
+.use-template-btn {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+  border-radius: 16px;
+  background: rgba(26, 26, 26, 0.1);
+  min-height: 48px;
+  padding: 16px 24px;
+  color: #1b1b1b;
+  font-family: Unbounded;
+  font-size: 14px;
+  font-weight: 400;
+  border: none;
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
+  cursor: pointer;
+  display: block;
+  /* width: 100%; */
+  box-sizing: border-box;
+}
+
+.use-template-btn:hover {
+  background: #e5e7eb;
+}
+
+/* Сетка для блока типов договоров ниже */
 .queries-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -807,8 +951,41 @@
     max-width: 100%;
   }
 
-  .queries-grid {
+  .accordion-list {
+    gap: 12px;
+  }
+
+  .frequent-queries-content {
     grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .frequent-queries-title {
+    font-size: 18px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .frequent-queries-item {
+    width: 100%;
+    padding: 14px 16px;
+  }
+
+  .frequent-queries-question {
+    font-size: 14px;
+  }
+
+  .frequent-queries-answer-content {
+    font-size: 12px;
+  }
+
+  .frequent-queries-answer p {
+    font-size: 14px;
+  }
+
+  .frequent-queries-image {
+    width: 100%;
+    margin: 16px auto 0;
   }
 }
 

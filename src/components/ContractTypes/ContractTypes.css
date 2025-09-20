@@ -28,6 +28,13 @@
   margin-left: 280px;
 }
 
+.frequent-queries-text-2 {
+  font-family: Inter;
+  font-size: 14px;
+  font-weight: 400;
+  margin-top: 16px;
+}
+
 @media (max-width: 1024px) {
   .contract-types {
     padding: 30px 20px 20px 20px;

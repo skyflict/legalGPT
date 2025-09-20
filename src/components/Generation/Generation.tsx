@@ -18,6 +18,9 @@ const Generation = () => {
   const [query, setQuery] = useState("");
   const [showOverlay, setShowOverlay] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [openTemplates, setOpenTemplates] = useState<Record<string, boolean>>(
+    {}
+  );
   // const [showHelpText, setShowHelpText] = useState(true);
 
   const documentGeneration = useDocumentGeneration();
@@ -161,6 +164,10 @@ const Generation = () => {
 
   const handleBackToContractType = () => {
     handleCancel();
+  };
+
+  const toggleTemplate = (title: string) => {
+    setOpenTemplates((prev) => ({ ...prev, [title]: !prev[title] }));
   };
 
   const getContractTypeName = (type?: string) => {
@@ -529,44 +536,51 @@ const Generation = () => {
               </div>
 
               <div className="frequent-queries">
-                <div className="frequent-title">Шаблоны запросов:</div>
-                <div className="queries-grid">
-                  {frequentQueries.map((q) => (
-                    <div className="query-button-wrapper" key={q.title}>
-                      <div
-                        className="query-button"
-                        onClick={() => handleQueryClick(q.prompt)}
-                      >
-                        <span className="query-button-text">{q.title}</span>
-                      </div>
+                <div className="frequent-queries-content">
+                  <div className="frequent-queries-text">
+                    <h2 className="frequent-queries-title">
+                      Шаблоны* запросов для составления договора:
+                    </h2>
+                    <div className="frequent-queries-list">
+                      {frequentQueries.map((item, index) => (
+                        <div key={index} className="frequent-queries-item">
+                          <button
+                            className={`frequent-queries-question ${
+                              openTemplates[item.title] ? "active" : ""
+                            }`}
+                            onClick={() => toggleTemplate(item.title)}
+                          >
+                            <span>{item.title}</span>
+                            <Icon
+                              name="arrow"
+                              className="frequent-queries-icon"
+                            />
+                          </button>
+                          <div
+                            className={`frequent-queries-answer ${
+                              openTemplates[item.title]
+                                ? "frequent-queries-answer--open"
+                                : "frequent-queries-answer--closed"
+                            }`}
+                          >
+                            <div className="frequent-queries-answer-content">
+                              {item.prompt}
+                              <button
+                                className="use-template-btn"
+                                onClick={() => handleQueryClick(item.prompt)}
+                              >
+                                Использовать шаблон
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
+                  <div className="frequent-queries-image" />
                 </div>
-              </div>
-
-              <div className="contract-types-section">
-                <div className="example-title">
-                  С какими типами договоров мы работаем:
-                </div>
-                <div className="queries-grid">
-                  {[
-                    "Агентский договор",
-                    "Договор аренды",
-                    "Договор купли-продажи",
-                    "Договор дарения",
-                    "Договор найма жилого помещения",
-                    "Договор хранения",
-                    "Договор оказания услуг",
-                    "Договор займа",
-                  ].map((contractType, index) => (
-                    <div className="query-button-wrapper" key={index}>
-                      <div className="contract-type-item">
-                        <span className="query-button-text">
-                          {contractType}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
+                <div className="frequent-queries-text-2">
+                  *Пока мы работаем только с предложенными типами договоров
                 </div>
               </div>
             </>

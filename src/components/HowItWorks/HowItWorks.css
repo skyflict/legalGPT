@@ -31,8 +31,13 @@
   color: var(--Text-Primary, #1a1a1a);
   width: 100%;
   max-width: 536px;
+  min-width: 536px;
   min-height: 188px;
   box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    min-width: 100%;
+  }
 }
 
 .example-request p {
@@ -162,7 +167,7 @@
   border-radius: var(--Corner-Extra-large, 28px);
   background: #2e2bff;
   width: 720px;
-  height: 168px;
+  height: 126px;
 }
 
 .guarantee-title {
@@ -182,7 +187,7 @@
 
 .guarantee-image {
   width: 224px;
-  height: 168px;
+  height: 126px;
   border-radius: var(--Corner-Extra-large, 28px);
   background: url("../../assets/hands.webp") white center / calc(100% - 50px)
     no-repeat;
@@ -430,7 +435,8 @@
   width: 224px;
   height: 108px;
   border-radius: var(--Corner-Extra-large, 28px);
-  background: url("../../assets/book.webp") white center / contain no-repeat;
+  background: url("../../assets/book.webp") white center / calc(100% - 105px)
+    no-repeat;
   backdrop-filter: blur(10px);
 
   @media (max-width: 768px) {
