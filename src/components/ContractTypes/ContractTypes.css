@@ -9,7 +9,6 @@
 
 .contract-types-content {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   margin-bottom: 40px;
 }
@@ -86,7 +85,6 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-
   z-index: 100;
   color: #000;
   font-family: Jura;
@@ -94,8 +92,10 @@
   font-weight: 700;
   margin-right: 30px;
   border-color: transparent !important;
-  backdrop-filter: blur(10px) !important;
-  margin-top: 30px;
+  margin-top: 80px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 1000px;
+  margin-right: 14px;
 }
 
 .register-link {
@@ -135,7 +135,7 @@
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(10px);
   flex: 1;
-  min-width: 380px;
+  /* min-width: 380px; */
   display: flex;
   align-items: center;
   justify-content: center;

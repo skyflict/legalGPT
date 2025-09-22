@@ -101,7 +101,7 @@
 
 .how-it-works-image {
   width: 348px;
-  height: 188px;
+  height: 195px;
   border-radius: var(--Corner-Extra-large, 28px);
   background: url("../../assets/scales.webp") white center / contain no-repeat;
   backdrop-filter: blur(10px);
@@ -435,7 +435,7 @@
   width: 224px;
   height: 108px;
   border-radius: var(--Corner-Extra-large, 28px);
-  background: url("../../assets/book.webp") white center / calc(100% - 105px)
+  background: url("../../assets/book.webp") white 50% 50% / calc(100% - 115px)
     no-repeat;
   backdrop-filter: blur(10px);
 
@@ -448,7 +448,7 @@
   width: 224px;
   height: 108px;
   border-radius: var(--Corner-Extra-large, 28px);
-  background: url("../../assets/paper.webp") white center / contain no-repeat;
+  background: url("../../assets/paper.webp") white 50% 50% / contain no-repeat;
   backdrop-filter: blur(10px);
 
   @media (max-width: 768px) {

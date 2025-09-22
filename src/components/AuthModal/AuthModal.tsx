@@ -34,8 +34,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [resetStep, setResetStep] = useState<ResetStep>("none");
   const [newPassword, setNewPassword] = useState("");
   const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
-  const [agreedTerms, setAgreedTerms] = useState(false);
   const [agreedPersonal, setAgreedPersonal] = useState(false);
+  const [agreedTerms, setAgreedTerms] = useState(false);
+  const [agreedMarketing, setAgreedMarketing] = useState(false);
 
   const auth = useAuth({ onLogin, onClose });
   const validation = useFormValidation({
@@ -59,8 +60,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setResetStep("none");
     setNewPassword("");
     setNewPasswordConfirm("");
-    setAgreedTerms(false);
     setAgreedPersonal(false);
+    setAgreedTerms(false);
+    setAgreedMarketing(false);
     auth.clearError();
     if ("clearResetFlow" in auth && typeof auth.clearResetFlow === "function") {
       auth.clearResetFlow();
@@ -167,7 +169,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const showAgreements = !isLoginMode && registrationStep === "form";
 
   const isAgreementsAccepted =
-    !showAgreements || (agreedTerms && agreedPersonal);
+    !showAgreements || (agreedPersonal && agreedTerms && agreedMarketing);
 
   return (
     <div className="auth-modal-overlay" onClick={handleClose}>
@@ -381,10 +383,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             {showAgreements && (
               <AgreementCheckbox
                 isLoginMode={isLoginMode}
-                agreedTerms={agreedTerms}
                 agreedPersonal={agreedPersonal}
-                onChangeTerms={setAgreedTerms}
+                agreedTerms={agreedTerms}
+                agreedMarketing={agreedMarketing}
                 onChangePersonal={setAgreedPersonal}
+                onChangeTerms={setAgreedTerms}
+                onChangeMarketing={setAgreedMarketing}
               />
             )}
           </form>

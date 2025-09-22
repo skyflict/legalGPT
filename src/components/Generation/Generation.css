@@ -692,7 +692,6 @@
   height: 148px;
   border-radius: var(--Corner-Extra-large, 28px);
   background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(10px);
 
   @media (max-width: 768px) {
     width: 100%;
@@ -822,10 +821,15 @@
 }
 
 .frequent-queries-answer p {
-  color: #6b7280;
-  line-height: 1.6;
-  font-size: 15px;
-  white-space: pre-line;
+  color: var(--Text-Primary, #1a1a1a);
+  font-family: Inter;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 140%;
+  padding: 0 0 4px 0;
+  transform: translateY(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.1s,
+    opacity 0.3s ease 0.1s;
 }
 
 .use-template-btn {

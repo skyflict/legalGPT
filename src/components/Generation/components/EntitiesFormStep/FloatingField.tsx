@@ -30,7 +30,9 @@ const FloatingField: React.FC<Props> = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -72,12 +74,43 @@ const FloatingField: React.FC<Props> = ({
   const handleOptionSelect = (optionValue: string) => {
     onChange(optionValue);
     setIsDropdownOpen(false);
+    setIsEditing(false);
   };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      setIsDropdownOpen(false);
+      setIsEditing(false);
+      inputRef.current?.blur();
+    } else if (e.key === 'Escape') {
+      setIsDropdownOpen(false);
+      setIsEditing(false);
+      inputRef.current?.blur();
+    }
+  };
+
+  const handleInputFocus = () => {
+    setIsEditing(true);
+    setIsDropdownOpen(true);
+  };
+
 
   const getDisplayValue = () => {
     if (!enumOptions || enumOptions.length === 0) return value;
     const selectedOption = enumOptions.find((opt) => opt.value === value);
-    return selectedOption ? selectedOption.title : value || "Не выбрано";
+    return selectedOption ? selectedOption.title : value || "";
+  };
+
+  const getFilteredOptions = () => {
+    if (!enumOptions || !isEditing || !value) return enumOptions || [];
+    return enumOptions.filter(option =>
+      option.title.toLowerCase().includes(value.toLowerCase()) ||
+      option.value.toLowerCase().includes(value.toLowerCase())
+    );
   };
 
   const getPlaceholderWithExamples = () => {
@@ -212,41 +245,54 @@ const FloatingField: React.FC<Props> = ({
           ref={dropdownRef}
           style={{ position: "relative" }}
         >
-          <button
-            type="button"
-            className={`form-field dropdown-trigger ${
-              isDropdownOpen ? "dropdown-trigger--open" : ""
-            }`}
-            onClick={handleDropdownToggle}
+          <div
             style={{
+              position: "relative",
               display: "flex",
-              justifyContent: "space-between",
               alignItems: "center",
-              width: "100%",
-              textAlign: "left",
-              cursor: "pointer",
-              background: "white",
-              border: "1px solid #e5e7eb",
-              borderRadius: "8px",
-              padding: "12px 16px",
-              fontSize: "14px",
-              color: value ? "#1a1a1a" : "#9ca3af",
             }}
           >
-            <span>{getDisplayValue()}</span>
-            <Icon
-              name="arrow"
-              width={16}
-              height={16}
-              className={`dropdown-arrow ${
-                isDropdownOpen ? "dropdown-arrow--open" : ""
-              }`}
+            <input
+              ref={inputRef}
+              type="text"
+              className="form-field"
+              value={isEditing ? value : getDisplayValue()}
+              onChange={handleInputChange}
+              onFocus={handleInputFocus}
+              onKeyDown={handleKeyDown}
+              placeholder={getPlaceholderWithExamples()}
               style={{
-                transform: isDropdownOpen ? "rotate(180deg)" : "rotate(0deg)",
-                transition: "transform 0.2s ease",
+                paddingRight: "40px",
+                color: value ? "#9ca3af" : "#9ca3af",
+                fontSize: "14px",
               }}
             />
-          </button>
+            <button
+              type="button"
+              onClick={handleDropdownToggle}
+              style={{
+                position: "absolute",
+                right: "12px",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "4px",
+              }}
+            >
+              <Icon
+                name="arrow"
+                width={16}
+                height={16}
+                style={{
+                  transform: isDropdownOpen ? "rotate(180deg)" : "rotate(0deg)",
+                  transition: "transform 0.2s ease",
+                }}
+              />
+            </button>
+          </div>
 
           {isDropdownOpen && (
             <div
@@ -266,7 +312,7 @@ const FloatingField: React.FC<Props> = ({
                 boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
               }}
             >
-              {!value && (
+              {!value && !isEditing && (
                 <div
                   className="dropdown-item"
                   onClick={() => handleOptionSelect("")}
@@ -287,7 +333,7 @@ const FloatingField: React.FC<Props> = ({
                   Не выбрано
                 </div>
               )}
-              {enumOptions.map((option) => (
+              {(isEditing ? getFilteredOptions() : enumOptions).map((option) => (
                 <div
                   key={option.value}
                   className="dropdown-item"
@@ -313,6 +359,28 @@ const FloatingField: React.FC<Props> = ({
                   {option.title}
                 </div>
               ))}
+              {isEditing && value && !enumOptions.find(opt => opt.value === value) && (
+                <div
+                  className="dropdown-item"
+                  onClick={() => handleOptionSelect(value)}
+                  style={{
+                    padding: "12px 16px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    color: "#4f46e5",
+                    borderBottom: "1px solid #f3f4f6",
+                    fontWeight: "500",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = "#f9fafb";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "white";
+                  }}
+                >
+                  Использовать "{value}"
+                </div>
+              )}
             </div>
           )}
         </div>

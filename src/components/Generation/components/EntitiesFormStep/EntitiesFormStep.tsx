@@ -212,8 +212,14 @@ const EntitiesFormStep: React.FC<Props> = ({
                             }`}
                           />
                         </button>
-                        {openOptionalGroups[group.name] && (
-                          <div className={styles.additional}>
+                        <div
+                          className={`${styles.spoilerContent} ${
+                            openOptionalGroups[group.name]
+                              ? styles["spoilerContent--open"]
+                              : styles["spoilerContent--closed"]
+                          }`}
+                        >
+                          <div className={`${styles.additional} ${styles.spoilerContentInner}`}>
                             {optionalInGroup.map((fieldName) => {
                               const fieldProps = allFields[fieldName] || {};
                               const defaultValue = fieldProps.default || "";
@@ -233,7 +239,7 @@ const EntitiesFormStep: React.FC<Props> = ({
                               );
                             })}
                           </div>
-                        )}
+                        </div>
                       </div>
                     );
                   })}

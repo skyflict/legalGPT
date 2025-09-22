@@ -6,12 +6,13 @@ import Modal from "../../../Modal/Modal";
 type Props = {
   documentName: string;
   downloadUrl?: string;
+  onStartNew?: () => void;
 };
 
 const FEEDBACK_FORM_URL =
   "https://forms.yandex.ru/cloud/68bab2914936399c60c1bac5/?page=1";
 
-const FinalResultStep: React.FC<Props> = ({ documentName, downloadUrl }) => {
+const FinalResultStep: React.FC<Props> = ({ documentName, downloadUrl, onStartNew }) => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   // Модалка фидбека открывается после нажатия на скачивание
@@ -51,6 +52,16 @@ const FinalResultStep: React.FC<Props> = ({ documentName, downloadUrl }) => {
           className="download-icon"
         />
       </button>
+
+      {onStartNew && (
+        <button
+          className="action-button action-button--secondary"
+          onClick={onStartNew}
+          style={{ marginTop: "16px" }}
+        >
+          Создать новый документ
+        </button>
+      )}
 
       <Modal
         isOpen={isFeedbackOpen}

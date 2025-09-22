@@ -61,3 +61,31 @@
 .open {
   transform: rotate(180deg);
 }
+
+.spoilerContent {
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.spoilerContent--closed {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+}
+
+.spoilerContent--open {
+  max-height: 1000px;
+  opacity: 1;
+  margin-top: 16px;
+}
+
+.spoilerContentInner {
+  transform: translateY(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.1s,
+    opacity 0.3s ease 0.1s;
+}
+
+.spoilerContent--closed .spoilerContentInner {
+  transform: translateY(-10px);
+  transition-delay: 0s;
+}
