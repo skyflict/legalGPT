@@ -29,6 +29,7 @@ const FloatingField: React.FC<Props> = ({
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -50,6 +51,20 @@ const FloatingField: React.FC<Props> = ({
     };
   }, [isDropdownOpen]);
 
+  // Отслеживаем размер экрана для адаптивного тултипа
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
+
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -70,6 +85,91 @@ const FloatingField: React.FC<Props> = ({
       return `Например: ${examples.join(", ")}`;
     }
     return placeholder ?? label;
+  };
+
+  const renderTooltip = (content: string) => {
+    if (isMobile) {
+      // На мобильных устройствах показываем тултип слева от иконки
+      const tooltipStyle = {
+        position: "absolute" as const,
+        top: "0",
+        right: "100%",
+        marginRight: "8px",
+        backgroundColor: "#1f2937",
+        color: "white",
+        padding: "8px 12px",
+        borderRadius: "6px",
+        fontSize: "12px",
+        lineHeight: "1.4",
+        whiteSpace: "normal" as const,
+        maxWidth: "180px",
+        width: "180px",
+        zIndex: 1000,
+        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+        wordWrap: "break-word" as const,
+        textAlign: "left" as const,
+      };
+
+      const arrowStyle = {
+        position: "absolute" as const,
+        top: "8px",
+        right: "-4px",
+        width: 0,
+        height: 0,
+        borderTop: "4px solid transparent",
+        borderBottom: "4px solid transparent",
+        borderLeft: "4px solid #1f2937",
+      };
+
+      return (
+        <div style={tooltipStyle}>
+          {content}
+          <div style={arrowStyle} />
+        </div>
+      );
+    } else {
+      // На десктопе используем обычное позиционирование
+      const tooltipStyle = {
+        position: "absolute" as const,
+        top: "100%",
+        left: "50%",
+        transform: "translateX(-50%)",
+        backgroundColor: "#1f2937",
+        color: "white",
+        padding: "8px 12px",
+        borderRadius: "6px",
+        fontSize: "12px",
+        lineHeight: "1.4",
+        whiteSpace: "normal" as const,
+        maxWidth: "280px",
+        width: "max-content",
+        minWidth: "120px",
+        zIndex: 1000,
+        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+        marginTop: "4px",
+        wordWrap: "break-word" as const,
+        textAlign: "left" as const,
+      };
+
+      const arrowStyle = {
+        position: "absolute" as const,
+        top: "-4px",
+        left: "50%",
+        transform: "translateX(-50%)",
+        width: 0,
+        height: 0,
+        borderLeft: "4px solid transparent",
+        borderRight: "4px solid transparent",
+        borderBottom: "4px solid #1f2937",
+      };
+
+      return (
+        <div style={tooltipStyle}>
+          {content}
+          <div style={arrowStyle} />
+        </div>
+      );
+    }
   };
 
   if (enumOptions && enumOptions.length > 0) {
@@ -103,41 +203,7 @@ const FloatingField: React.FC<Props> = ({
                 height={16}
                 style={{ cursor: "help" }}
               />
-              {showTooltip && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "100%",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    backgroundColor: "#1f2937",
-                    color: "white",
-                    padding: "8px 12px",
-                    borderRadius: "6px",
-                    fontSize: "12px",
-                    whiteSpace: "nowrap",
-                    maxWidth: "300px",
-                    zIndex: 1000,
-                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                    marginTop: "4px",
-                  }}
-                >
-                  {description}
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "-4px",
-                      left: "50%",
-                      transform: "translateX(-50%)",
-                      width: 0,
-                      height: 0,
-                      borderLeft: "4px solid transparent",
-                      borderRight: "4px solid transparent",
-                      borderBottom: "4px solid #1f2937",
-                    }}
-                  />
-                </div>
-              )}
+              {showTooltip && renderTooltip(description)}
             </div>
           )}
         </div>
@@ -281,41 +347,7 @@ const FloatingField: React.FC<Props> = ({
               height={16}
               style={{ cursor: "help" }}
             />
-            {showTooltip && (
-              <div
-                style={{
-                  position: "absolute",
-                  top: "100%",
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  backgroundColor: "#1f2937",
-                  color: "white",
-                  padding: "8px 12px",
-                  borderRadius: "6px",
-                  fontSize: "12px",
-                  whiteSpace: "nowrap",
-                  maxWidth: "300px",
-                  zIndex: 1000,
-                  boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                  marginTop: "4px",
-                }}
-              >
-                {description}
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "-4px",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    width: 0,
-                    height: 0,
-                    borderLeft: "4px solid transparent",
-                    borderRight: "4px solid transparent",
-                    borderBottom: "4px solid #1f2937",
-                  }}
-                />
-              </div>
-            )}
+            {showTooltip && renderTooltip(description)}
           </div>
         )}
       </div>
