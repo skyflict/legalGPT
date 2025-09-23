@@ -162,6 +162,7 @@ function App() {
               element={
                 <HomePage
                   onOpenAuthModal={handleOpenAuthModal}
+                  onOpenRegisterModal={handleOpenRegisterModal}
                   isLoggedIn={isLoggedIn}
                 />
               }
@@ -175,6 +176,7 @@ function App() {
                 ) : (
                   <HomePage
                     onOpenAuthModal={handleOpenAuthModal}
+                    onOpenRegisterModal={handleOpenRegisterModal}
                     isLoggedIn={isLoggedIn}
                   />
                 )
@@ -189,6 +191,7 @@ function App() {
                 ) : (
                   <HomePage
                     onOpenAuthModal={handleOpenAuthModal}
+                    onOpenRegisterModal={handleOpenRegisterModal}
                     isLoggedIn={isLoggedIn}
                   />
                 )

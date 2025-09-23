@@ -7,14 +7,21 @@ import FAQ from "../components/FAQ/FAQ";
 
 interface Props {
   onOpenAuthModal: () => void;
+  onOpenRegisterModal: () => void;
   isLoggedIn: boolean;
 }
 
-const HomePage: React.FC<Props> = ({ onOpenAuthModal, isLoggedIn }) => {
+const HomePage: React.FC<Props> = ({
+  onOpenAuthModal,
+  onOpenRegisterModal,
+  isLoggedIn,
+}) => {
   return (
     <>
       {!isLoggedIn && <Hero onOpenAuthModal={onOpenAuthModal} />}
-      {!isLoggedIn && <ContractTypes />}
+      {!isLoggedIn && (
+        <ContractTypes onOpenRegisterModal={onOpenRegisterModal} />
+      )}
       <Features isLoggedIn={isLoggedIn} onOpenAuthModal={onOpenAuthModal} />
       <HowItWorks isLoggedIn={isLoggedIn} onOpenAuthModal={onOpenAuthModal} />
       <FAQ />

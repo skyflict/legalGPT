@@ -52,7 +52,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="header__content">
           <div className="header__left">
             {isLoggedIn && (
-              <button 
+              <button
                 className="sidebar-toggle"
                 onClick={onToggleSidebar}
                 aria-label="Переключить сайдбар"

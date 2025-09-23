@@ -115,7 +115,11 @@ const QueryInputPage: React.FC = () => {
     } else if (documentGeneration.currentStep === "completed") {
       navigate("/generation/final");
     }
-  }, [documentGeneration.currentStep, documentGeneration.status?.stage, navigate]);
+  }, [
+    documentGeneration.currentStep,
+    documentGeneration.status?.stage,
+    navigate,
+  ]);
 
   // Проверяем состояние при монтировании компонента
   React.useEffect(() => {
@@ -170,13 +174,11 @@ const QueryInputPage: React.FC = () => {
             <div className="example-section">
               <div className="example-title">Пример запроса:</div>
               <div className="example-text">
-                Привет! Составь, пожалуйста, договор оказания услуг, по которому
-                я, как индивидуальный предприниматель Максим Игоревич Смирнов,
-                буду проводить уроки английского языка. Стоимость одного занятия
-                — 3 000 рублей, продолжительность — 60 минут (1 час), при этом
-                точное время начала занятия будет определяться за 2 дня до
-                занятия. Оплата моих услуг будет осуществляться безналичным
-                способом после проведения занятия
+                Привет! Помоги составить договор оказания услуг: я, Максим
+                Игоревич Смирнов, оказываю услуги репетитора. Стоимость одного
+                занятия 3 000 рублей, продолжительность 1 час. Время начала
+                занятия согласовывается за 2 дня до урока. Оплата по безналу
+                после проведения.
               </div>
             </div>
 

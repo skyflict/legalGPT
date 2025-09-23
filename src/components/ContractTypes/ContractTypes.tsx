@@ -1,9 +1,16 @@
+import React from "react";
 import "./ContractTypes.css";
 
 import Button from "../Button";
 import Icon from "../Icon/Icon";
 
-const ContractTypes = () => {
+interface ContractTypesProps {
+  onOpenRegisterModal: () => void;
+}
+
+const ContractTypes: React.FC<ContractTypesProps> = ({
+  onOpenRegisterModal,
+}) => {
   const contractTypes = [
     { id: 1, title: "Агентский договор", isActive: false },
     { id: 2, title: "Договор аренды", isActive: true },
@@ -23,7 +30,7 @@ const ContractTypes = () => {
             <a href="#" className="register-link">
               Зарегистрируйтесь
             </a>
-            , чтобы воспользоваться готовыми шаблонами документов:
+            , чтобы воспользоваться нейро-конструктором документов
           </div>
 
           <div className="section-subtitle-2-container">
@@ -57,6 +64,8 @@ const ContractTypes = () => {
             <div
               key={contract.id}
               className={`contract-card ${contract.isActive ? "active" : ""}`}
+              onClick={onOpenRegisterModal}
+              style={{ cursor: "pointer" }}
             >
               <span className="contract-title">{contract.title}</span>
             </div>
@@ -67,6 +76,8 @@ const ContractTypes = () => {
               className={`contract-card duplicate ${
                 contract.isActive ? "active" : ""
               }`}
+              onClick={onOpenRegisterModal}
+              style={{ cursor: "pointer" }}
             >
               <span className="contract-title">{contract.title}</span>
             </div>
