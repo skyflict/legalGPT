@@ -72,6 +72,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  align-items: flex-end;
 }
 .history-btn {
   display: inline-flex;
@@ -87,6 +88,18 @@
   font-size: 12px;
   cursor: pointer;
 }
+.history-btn--primary {
+  background: #4f46e5;
+  color: #fff;
+  font-weight: 400;
+  min-width: 100px;
+  transition: background-color 0.2s;
+}
+
+.history-btn--primary:hover {
+  background: #4338ca;
+}
+
 .history-btn--icon {
   width: 40px;
   height: 40px;

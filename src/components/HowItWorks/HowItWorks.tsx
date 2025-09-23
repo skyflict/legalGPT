@@ -34,15 +34,16 @@ const HowItWorks = ({
           <div className="how-it-works-step">
             <div className="how-it-works-step-number">1</div>
             <div className="how-it-works-step-title">
-              Определяем, какой тип договора вам нужен
+              Определяем, какой тип договора вам нужен, проверяем соответствие
+              запроса законодательству и находим возможные нарушения
             </div>
           </div>
 
           <div className="how-it-works-step-2">
             <div className="how-it-works-step-number">2</div>
             <div className="how-it-works-step-title">
-              Проверяем соответствие запроса законодательству и находим
-              возможные нарушения
+              Распознаём ключевые данные в вашем запросе и при необходимости
+              уточняем недостающую информацию
             </div>
           </div>
         </div>
@@ -51,8 +52,8 @@ const HowItWorks = ({
           <div className="how-it-works-step-3">
             <div className="how-it-works-step-number">3</div>
             <div className="how-it-works-step-title">
-              Распознаём ключевые данные в вашем запросе и при необходимости
-              уточняем недостающую информацию
+              Генерируем готовый договор с помощью искусственного интеллекта и
+              шаблонов, разработанных опытными юристами
             </div>
           </div>
 
@@ -65,8 +66,8 @@ const HowItWorks = ({
           <div className="how-it-works-step-3">
             <div className="how-it-works-step-number">4</div>
             <div className="how-it-works-step-title">
-              Генерируем готовый договор с помощью искусственного интеллекта и
-              шаблонов, разработанных опытными юристами
+              Мгновенно подключаем юриста сервиса для анализа и индивидуальной
+              проработки вашего кейса по запросу
             </div>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Icon from "../Icon";
 import "./HistoryModal.css";
 import { apiRequest, API_ENDPOINTS } from "../../utils/api";
@@ -45,6 +46,7 @@ function formatDate(iso: string) {
 }
 
 const HistoryPage = () => {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [items, setItems] = useState<DocumentItem[]>([]);
@@ -77,6 +79,17 @@ const HistoryPage = () => {
 
   const toggleRow = (id: string) => {
     setExpandedId((prev) => (prev === id ? null : id));
+  };
+
+  const handleContinueGeneration = (doc: DocumentItem) => {
+    // Переход на страницу генерации с передачей ID документа
+    navigate(`/generation?document=${doc.id}`);
+  };
+
+  const isGenerationIncomplete = (stage: string): boolean => {
+    // Документ не завершен, если статус не "Сгенерирован", "Подтверждён" и не является финальным состоянием
+    const completedStages = ["DOC_GENERATED", "DOC_APPROVED", "COMPLETED", "FINISHED"];
+    return !completedStages.includes(stage);
   };
 
   return (
@@ -146,6 +159,15 @@ const HistoryPage = () => {
                     </div>
                   </div>
                   <div className="history-actions">
+                    {isGenerationIncomplete(doc.stage) && (
+                      <button
+                        className="history-btn history-btn--primary"
+                        onClick={() => handleContinueGeneration(doc)}
+                        title="Продолжить генерацию"
+                      >
+                        Продолжить
+                      </button>
+                    )}
                     {doc.document_url && (
                       <button
                         className="history-btn history-btn--icon"

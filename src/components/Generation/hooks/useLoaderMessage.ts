@@ -11,6 +11,8 @@ export function useLoaderMessage(isLoading: boolean, status?: Status): string {
       case "ENTITIES_EXTRACTING":
       case "ENTITIES_EXCTRACTED":
         return "Извлекаем необходимые данные...";
+      case "ENTITIES_PROVIDED":
+        return "Подготавливаем генерацию документа...";
       case "DOC_GENERATING":
       case "DOC_GENERATED":
         return "Генерируем документ...";

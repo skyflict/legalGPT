@@ -6,6 +6,7 @@ import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import AuthModal from "./components/AuthModal/AuthModal";
 import Sidebar from "./components/Sidebar/Sidebar";
+import Loader from "./components/Loader/Loader";
 
 import HomePage from "./pages/HomePage";
 import HistoryPage from "./pages/HistoryPage";
@@ -24,6 +25,7 @@ function App() {
     "login"
   );
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [userEmail, setUserEmail] = useState("");
   const [userData, setUserData] = useState<UserData | null>(null);
   const navigate = useNavigate();
@@ -37,6 +39,8 @@ function App() {
       setIsLoggedIn(true);
       setUserEmail(savedEmail);
       fetchUserData();
+    } else {
+      setIsLoading(false);
     }
   }, []);
 
@@ -46,6 +50,8 @@ function App() {
       setUserData(data);
     } catch (error) {
       console.error("Ошибка при получении данных пользователя:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -132,6 +138,27 @@ function App() {
     }
     return "generation";
   };
+
+  if (isLoading) {
+    return (
+      <div className="app">
+        <Header
+          onOpenAuthModal={handleOpenAuthModal}
+          onOpenRegisterModal={handleOpenRegisterModal}
+          isLoggedIn={isLoggedIn}
+          userEmail={userEmail}
+          onLogout={handleLogout}
+          onToggleSidebar={toggleSidebar}
+        />
+        <div className="app-layout">
+          <main className="main-content">
+            <Loader isVisible={true} message="Загрузка..." />
+          </main>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="app">

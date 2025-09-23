@@ -82,11 +82,11 @@ const FloatingField: React.FC<Props> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       setIsDropdownOpen(false);
       setIsEditing(false);
       inputRef.current?.blur();
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       setIsDropdownOpen(false);
       setIsEditing(false);
       inputRef.current?.blur();
@@ -98,7 +98,6 @@ const FloatingField: React.FC<Props> = ({
     setIsDropdownOpen(true);
   };
 
-
   const getDisplayValue = () => {
     if (!enumOptions || enumOptions.length === 0) return value;
     const selectedOption = enumOptions.find((opt) => opt.value === value);
@@ -107,9 +106,10 @@ const FloatingField: React.FC<Props> = ({
 
   const getFilteredOptions = () => {
     if (!enumOptions || !isEditing || !value) return enumOptions || [];
-    return enumOptions.filter(option =>
-      option.title.toLowerCase().includes(value.toLowerCase()) ||
-      option.value.toLowerCase().includes(value.toLowerCase())
+    return enumOptions.filter(
+      (option) =>
+        option.title.toLowerCase().includes(value.toLowerCase()) ||
+        option.value.toLowerCase().includes(value.toLowerCase())
     );
   };
 
@@ -225,7 +225,9 @@ const FloatingField: React.FC<Props> = ({
             <div
               style={{
                 position: "relative",
-                display: "inline-block",
+                display: "inline-flex",
+                alignItems: "center",
+                flexShrink: 0,
               }}
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
@@ -234,7 +236,7 @@ const FloatingField: React.FC<Props> = ({
                 name="help"
                 width={16}
                 height={16}
-                style={{ cursor: "help" }}
+                style={{ cursor: "help", flexShrink: 0 }}
               />
               {showTooltip && renderTooltip(description)}
             </div>
@@ -333,54 +335,58 @@ const FloatingField: React.FC<Props> = ({
                   Не выбрано
                 </div>
               )}
-              {(isEditing ? getFilteredOptions() : enumOptions).map((option) => (
-                <div
-                  key={option.value}
-                  className="dropdown-item"
-                  onClick={() => handleOptionSelect(option.value)}
-                  style={{
-                    padding: "12px 16px",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                    color: "#1a1a1a",
-                    borderBottom: "1px solid #f3f4f6",
-                    background: value === option.value ? "#f3f4f6" : "white",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (value !== option.value) {
-                      e.currentTarget.style.background = "#f9fafb";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background =
-                      value === option.value ? "#f3f4f6" : "white";
-                  }}
-                >
-                  {option.title}
-                </div>
-              ))}
-              {isEditing && value && !enumOptions.find(opt => opt.value === value) && (
-                <div
-                  className="dropdown-item"
-                  onClick={() => handleOptionSelect(value)}
-                  style={{
-                    padding: "12px 16px",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                    color: "#4f46e5",
-                    borderBottom: "1px solid #f3f4f6",
-                    fontWeight: "500",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "#f9fafb";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "white";
-                  }}
-                >
-                  Использовать "{value}"
-                </div>
+              {(isEditing ? getFilteredOptions() : enumOptions).map(
+                (option) => (
+                  <div
+                    key={option.value}
+                    className="dropdown-item"
+                    onClick={() => handleOptionSelect(option.value)}
+                    style={{
+                      padding: "12px 16px",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      color: "#1a1a1a",
+                      borderBottom: "1px solid #f3f4f6",
+                      background: value === option.value ? "#f3f4f6" : "white",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (value !== option.value) {
+                        e.currentTarget.style.background = "#f9fafb";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background =
+                        value === option.value ? "#f3f4f6" : "white";
+                    }}
+                  >
+                    {option.title}
+                  </div>
+                )
               )}
+              {isEditing &&
+                value &&
+                !enumOptions.find((opt) => opt.value === value) && (
+                  <div
+                    className="dropdown-item"
+                    onClick={() => handleOptionSelect(value)}
+                    style={{
+                      padding: "12px 16px",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      color: "#4f46e5",
+                      borderBottom: "1px solid #f3f4f6",
+                      fontWeight: "500",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "#f9fafb";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "white";
+                    }}
+                  >
+                    Использовать "{value}"
+                  </div>
+                )}
             </div>
           )}
         </div>
@@ -405,7 +411,12 @@ const FloatingField: React.FC<Props> = ({
         </label>
         {description && (
           <div
-            style={{ position: "relative", display: "inline-block" }}
+            style={{
+              position: "relative",
+              display: "inline-flex",
+              alignItems: "center",
+              flexShrink: 0,
+            }}
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}
           >
@@ -413,7 +424,7 @@ const FloatingField: React.FC<Props> = ({
               name="help"
               width={16}
               height={16}
-              style={{ cursor: "help" }}
+              style={{ cursor: "help", flexShrink: 0 }}
             />
             {showTooltip && renderTooltip(description)}
           </div>

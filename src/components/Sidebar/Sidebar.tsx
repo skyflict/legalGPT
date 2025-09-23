@@ -201,7 +201,7 @@ const Sidebar = ({
                         }
                       >
                         <td>{user.email}</td>
-                        <td>{user.balance} LC</td>
+                        <td>{user.balance} Ю</td>
                         <td>
                           <button
                             onClick={() => handleUserSelect(user)}

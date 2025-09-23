@@ -73,7 +73,7 @@ export const Header: React.FC<HeaderProps> = ({
                         className="user-email"
                         style={{ cursor: "default" }}
                       >
-                        Баланс: {userData.balance} LC
+                        Баланс: {userData.balance} Ю
                       </span>
                       {/* <span className="dropdown__arrow">
                         <svg

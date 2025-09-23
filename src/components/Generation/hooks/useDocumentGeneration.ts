@@ -96,6 +96,45 @@ export const useDocumentGeneration = () => {
             return;
           }
 
+          // Если статус ENTITIES_PROVIDED, это означает что данные уже предоставлены
+          // и пользователь может их отредактировать - показываем форму
+          if (response.stage === "ENTITIES_PROVIDED") {
+            // Если нет required_user_input, создаем синтетическую схему на основе существующих entities
+            if (!response.required_user_input && response.context?.entities) {
+              const syntheticSchema = {
+                type: "object",
+                properties: {} as Record<string, any>,
+                required: [] as string[],
+                additionalProperties: false,
+              };
+
+              // Создаем схему на основе существующих данных
+              Object.entries(response.context.entities).forEach(([key, value]) => {
+                syntheticSchema.properties[key] = {
+                  type: "string",
+                  title: key,
+                  default: String(value),
+                };
+                // Все поля считаем обязательными
+                syntheticSchema.required.push(key);
+              });
+
+              // Добавляем синтетический required_user_input
+              response.required_user_input = {
+                event_type: "ENTITIES_PROVIDED",
+                schema: syntheticSchema,
+              };
+            }
+
+            setState((prev) => ({
+              ...prev,
+              currentStep: "waiting_input",
+              isLoading: false,
+            }));
+            stopPolling();
+            return;
+          }
+
           // Если запрос нарушает законодательство — останавливаемся
           if (response.stage === "LAW_VIOLATED") {
             setState((prev) => ({
@@ -216,6 +255,32 @@ export const useDocumentGeneration = () => {
     [state.documentId, startPolling]
   );
 
+  const continueGeneration = useCallback(
+    async (documentId: string) => {
+      setState((prev) => ({
+        ...prev,
+        isLoading: true,
+        error: null,
+        currentStep: "generating",
+        documentId,
+      }));
+
+      try {
+        // Получаем статус документа и начинаем поллинг
+        await startPolling(documentId);
+      } catch (error) {
+        console.error("Continue generation error:", error);
+        setState((prev) => ({
+          ...prev,
+          error: "Ошибка при продолжении генерации",
+          currentStep: "error",
+          isLoading: false,
+        }));
+      }
+    },
+    [startPolling]
+  );
+
   const reset = useCallback(() => {
     stopPolling();
     setState({
@@ -235,6 +300,7 @@ export const useDocumentGeneration = () => {
     ...state,
     startGeneration,
     submitUserInput,
+    continueGeneration,
     reset,
     clearError,
   };

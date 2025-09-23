@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import Icon from "../Icon/Icon";
 import Loader from "../Loader/Loader";
 import "./Generation.css";
@@ -13,9 +14,11 @@ import { useFormSchema } from "./hooks/useFormSchema";
 import { useUserForm, useFormValidity } from "./hooks/useUserForm";
 import { useLoaderMessage } from "./hooks/useLoaderMessage";
 import { useDocumentTypes } from "./hooks/useDocumentTypes";
+import { useLatestIncompleteDocument } from "../../hooks/useLatestIncompleteDocument";
 import Modal from "../Modal";
 
 const Generation = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState("");
   const [showOverlay, setShowOverlay] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -28,6 +31,7 @@ const Generation = () => {
 
   const documentGeneration = useDocumentGeneration();
   const { documentTypes, getDocumentTypeById } = useDocumentTypes();
+  const { latestDocument } = useLatestIncompleteDocument();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -42,7 +46,8 @@ const Generation = () => {
   const showContractSelect = showManualContractSelect;
   const showEntitiesForm =
     documentGeneration.currentStep === "waiting_input" &&
-    documentGeneration.status?.stage === "ENTITIES_EXCTRACTED" &&
+    (documentGeneration.status?.stage === "ENTITIES_EXCTRACTED" ||
+     documentGeneration.status?.stage === "ENTITIES_PROVIDED") &&
     !isLoading;
   const showFinalResult = documentGeneration.currentStep === "completed";
 
@@ -161,12 +166,36 @@ const Generation = () => {
     });
   };
 
+  const handleContinueGeneration = () => {
+    if (latestDocument) {
+      documentGeneration.continueGeneration(latestDocument.id);
+      // Очищаем URL параметр
+      setSearchParams({});
+    }
+  };
+
+  // Обработка URL параметра document для прямого продолжения генерации
+  useEffect(() => {
+    const documentId = searchParams.get("document");
+    if (documentId && documentGeneration.currentStep === "idle") {
+      documentGeneration.continueGeneration(documentId);
+      // Очищаем URL параметр
+      setSearchParams({});
+    }
+  }, [
+    searchParams,
+    documentGeneration.currentStep,
+    documentGeneration.continueGeneration,
+    setSearchParams,
+  ]);
+
   const { requiredFields, optionalFields, allFields, groups } = useFormSchema(
     documentGeneration.status as any
   );
   const { values: userFormValues, setField: setUserFormField } = useUserForm(
     allFields as any,
-    showEntitiesForm
+    showEntitiesForm,
+    documentGeneration.status?.context?.entities
   );
   const formIsValid = useFormValidity(requiredFields, userFormValues);
 
@@ -328,6 +357,72 @@ const Generation = () => {
                 onOverlayClick={handleOverlayClick}
               />
             </div>
+
+            {/* Кнопка продолжения генерации */}
+            {!isLoading &&
+              !showContractType &&
+              !showContractSelect &&
+              !showEntitiesForm &&
+              !showFinalResult &&
+              latestDocument &&
+              documentGeneration.currentStep === "idle" && (
+                <div className="continue-generation-section">
+                  <div className="continue-generation-section-content">
+                    <div style={{ flex: "1", minWidth: "0" }}>
+                      <div
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: "500",
+                          color: "#1f2937",
+                          marginBottom: "4px",
+                        }}
+                      >
+                        У вас есть незавершенная генерация
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "12px",
+                          color: "#6b7280",
+                          wordBreak: "break-word",
+                          lineHeight: "1.4",
+                        }}
+                      >
+                        {latestDocument.context?.query
+                          ? `"${latestDocument.context.query.slice(0, 80)}${
+                              latestDocument.context.query.length > 80
+                                ? "..."
+                                : ""
+                            }"`
+                          : "Продолжите генерацию документа"}
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleContinueGeneration}
+                      style={{
+                        background: "#4f46e5",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "8px",
+                        padding: "10px 20px",
+                        fontSize: "14px",
+                        fontWeight: "500",
+                        cursor: "pointer",
+                        transition: "background-color 0.2s",
+                        whiteSpace: "nowrap",
+                        flexShrink: 0,
+                      }}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.background = "#4338ca";
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.background = "#4f46e5";
+                      }}
+                    >
+                      Продолжить
+                    </button>
+                  </div>
+                </div>
+              )}
 
             {/* <HelpText visible={showHelpText} onClose={handleCloseHelpText} /> */}
 

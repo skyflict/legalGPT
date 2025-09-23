@@ -27,7 +27,7 @@ const ContractTypes: React.FC<ContractTypesProps> = ({
       <div className="container">
         <div className="contract-types-content">
           <div className="section-subtitle">
-            <a href="#" className="register-link">
+            <a href="#" className="register-link" onClick={onOpenRegisterModal}>
               Зарегистрируйтесь
             </a>
             , чтобы воспользоваться нейро-конструктором документов

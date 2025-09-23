@@ -32,7 +32,7 @@
   width: 100%;
   max-width: 536px;
   min-width: 536px;
-  min-height: 188px;
+  min-height: 128px;
   box-sizing: border-box;
 
   @media (max-width: 768px) {
@@ -101,9 +101,10 @@
 
 .how-it-works-image {
   width: 348px;
-  height: 195px;
+  height: 153px;
   border-radius: var(--Corner-Extra-large, 28px);
-  background: url("../../assets/scales.webp") white center / contain no-repeat;
+  background: url("../../assets/scales.webp") white center / calc(100% - 130px)
+    no-repeat;
   backdrop-filter: blur(10px);
   margin-top: 76px;
 }
@@ -362,7 +363,7 @@
 }
 
 .how-it-works-step {
-  width: 329px;
+  width: 540px;
   padding: 24px;
   height: 108px;
   display: flex;

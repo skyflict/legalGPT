@@ -44,8 +44,33 @@
   margin-bottom: 32px;
 }
 
-.generation-form {
+.continue-generation-section {
+  margin: 16px 0;
+  padding: 16px;
+  background: rgba(79, 70, 229, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(79, 70, 229, 0.1);
+  max-width: 100%;
+  min-width: 916px;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 130px;
+  }
+}
+
+.continue-generation-section-content {
   display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 /* Адаптив: складываем инпут и HelpText в колонку, чтобы HelpText всегда был виден */
