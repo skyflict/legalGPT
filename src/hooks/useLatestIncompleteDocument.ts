@@ -16,13 +16,24 @@ type DocumentItem = {
 type HistoryResponse = { documents: DocumentItem[] };
 
 export const useLatestIncompleteDocument = () => {
-  const [latestDocument, setLatestDocument] = useState<DocumentItem | null>(null);
+  const [latestDocument, setLatestDocument] = useState<DocumentItem | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const isGenerationIncomplete = (stage: string): boolean => {
-    const completedStages = ["DOC_GENERATED", "DOC_APPROVED", "COMPLETED", "FINISHED"];
-    return !completedStages.includes(stage);
+    const completedStages = [
+      "DOC_GENERATED",
+      "DOC_APPROVED",
+      "COMPLETED",
+      "FINISHED",
+    ];
+    const cannotContinueStages = ["LAW_VIOLATED"];
+
+    return (
+      !completedStages.includes(stage) && !cannotContinueStages.includes(stage)
+    );
   };
 
   const fetchLatestIncompleteDocument = async () => {
@@ -30,18 +41,21 @@ export const useLatestIncompleteDocument = () => {
     setError(null);
 
     try {
-      const response = (await apiRequest(API_ENDPOINTS.DOCUMENT_LIST)) as HistoryResponse;
+      const response = (await apiRequest(
+        API_ENDPOINTS.DOCUMENT_LIST
+      )) as HistoryResponse;
       const documents = response.documents || [];
 
       // Фильтруем незавершенные документы
-      const incompleteDocuments = documents.filter(doc =>
+      const incompleteDocuments = documents.filter((doc) =>
         isGenerationIncomplete(doc.stage)
       );
 
       if (incompleteDocuments.length > 0) {
         // Сортируем по дате модификации (последний модифицированный)
-        const sortedDocuments = incompleteDocuments.sort((a, b) =>
-          new Date(b.modified_at).getTime() - new Date(a.created_at).getTime()
+        const sortedDocuments = incompleteDocuments.sort(
+          (a, b) =>
+            new Date(b.modified_at).getTime() - new Date(a.created_at).getTime()
         );
 
         setLatestDocument(sortedDocuments[0]);

@@ -47,7 +47,7 @@ const Generation = () => {
   const showEntitiesForm =
     documentGeneration.currentStep === "waiting_input" &&
     (documentGeneration.status?.stage === "ENTITIES_EXCTRACTED" ||
-     documentGeneration.status?.stage === "ENTITIES_PROVIDED") &&
+      documentGeneration.status?.stage === "ENTITIES_PROVIDED") &&
     !isLoading;
   const showFinalResult = documentGeneration.currentStep === "completed";
 

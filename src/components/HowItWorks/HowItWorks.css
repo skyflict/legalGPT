@@ -100,7 +100,7 @@
 }
 
 .how-it-works-image {
-  width: 348px;
+  width: 320px;
   height: 153px;
   border-radius: var(--Corner-Extra-large, 28px);
   background: url("../../assets/scales.webp") white center / calc(100% - 130px)

@@ -35,6 +35,7 @@ const stageNameMap: Record<string, string> = {
   DOC_GENERATED: "Сгенерирован",
   DOC_APPROVED: "Подтверждён",
   PROCESSING: "Обработка",
+  LAW_VIOLATED: "Нарушение закона, генерация невозможна",
 };
 
 function formatDate(iso: string) {
@@ -88,8 +89,18 @@ const HistoryPage = () => {
 
   const isGenerationIncomplete = (stage: string): boolean => {
     // Документ не завершен, если статус не "Сгенерирован", "Подтверждён" и не является финальным состоянием
-    const completedStages = ["DOC_GENERATED", "DOC_APPROVED", "COMPLETED", "FINISHED"];
-    return !completedStages.includes(stage);
+    // Также исключаем LAW_VIOLATED - такие документы нельзя продолжить
+    const completedStages = [
+      "DOC_GENERATED",
+      "DOC_APPROVED",
+      "COMPLETED",
+      "FINISHED",
+    ];
+    const cannotContinueStages = ["LAW_VIOLATED"];
+
+    return (
+      !completedStages.includes(stage) && !cannotContinueStages.includes(stage)
+    );
   };
 
   return (

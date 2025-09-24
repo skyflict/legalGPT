@@ -70,18 +70,16 @@ export const useDocumentGeneration = () => {
             status: response,
           }));
 
-          // Если есть required_user_input, останавливаем поллинг и ждем ввода
           if (response.required_user_input) {
             setState((prev) => ({
               ...prev,
               currentStep: "waiting_input",
-              isLoading: false, // Останавливаем загрузку, чтобы показать форму
+              isLoading: false,
             }));
             stopPolling();
             return;
           }
 
-          // Если документ готов, останавливаем поллинг
           if (
             response.stage === "COMPLETED" ||
             response.stage === "FINISHED" ||
@@ -96,10 +94,7 @@ export const useDocumentGeneration = () => {
             return;
           }
 
-          // Если статус ENTITIES_PROVIDED, это означает что данные уже предоставлены
-          // и пользователь может их отредактировать - показываем форму
           if (response.stage === "ENTITIES_PROVIDED") {
-            // Если нет required_user_input, создаем синтетическую схему на основе существующих entities
             if (!response.required_user_input && response.context?.entities) {
               const syntheticSchema = {
                 type: "object",
@@ -108,18 +103,17 @@ export const useDocumentGeneration = () => {
                 additionalProperties: false,
               };
 
-              // Создаем схему на основе существующих данных
-              Object.entries(response.context.entities).forEach(([key, value]) => {
-                syntheticSchema.properties[key] = {
-                  type: "string",
-                  title: key,
-                  default: String(value),
-                };
-                // Все поля считаем обязательными
-                syntheticSchema.required.push(key);
-              });
+              Object.entries(response.context.entities).forEach(
+                ([key, value]) => {
+                  syntheticSchema.properties[key] = {
+                    type: "string",
+                    title: key,
+                    default: String(value),
+                  };
+                  syntheticSchema.required.push(key);
+                }
+              );
 
-              // Добавляем синтетический required_user_input
               response.required_user_input = {
                 event_type: "ENTITIES_PROVIDED",
                 schema: syntheticSchema,
@@ -135,7 +129,6 @@ export const useDocumentGeneration = () => {
             return;
           }
 
-          // Если запрос нарушает законодательство — останавливаемся
           if (response.stage === "LAW_VIOLATED") {
             setState((prev) => ({
               ...prev,
@@ -146,10 +139,6 @@ export const useDocumentGeneration = () => {
             return;
           }
 
-          // Если документ еще обрабатывается, оставляем isLoading: true
-          // isLoading остается в том состоянии, в котором был
-
-          // Если ошибка, останавливаем поллинг
           if (response.stage === "ERROR" || response.stage === "FAILED") {
             setState((prev) => ({
               ...prev,
@@ -173,9 +162,7 @@ export const useDocumentGeneration = () => {
         }
       };
 
-      // Начинаем поллинг каждые 2 секунды
       pollingRef.current = setInterval(poll, 2000);
-      // Сразу делаем первый запрос
       await poll();
     },
     [stopPolling]
@@ -202,7 +189,6 @@ export const useDocumentGeneration = () => {
           }),
         });
 
-        // Начинаем поллинг
         await startPolling(documentId);
       } catch (error) {
         console.error("Document generation error:", error);
@@ -266,8 +252,90 @@ export const useDocumentGeneration = () => {
       }));
 
       try {
-        // Получаем статус документа и начинаем поллинг
-        await startPolling(documentId);
+        const listResponse = (await apiRequest(
+          API_ENDPOINTS.DOCUMENT_LIST
+        )) as { documents?: DocumentStatus[] };
+
+        const documents = listResponse?.documents || [];
+
+        const foundDocument = documents.find((doc) => doc.id === documentId);
+
+        if (!foundDocument) {
+          await startPolling(documentId);
+          return;
+        }
+
+        if (
+          foundDocument.stage === "ENTITIES_PROVIDED" &&
+          !foundDocument.required_user_input &&
+          foundDocument.context?.entities
+        ) {
+          const entities = foundDocument.context.entities as Record<
+            string,
+            unknown
+          >;
+          const syntheticSchema = {
+            type: "object",
+            properties: {} as Record<string, any>,
+            required: [] as string[],
+            additionalProperties: false,
+          };
+
+          Object.entries(entities).forEach(([key, value]) => {
+            syntheticSchema.properties[key] = {
+              type: "string",
+              title: key,
+              default: String(value ?? ""),
+            };
+            syntheticSchema.required.push(key);
+          });
+
+          (foundDocument as any).required_user_input = {
+            event_type: "ENTITIES_PROVIDED",
+            schema: syntheticSchema,
+          };
+        }
+
+        const completedStages = [
+          "DOC_GENERATED",
+          "DOC_APPROVED",
+          "COMPLETED",
+          "FINISHED",
+        ];
+
+        if (completedStages.includes(foundDocument.stage)) {
+          setState((prev) => ({
+            ...prev,
+            status: foundDocument,
+            currentStep: "completed",
+            isLoading: false,
+          }));
+        } else if (foundDocument.stage === "LAW_VIOLATED") {
+          setState((prev) => ({
+            ...prev,
+            status: foundDocument,
+            currentStep: "error",
+            isLoading: false,
+          }));
+        } else if (
+          foundDocument.required_user_input ||
+          foundDocument.stage === "DOC_TYPE_DEDUCED" ||
+          foundDocument.stage === "ENTITIES_EXCTRACTED" ||
+          foundDocument.stage === "ENTITIES_PROVIDED"
+        ) {
+          setState((prev) => ({
+            ...prev,
+            status: foundDocument,
+            currentStep: "waiting_input",
+            isLoading: false,
+          }));
+        } else {
+          setState((prev) => ({
+            ...prev,
+            status: foundDocument,
+          }));
+          await startPolling(documentId);
+        }
       } catch (error) {
         console.error("Continue generation error:", error);
         setState((prev) => ({
