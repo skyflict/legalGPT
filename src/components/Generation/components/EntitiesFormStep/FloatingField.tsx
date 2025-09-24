@@ -115,7 +115,7 @@ const FloatingField: React.FC<Props> = ({
 
   const getPlaceholderWithExamples = () => {
     if (examples && examples.length > 0) {
-      return `Например: ${examples.join(", ")}`;
+      return `${examples.join(", ")}`;
     }
     return placeholder ?? label;
   };

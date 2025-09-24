@@ -53,6 +53,7 @@
   max-width: 100%;
   min-width: 916px;
   box-sizing: border-box;
+  min-height: 80px;
 
   @media (max-width: 768px) {
     min-width: 100%;
