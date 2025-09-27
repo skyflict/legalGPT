@@ -44,6 +44,12 @@ function App() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!isLoading && isLoggedIn && location.pathname === "/") {
+      navigate("/generation", { replace: true });
+    }
+  }, [isLoading, isLoggedIn, location.pathname, navigate]);
+
   const fetchUserData = async () => {
     try {
       const data = await apiRequest(API_ENDPOINTS.USER);

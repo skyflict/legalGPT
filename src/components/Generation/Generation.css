@@ -738,9 +738,9 @@
 
 .frequent-queries-image {
   width: 279px;
-  height: 430px;
+  height: 502px;
   border-radius: var(--Corner-Extra-large, 28px);
-  background: url("../../assets/time.webp") white center 44px /
+  background: url("../../assets/time.webp") white center 74px /
     calc(100% - 100px) no-repeat;
   backdrop-filter: blur(10px);
   margin-top: 40px;
@@ -1116,7 +1116,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 16px;
   font-family: Inter;
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 400;
   color: var(--Text-Primary, #1a1a1a);
   background: rgba(255, 255, 255, 0.6);

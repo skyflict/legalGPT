@@ -95,38 +95,18 @@ export const useDocumentGeneration = () => {
           }
 
           if (response.stage === "ENTITIES_PROVIDED") {
-            if (!response.required_user_input && response.context?.entities) {
-              const syntheticSchema = {
-                type: "object",
-                properties: {} as Record<string, any>,
-                required: [] as string[],
-                additionalProperties: false,
-              };
-
-              Object.entries(response.context.entities).forEach(
-                ([key, value]) => {
-                  syntheticSchema.properties[key] = {
-                    type: "string",
-                    title: key,
-                    default: String(value),
-                  };
-                  syntheticSchema.required.push(key);
-                }
-              );
-
-              response.required_user_input = {
-                event_type: "ENTITIES_PROVIDED",
-                schema: syntheticSchema,
-              };
+            // Только если сервер явно требует ввод пользователя
+            if (response.required_user_input) {
+              setState((prev) => ({
+                ...prev,
+                currentStep: "waiting_input",
+                isLoading: false,
+              }));
+              stopPolling();
+              return;
             }
-
-            setState((prev) => ({
-              ...prev,
-              currentStep: "waiting_input",
-              isLoading: false,
-            }));
-            stopPolling();
-            return;
+            // Если нет required_user_input, продолжаем поллинг
+            // (сервер обработает entities автоматически)
           }
 
           if (response.stage === "LAW_VIOLATED") {
@@ -265,36 +245,8 @@ export const useDocumentGeneration = () => {
           return;
         }
 
-        if (
-          foundDocument.stage === "ENTITIES_PROVIDED" &&
-          !foundDocument.required_user_input &&
-          foundDocument.context?.entities
-        ) {
-          const entities = foundDocument.context.entities as Record<
-            string,
-            unknown
-          >;
-          const syntheticSchema = {
-            type: "object",
-            properties: {} as Record<string, any>,
-            required: [] as string[],
-            additionalProperties: false,
-          };
-
-          Object.entries(entities).forEach(([key, value]) => {
-            syntheticSchema.properties[key] = {
-              type: "string",
-              title: key,
-              default: String(value ?? ""),
-            };
-            syntheticSchema.required.push(key);
-          });
-
-          (foundDocument as any).required_user_input = {
-            event_type: "ENTITIES_PROVIDED",
-            schema: syntheticSchema,
-          };
-        }
+        // Убираем автоматическое создание синтетической схемы
+        // Только если сервер явно требует ввод пользователя, показываем форму
 
         const completedStages = [
           "DOC_GENERATED",
@@ -320,8 +272,7 @@ export const useDocumentGeneration = () => {
         } else if (
           foundDocument.required_user_input ||
           foundDocument.stage === "DOC_TYPE_DEDUCED" ||
-          foundDocument.stage === "ENTITIES_EXCTRACTED" ||
-          foundDocument.stage === "ENTITIES_PROVIDED"
+          foundDocument.stage === "ENTITIES_EXCTRACTED"
         ) {
           setState((prev) => ({
             ...prev,

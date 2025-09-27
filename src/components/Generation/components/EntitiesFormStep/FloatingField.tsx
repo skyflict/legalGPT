@@ -31,8 +31,13 @@ const FloatingField: React.FC<Props> = ({
   const [showTooltip, setShowTooltip] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [tooltipPosition, setTooltipPosition] = useState({
+    direction: "right",
+    align: "center",
+  });
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const tooltipTriggerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -66,6 +71,106 @@ const FloatingField: React.FC<Props> = ({
       window.removeEventListener("resize", checkMobile);
     };
   }, []);
+
+  // Вычисляем оптимальную позицию тултипа с учетом границ экрана
+  useEffect(() => {
+    if (showTooltip && tooltipTriggerRef.current) {
+      const calculateOptimalPosition = () => {
+        const triggerElement = tooltipTriggerRef.current;
+        if (!triggerElement) return;
+
+        const rect = triggerElement.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        // Примерные размеры тултипа
+        const tooltipWidth = isMobile ? 180 : 280;
+        const tooltipHeight = 60;
+
+        let direction = "right";
+        let align = "center";
+
+        if (isMobile) {
+          // На мобильных устройствах предпочитаем показать слева, но проверяем границы
+          const spaceLeft = rect.left;
+          const spaceRight = viewportWidth - rect.right;
+
+          if (spaceLeft >= tooltipWidth + 8) {
+            direction = "left";
+            align = "center";
+          } else if (spaceRight >= tooltipWidth + 8) {
+            direction = "right";
+            align = "center";
+          } else {
+            // Если места по бокам мало, показываем снизу
+            direction = rect.top > viewportHeight / 2 ? "top" : "bottom";
+            align = "center";
+          }
+        } else {
+          // На десктопе сначала пробуем справа от иконки
+          const spaceRight = viewportWidth - rect.right;
+          const spaceLeft = rect.left;
+          const spaceBottom = viewportHeight - rect.bottom;
+          const spaceTop = rect.top;
+
+          if (spaceRight >= tooltipWidth + 8) {
+            direction = "right";
+            align = "center";
+          } else if (spaceLeft >= tooltipWidth + 8) {
+            direction = "left";
+            align = "center";
+          } else if (spaceBottom >= tooltipHeight + 8) {
+            direction = "bottom";
+            // Проверяем, поместится ли по центру
+            const spaceLeftForCenter =
+              rect.left + rect.width / 2 - tooltipWidth / 2;
+            const spaceRightForCenter =
+              viewportWidth - (rect.left + rect.width / 2 + tooltipWidth / 2);
+
+            if (spaceLeftForCenter >= 0 && spaceRightForCenter >= 0) {
+              align = "center";
+            } else if (spaceLeftForCenter < 0) {
+              align = "left";
+            } else {
+              align = "right";
+            }
+          } else if (spaceTop >= tooltipHeight + 8) {
+            direction = "top";
+            // Аналогично для верха
+            const spaceLeftForCenter =
+              rect.left + rect.width / 2 - tooltipWidth / 2;
+            const spaceRightForCenter =
+              viewportWidth - (rect.left + rect.width / 2 + tooltipWidth / 2);
+
+            if (spaceLeftForCenter >= 0 && spaceRightForCenter >= 0) {
+              align = "center";
+            } else if (spaceLeftForCenter < 0) {
+              align = "left";
+            } else {
+              align = "right";
+            }
+          } else {
+            // В крайнем случае показываем справа, даже если места мало
+            direction = "right";
+            align = "center";
+          }
+        }
+
+        setTooltipPosition({ direction, align });
+      };
+
+      calculateOptimalPosition();
+
+      // Пересчитываем при изменении размера окна
+      window.addEventListener("resize", calculateOptimalPosition);
+      window.addEventListener("scroll", calculateOptimalPosition);
+
+      return () => {
+        window.removeEventListener("resize", calculateOptimalPosition);
+        window.removeEventListener("scroll", calculateOptimalPosition);
+      };
+    }
+  }, [showTooltip, isMobile]);
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -121,88 +226,161 @@ const FloatingField: React.FC<Props> = ({
   };
 
   const renderTooltip = (content: string) => {
-    if (isMobile) {
-      // На мобильных устройствах показываем тултип слева от иконки
-      const tooltipStyle = {
-        position: "absolute" as const,
-        top: "0",
-        right: "100%",
-        marginRight: "8px",
-        backgroundColor: "#1f2937",
-        color: "white",
-        padding: "8px 12px",
-        borderRadius: "6px",
-        fontSize: "12px",
-        lineHeight: "1.4",
-        whiteSpace: "normal" as const,
-        maxWidth: "180px",
-        width: "180px",
-        zIndex: 1000,
-        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-        wordWrap: "break-word" as const,
-        textAlign: "left" as const,
-      };
+    const { direction, align } = tooltipPosition;
+    const maxWidth = isMobile ? 180 : 280;
 
-      const arrowStyle = {
-        position: "absolute" as const,
-        top: "8px",
-        right: "-4px",
-        width: 0,
-        height: 0,
-        borderTop: "4px solid transparent",
-        borderBottom: "4px solid transparent",
-        borderLeft: "4px solid #1f2937",
-      };
+    // Базовые стили тултипа
+    const baseTooltipStyle = {
+      position: "absolute" as const,
+      backgroundColor: "#1f2937",
+      color: "white",
+      padding: "8px 12px",
+      borderRadius: "6px",
+      fontSize: "12px",
+      lineHeight: "1.4",
+      whiteSpace: "normal" as const,
+      maxWidth: `${maxWidth}px`,
+      width: isMobile ? `${maxWidth}px` : "max-content",
+      minWidth: isMobile ? `${maxWidth}px` : "120px",
+      zIndex: 1000,
+      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+      wordWrap: "break-word" as const,
+      textAlign: "left" as const,
+    };
 
-      return (
-        <div style={tooltipStyle}>
-          {content}
-          <div style={arrowStyle} />
-        </div>
-      );
-    } else {
-      // На десктопе используем обычное позиционирование
-      const tooltipStyle = {
-        position: "absolute" as const,
-        top: "100%",
-        left: "50%",
-        transform: "translateX(-50%)",
-        backgroundColor: "#1f2937",
-        color: "white",
-        padding: "8px 12px",
-        borderRadius: "6px",
-        fontSize: "12px",
-        lineHeight: "1.4",
-        whiteSpace: "normal" as const,
-        maxWidth: "280px",
-        width: "max-content",
-        minWidth: "120px",
-        zIndex: 1000,
-        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-        marginTop: "4px",
-        wordWrap: "break-word" as const,
-        textAlign: "left" as const,
-      };
+    // Позиционирование в зависимости от направления и выравнивания
+    let positionStyle = {};
+    let arrowStyle = {};
 
-      const arrowStyle = {
-        position: "absolute" as const,
-        top: "-4px",
-        left: "50%",
-        transform: "translateX(-50%)",
-        width: 0,
-        height: 0,
-        borderLeft: "4px solid transparent",
-        borderRight: "4px solid transparent",
-        borderBottom: "4px solid #1f2937",
-      };
+    switch (direction) {
+      case "bottom":
+        positionStyle = {
+          top: "100%",
+          marginTop: "4px",
+          ...(align === "center" && {
+            left: "50%",
+            transform: "translateX(-50%)",
+          }),
+          ...(align === "left" && {
+            left: "0",
+          }),
+          ...(align === "right" && {
+            right: "0",
+          }),
+        };
 
-      return (
-        <div style={tooltipStyle}>
-          {content}
-          <div style={arrowStyle} />
-        </div>
-      );
+        arrowStyle = {
+          position: "absolute" as const,
+          top: "-4px",
+          width: 0,
+          height: 0,
+          borderLeft: "4px solid transparent",
+          borderRight: "4px solid transparent",
+          borderBottom: "4px solid #1f2937",
+          ...(align === "center" && {
+            left: "50%",
+            transform: "translateX(-50%)",
+          }),
+          ...(align === "left" && {
+            left: "12px",
+          }),
+          ...(align === "right" && {
+            right: "12px",
+          }),
+        };
+        break;
+
+      case "top":
+        positionStyle = {
+          bottom: "100%",
+          marginBottom: "4px",
+          ...(align === "center" && {
+            left: "50%",
+            transform: "translateX(-50%)",
+          }),
+          ...(align === "left" && {
+            left: "0",
+          }),
+          ...(align === "right" && {
+            right: "0",
+          }),
+        };
+
+        arrowStyle = {
+          position: "absolute" as const,
+          bottom: "-4px",
+          width: 0,
+          height: 0,
+          borderLeft: "4px solid transparent",
+          borderRight: "4px solid transparent",
+          borderTop: "4px solid #1f2937",
+          ...(align === "center" && {
+            left: "50%",
+            transform: "translateX(-50%)",
+          }),
+          ...(align === "left" && {
+            left: "12px",
+          }),
+          ...(align === "right" && {
+            right: "12px",
+          }),
+        };
+        break;
+
+      case "left":
+        positionStyle = {
+          top: "50%",
+          right: "100%",
+          marginRight: "8px",
+          transform: "translateY(-50%)",
+        };
+
+        arrowStyle = {
+          position: "absolute" as const,
+          top: "50%",
+          right: "-4px",
+          transform: "translateY(-50%)",
+          width: 0,
+          height: 0,
+          borderTop: "4px solid transparent",
+          borderBottom: "4px solid transparent",
+          borderLeft: "4px solid #1f2937",
+        };
+        break;
+
+      case "right":
+        positionStyle = {
+          top: "50%",
+          left: "100%",
+          marginLeft: "8px",
+          transform: "translateY(-50%)",
+        };
+
+        arrowStyle = {
+          position: "absolute" as const,
+          top: "50%",
+          left: "-4px",
+          transform: "translateY(-50%)",
+          width: 0,
+          height: 0,
+          borderTop: "4px solid transparent",
+          borderBottom: "4px solid transparent",
+          borderRight: "4px solid #1f2937",
+        };
+        break;
     }
+
+    const tooltipStyle = {
+      ...baseTooltipStyle,
+      ...positionStyle,
+    };
+
+    return (
+      <div style={tooltipStyle}>
+        {content}
+        <div style={arrowStyle} />
+      </div>
+    );
   };
 
   if (enumOptions && enumOptions.length > 0) {
@@ -223,6 +401,7 @@ const FloatingField: React.FC<Props> = ({
           </label>
           {description && (
             <div
+              ref={tooltipTriggerRef}
               style={{
                 position: "relative",
                 display: "inline-flex",
@@ -411,6 +590,7 @@ const FloatingField: React.FC<Props> = ({
         </label>
         {description && (
           <div
+            ref={tooltipTriggerRef}
             style={{
               position: "relative",
               display: "inline-flex",
