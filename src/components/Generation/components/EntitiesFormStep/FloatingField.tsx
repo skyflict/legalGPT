@@ -31,6 +31,7 @@ const FloatingField: React.FC<Props> = ({
   const [showTooltip, setShowTooltip] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isCustomInput, setIsCustomInput] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState({
     direction: "right",
     align: "center",
@@ -174,16 +175,28 @@ const FloatingField: React.FC<Props> = ({
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
+    // Если открываем dropdown, сбрасываем режим кастомного ввода
+    if (!isDropdownOpen) {
+      setIsCustomInput(false);
+    }
   };
 
   const handleOptionSelect = (optionValue: string) => {
     onChange(optionValue);
     setIsDropdownOpen(false);
     setIsEditing(false);
+    setIsCustomInput(false); // Сбрасываем флаг кастомного ввода при выборе enum значения
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
+  };
+
+  const handleInputBlur = () => {
+    // Если поле пустое в кастомном режиме, сбрасываем кастомный режим
+    if (!value && isCustomInput) {
+      setIsCustomInput(false);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -200,6 +213,13 @@ const FloatingField: React.FC<Props> = ({
 
   const handleInputFocus = () => {
     setIsEditing(true);
+
+    // В кастомном режиме НЕ открываем dropdown
+    if (isCustomInput) {
+      return;
+    }
+
+    // В обычном режиме открываем dropdown
     setIsDropdownOpen(true);
   };
 
@@ -210,15 +230,36 @@ const FloatingField: React.FC<Props> = ({
   };
 
   const getFilteredOptions = () => {
-    if (!enumOptions || !isEditing || !value) return enumOptions || [];
-    return enumOptions.filter(
+    if (!enumOptions) return [];
+
+    // Если не редактируем или поле пустое, показываем все опции
+    if (!isEditing || !value) return enumOptions;
+
+    // При редактировании показываем и отфильтрованные опции, и все enum опции
+    const filtered = enumOptions.filter(
       (option) =>
         option.title.toLowerCase().includes(value.toLowerCase()) ||
         option.value.toLowerCase().includes(value.toLowerCase())
     );
+
+    // Если есть точные совпадения, показываем их вверху, затем остальные enum опции
+    if (filtered.length > 0) {
+      const remaining = enumOptions.filter(
+        (opt) => !filtered.find((f) => f.value === opt.value)
+      );
+      return [...filtered, ...remaining];
+    }
+
+    // Если нет совпадений, показываем все enum опции
+    return enumOptions;
   };
 
   const getPlaceholderWithExamples = () => {
+    // Если пользователь выбрал "ввести своё значение", не показываем примеры
+    if (isCustomInput) {
+      return placeholder ?? "Введите значение";
+    }
+    // Иначе показываем примеры, если они есть
     if (examples && examples.length > 0) {
       return `${examples.join(", ")}`;
     }
@@ -440,6 +481,7 @@ const FloatingField: React.FC<Props> = ({
               value={isEditing ? value : getDisplayValue()}
               onChange={handleInputChange}
               onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
               onKeyDown={handleKeyDown}
               placeholder={getPlaceholderWithExamples()}
               style={{
@@ -547,7 +589,15 @@ const FloatingField: React.FC<Props> = ({
                 !enumOptions.find((opt) => opt.value === value) && (
                   <div
                     className="dropdown-item"
-                    onClick={() => handleOptionSelect(value)}
+                    onClick={() => {
+                      // Сначала очищаем поле
+                      onChange("");
+                      // Закрываем dropdown и устанавливаем кастомный режим
+                      setIsDropdownOpen(false);
+                      setIsCustomInput(true);
+                      // НЕ выходим из режима редактирования, чтобы пользователь мог сразу печатать
+                      // setIsEditing остается true
+                    }}
                     style={{
                       padding: "12px 16px",
                       cursor: "pointer",
@@ -563,7 +613,7 @@ const FloatingField: React.FC<Props> = ({
                       e.currentTarget.style.background = "white";
                     }}
                   >
-                    Использовать "{value}"
+                    Ввести своё значение
                   </div>
                 )}
             </div>
