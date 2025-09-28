@@ -738,10 +738,10 @@
 
 .frequent-queries-image {
   width: 279px;
-  height: 502px;
+  height: 575px;
   border-radius: var(--Corner-Extra-large, 28px);
-  background: url("../../assets/time.webp") white center 74px /
-    calc(100% - 100px) no-repeat;
+  background: url("../../assets/time.webp") white center 95px /
+    calc(100% - 80px) no-repeat;
   backdrop-filter: blur(10px);
   margin-top: 40px;
   margin-left: 8px;
