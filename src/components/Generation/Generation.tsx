@@ -560,9 +560,6 @@ const Generation = () => {
                     <Icon name="whiteLine" width={139} height={4} />
                   </span>
                   <div className="step-number">2</div>
-                  <span>
-                    <Icon name="whiteLine" width={139} height={4} />
-                  </span>
                 </div>
               )}
 
@@ -589,12 +586,6 @@ const Generation = () => {
           {showFinalResult && (
             <div className="final-result-section">
               <div className="final-progress">
-                <div className="step-number-no-active">
-                  <Icon name="check" width={16} height={16} />
-                </div>
-                <span>
-                  <Icon name="whiteLine" width={139} height={4} />
-                </span>
                 <div className="step-number-no-active">
                   <Icon name="check" width={16} height={16} />
                 </div>
