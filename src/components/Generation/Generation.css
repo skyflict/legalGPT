@@ -744,6 +744,7 @@
     calc(100% - 100px) no-repeat;
   backdrop-filter: blur(10px);
   margin-top: 40px;
+  margin-left: 8px;
 }
 
 .frequent-queries-image {
