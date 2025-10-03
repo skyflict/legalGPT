@@ -16,25 +16,29 @@ import { useLoaderMessage } from "./hooks/useLoaderMessage";
 import { useDocumentTypes } from "./hooks/useDocumentTypes";
 import { useLatestIncompleteDocument } from "../../hooks/useLatestIncompleteDocument";
 import Modal from "../Modal";
+import {
+  isIdleState,
+  shouldShowOverlay,
+  isFocusedState,
+} from "./utils/generationStates";
+import ContinueGenerationSection from "./components/ContinueGenerationSection/ContinueGenerationSection";
+import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
+import FrequentQueriesSection from "./components/FrequentQueriesSection/FrequentQueriesSection";
+import ContractSelectSection from "./components/ContractSelectSection/ContractSelectSection";
 
 const Generation = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState("");
   const [showOverlay, setShowOverlay] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [openTemplates, setOpenTemplates] = useState<Record<string, boolean>>(
-    {}
-  );
   const [showManualContractSelect, setShowManualContractSelect] =
     useState(false);
-  // const [showHelpText, setShowHelpText] = useState(true);
 
   const documentGeneration = useDocumentGeneration();
   const { documentTypes, getDocumentTypeById } = useDocumentTypes();
   const { latestDocument } = useLatestIncompleteDocument();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
 
   const isLoading = documentGeneration.isLoading;
@@ -51,6 +55,15 @@ const Generation = () => {
     !isLoading;
   const showFinalResult = documentGeneration.currentStep === "completed";
 
+  // Состояния для утилит
+  const generationStates = {
+    isLoading,
+    showContractType,
+    showContractSelect,
+    showEntitiesForm,
+    showFinalResult,
+  };
+
   const shouldShowLoader = isLoading && !showFinalResult;
   const loaderMessage = useLoaderMessage(
     isLoading,
@@ -66,28 +79,21 @@ const Generation = () => {
     setShowOverlay(false);
     try {
       window.scrollTo({ top: 0, behavior: "smooth" });
-    } catch {}
+    } catch {
+      // Игнорируем ошибки скроллинга
+    }
   };
 
   const handleQueryClick = (queryText: string) => {
     setQuery(queryText);
   };
 
-  // Убрали кнопку "Применить"; клика по карточке достаточно
-
   const handleFocus = () => {
     setShowOverlay(true);
   };
 
   const handleBlur = () => {
-    if (
-      query.length === 0 &&
-      !isLoading &&
-      !showContractType &&
-      !showContractSelect &&
-      !showEntitiesForm &&
-      !showFinalResult
-    ) {
+    if (query.length === 0 && isIdleState(generationStates)) {
       setShowOverlay(false);
     }
   };
@@ -95,13 +101,7 @@ const Generation = () => {
   const handleOverlayClick = () => {
     // При клике вне инпута сбрасываем состояние наведения/фокуса,
     // если не запущены другие шаги генерации
-    if (
-      !isLoading &&
-      !showContractType &&
-      !showContractSelect &&
-      !showEntitiesForm &&
-      !showFinalResult
-    ) {
+    if (isIdleState(generationStates)) {
       setShowOverlay(false);
       if (textareaRef.current) {
         textareaRef.current.blur();
@@ -208,10 +208,6 @@ const Generation = () => {
     setIsDropdownOpen(false);
   };
 
-  const toggleTemplate = (title: string) => {
-    setOpenTemplates((prev) => ({ ...prev, [title]: !prev[title] }));
-  };
-
   const getContractTypeName = (type?: string) => {
     if (!type) return undefined;
     const documentType = getDocumentTypeById(type);
@@ -235,62 +231,8 @@ const Generation = () => {
   // Используем данные из API вместо статического массива
   const contractTypes = documentTypes;
 
-  const frequentQueries = [
-    {
-      title: "Договор оказания услуг",
-      prompt:
-        "Хочу заключить договор услуг, по которому _____ (исполнитель по договору) окажет _____ (заказчик по договору) услуги по _____ (сфера оказываемых услуг), в рамках оказания услуг _____ (подробное описание оказываемых услуг и результата). Все услуги должны быть оказаны в течение (срок оказания услуг), вознаграждение исполнителя составит _____ (сумма вознаграждения), оплата будет _____ (наличными / переводом денежных средств).",
-    },
-    {
-      title: "Договор купли-продажи",
-      prompt:
-        "Хочу заключить договор купли продажи _____ (товар), со следующими уникальными признаками _____ (описание товара) в количестве _____ (количество товара) между _____ (покупатель) и _____ (продавец). Сумма договора _____ (стоимость товара и всех сопутствующих услуг), товар будет доставлен покупателю по адресу _____ (адрес доставки), оплата _____ (наличными / переводом денежных средств) в течение _____ (количество дней для оплаты товара) после подписания договора.",
-    },
-    {
-      title: "Договор займа",
-      prompt:
-        "Необходимо составить договор займа между _____ (заемщик) и _____ (займодатель), на сумму _____ (сумма займа) рублей. заемщик вернет заем в течение_____ (срок возврата займа). Процентная ставка по займу составляет _____ (процент по заему). Погашение займа _____ (когда заемщик должен вернуть сумму займа). Заем выдается _____ (наличными / переводом денежных средств).",
-    },
-    {
-      title: "Договор найма жилого помещения",
-      prompt:
-        "Хочу заключить договор найма жилого помещения _____ (адрес помещения, включая город, улицу, дом, квартиру), со следующими уникальными признаками _____ (описание: площадь, количество комнат, этаж, мебель, техника, состояние и т.д.) между _____ (наймодатель - ФИО/название и реквизиты собственника) и _____ (наниматель - ФИО/паспортные данные). Сумма договора _____ (размер ежемесячной платы за наем, стоимость коммунальных услуг и других платежей, если включены) в месяц, помещение будет предоставлено нанимателю для проживания с _____ (дата начала найма) по _____ (дата окончания найма). Оплата _____ (наличными / банковским переводом на счет наймодателя) в течение _____ (количество дней каждого месяца для внесения платы) каждого календарного месяца периода найма.",
-    },
-    {
-      title: "Договор аренды",
-      prompt:
-        'Хочу заключить договор аренды _____ (вид имущества/помещения: например, нежилое помещение, оборудование, транспортное средство, склад, офис), со следующими уникальными признаками _____ (описание: для помещения - адрес, площадь, назначение; для оборудования - марка, модель, серийный номер, состояние; для ТС - марка, модель, VIN, гос. номер) в количестве _____ (количество: обычно 1 для объекта, для оборудования - число единиц) между _____ (арендодатель (наймодатель) - ФИО/название и реквизиты собственника) и _____ (арендатор (наниматель) - ФИО/название и реквизиты). Сумма договора _____ (размер ежемесячной/ежегодной арендной платы, стоимость коммунальных услуг, эксплуатационных расходов, НДС - если применимо) в месяц/год/иной период, имущество/помещение будет предоставлено арендатору для использования по адресу/на территории _____ (адрес/место нахождения имущества) с _____ (дата начала аренды) по _____ (дата окончания аренды). Оплата арендной платы _____ (наличными / банковским переводом на счет арендодателя) в течение _____ (количество дней каждого периода для внесения платы) каждого расчетного периода (месяца/квартала/года), первый платеж (аванс/залог) в размере _____ (сумма) вносится _____ (срок внесения, например, "до подписания договора", "при подписании договора").',
-    },
-    {
-      title: "Договор хранения",
-      prompt:
-        "Хочу заключить договор хранения _____ (имущество), со следующими уникальными признаками _____ (описание имущества) в количестве _____ (количество имущества) между _____ (клиент, передающий на хранение) и _____ (охраняющая сторона, хранитель). Сумма договора _____ (стоимость услуг хранения и всех сопутствующих услуг), имущество будет принято на хранение по адресу _____ (адрес хранения), передача имущества на хранение осуществляется _____ (дата и/или порядок передачи). Оплата _____ (наличными / переводом денежных средств) производится в течение _____ (количество дней для оплаты услуги хранения) после подписания договора.",
-    },
-    {
-      title: "Агентский договор",
-      prompt:
-        "Хочу заключить договор дарения _____ (предмет дарения), со следующими уникальными признаками _____ (описание предмета дарения) в количестве _____ (количество предметов) между _____ (даритель) и _____ (одаряемый). Дар передается по адресу _____ (адрес передачи дара). Дар будет передан _____ (дата передачи или порядок передачи). Стороны подтверждают безвозмездность передачи имущества.",
-    },
-    {
-      title: "Договор дарения",
-      prompt:
-        "Хочу заключить агентский договор _____ (на совершение юридических действий / на совершение фактических действий / смешанный), по которому _____ (Агент) обязуется совершить от имени _____ (Принципала / от своего имени, но за счет Принципала) следующие действия: _____ (перечень конкретных поручаемых действий, например: заключать договоры купли-продажи, проводить маркетинговые исследования, искать покупателей). Срок действия договора _____ (указать срок). Вознаграждение Агента составляет _____ (размер вознаграждения) и выплачивается _____ (процент от суммы заключенных сделок / фиксированная сумма) в течение _____ (срок для выплаты вознаграждения) после _____ (предоставления отчета Агента / выполнения поручения).",
-    },
-  ];
-
-  // const handleCloseHelpText = () => {
-  //   setShowHelpText(false);
-  // };
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsDropdownOpen(false);
-      }
-
       if (
         showOverlay &&
         inputWrapperRef.current &&
@@ -300,14 +242,14 @@ const Generation = () => {
       }
     };
 
-    if (isDropdownOpen || showOverlay) {
+    if (showOverlay) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isDropdownOpen, showOverlay]);
+  }, [showOverlay]);
 
   useEffect(() => {
     return () => {
@@ -318,20 +260,9 @@ const Generation = () => {
   return (
     <section
       className={`generation ${
-        isLoading ||
-        showContractType ||
-        showContractSelect ||
-        showEntitiesForm ||
-        showFinalResult
-          ? "generation--focused"
-          : ""
+        isFocusedState(generationStates) ? "generation--focused" : ""
       } ${
-        showOverlay &&
-        !isLoading &&
-        !showContractType &&
-        !showContractSelect &&
-        !showEntitiesForm &&
-        !showFinalResult
+        shouldShowOverlay(showOverlay, generationStates)
           ? "generation--overlay-visible"
           : ""
       }`}
@@ -344,21 +275,8 @@ const Generation = () => {
                 value={query}
                 isBusy={isLoading}
                 disabled={documentGeneration.currentStep !== "idle"}
-                isFocused={
-                  isLoading ||
-                  showContractType ||
-                  showContractSelect ||
-                  showEntitiesForm ||
-                  showFinalResult
-                }
-                showOverlay={
-                  showOverlay &&
-                  !isLoading &&
-                  !showContractType &&
-                  !showContractSelect &&
-                  !showEntitiesForm &&
-                  !showFinalResult
-                }
+                isFocused={isFocusedState(generationStates)}
+                showOverlay={shouldShowOverlay(showOverlay, generationStates)}
                 onChange={setQuery}
                 onSend={handleSend}
                 onCancel={handleCancel}
@@ -369,99 +287,20 @@ const Generation = () => {
             </div>
 
             {/* Кнопка продолжения генерации */}
-            {!isLoading &&
-              !showContractType &&
-              !showContractSelect &&
-              !showEntitiesForm &&
-              !showFinalResult &&
+            {isIdleState(generationStates) &&
               latestDocument &&
               documentGeneration.currentStep === "idle" && (
-                <div className="continue-generation-section">
-                  <div className="continue-generation-section-content">
-                    <div style={{ flex: "1", minWidth: "0" }}>
-                      <div
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: "500",
-                          color: "#1f2937",
-                          marginBottom: "4px",
-                        }}
-                      >
-                        У вас есть незавершенная генерация
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "12px",
-                          color: "#6b7280",
-                          wordBreak: "break-word",
-                          lineHeight: "1.4",
-                        }}
-                      >
-                        {latestDocument.context?.query
-                          ? `"${latestDocument.context.query.slice(0, 80)}${
-                              latestDocument.context.query.length > 80
-                                ? "..."
-                                : ""
-                            }"`
-                          : "Продолжите генерацию документа"}
-                      </div>
-                    </div>
-                    <button
-                      onClick={handleContinueGeneration}
-                      style={{
-                        background: "#4f46e5",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "8px",
-                        padding: "10px 20px",
-                        fontSize: "14px",
-                        fontWeight: "500",
-                        cursor: "pointer",
-                        transition: "background-color 0.2s",
-                        whiteSpace: "nowrap",
-                        flexShrink: 0,
-                      }}
-                      onMouseOver={(e) => {
-                        e.currentTarget.style.background = "#4338ca";
-                      }}
-                      onMouseOut={(e) => {
-                        e.currentTarget.style.background = "#4f46e5";
-                      }}
-                    >
-                      Продолжить
-                    </button>
-                  </div>
-                </div>
+                <ContinueGenerationSection
+                  latestDocument={latestDocument}
+                  onContinue={handleContinueGeneration}
+                />
               )}
 
-            {/* <HelpText visible={showHelpText} onClose={handleCloseHelpText} /> */}
-
             {documentGeneration.error && (
-              <div
-                className="error-message"
-                style={{
-                  color: "#ef4444",
-                  background: "rgba(239, 68, 68, 0.1)",
-                  padding: "12px 16px",
-                  borderRadius: "8px",
-                  margin: "16px 0",
-                  fontSize: "14px",
-                }}
-              >
-                {documentGeneration.error}
-                <button
-                  onClick={documentGeneration.clearError}
-                  style={{
-                    marginLeft: "8px",
-                    background: "none",
-                    border: "none",
-                    color: "#ef4444",
-                    cursor: "pointer",
-                  }}
-                >
-                  ✕
-                </button>
-              </div>
+              <ErrorMessage
+                error={documentGeneration.error}
+                onClear={documentGeneration.clearError}
+              />
             )}
           </div>
 
@@ -484,75 +323,17 @@ const Generation = () => {
           )}
 
           {showContractSelect && (
-            <div className="contract-select-section">
-              <div className="step-number-container">
-                <div className="step-number">1</div>
-                <span>
-                  <Icon name="whiteLine" width={139} height={4} />
-                </span>
-              </div>
-
-              <div className="contract-select-content">
-                <div className="contract-select-header">
-                  <button
-                    className="back-button"
-                    onClick={handleBackToContractType}
-                  >
-                    <Icon
-                      name="arrow"
-                      width={24}
-                      height={24}
-                      className="arrow-back"
-                    />
-                    <span>Назад</span>
-                  </button>
-                </div>
-
-                <div className="contract-select-title">
-                  Выберите нужный тип договора:
-                </div>
-
-                <div className="contract-dropdown" ref={dropdownRef}>
-                  <button
-                    className={`dropdown-trigger ${
-                      isDropdownOpen ? "dropdown-trigger--open" : ""
-                    }`}
-                    onClick={handleDropdownToggle}
-                  >
-                    <span>
-                      {getContractTypeName(documentGeneration.status?.type) ||
-                        "Не выбрано"}
-                    </span>
-                    <Icon
-                      name="arrow"
-                      width={24}
-                      height={24}
-                      className={`dropdown-arrow ${
-                        isDropdownOpen ? "dropdown-arrow--open" : ""
-                      }`}
-                    />
-                  </button>
-
-                  {isDropdownOpen && (
-                    <div className="dropdown-menu">
-                      {contractTypes.map((contractType) => (
-                        <div
-                          key={contractType.id}
-                          className={`dropdown-item ${
-                            documentGeneration.status?.type === contractType.id
-                              ? "dropdown-item--selected"
-                              : ""
-                          }`}
-                          onClick={() => handleContractSelect(contractType.id)}
-                        >
-                          {contractType.name}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
+            <ContractSelectSection
+              contractTypes={contractTypes}
+              isDropdownOpen={isDropdownOpen}
+              selectedTypeId={documentGeneration.status?.type}
+              selectedTypeName={getContractTypeName(
+                documentGeneration.status?.type
+              )}
+              onDropdownToggle={handleDropdownToggle}
+              onContractSelect={handleContractSelect}
+              onBackToContractType={handleBackToContractType}
+            />
           )}
 
           {showEntitiesForm && (
@@ -615,79 +396,14 @@ const Generation = () => {
           )}
 
           {documentGeneration.currentStep === "idle" && (
-            <>
-              <div className="example-section">
-                <div className="example-title">Пример запроса:</div>
-                <div className="example-text">
-                  Привет! Помоги составить договор оказания услуг: я, Максим
-                  Игоревич Смирнов, оказываю услуги репетитора. Стоимость одного
-                  занятия 3 000 рублей, продолжительность 1 час. Время начала
-                  занятия согласовывается за 2 дня до урока. Оплата онлайн по
-                  карте после занятия.
-                </div>
-              </div>
-
-              <div className="frequent-queries">
-                <div className="frequent-queries-content">
-                  <div className="frequent-queries-text">
-                    <h2 className="frequent-queries-title">
-                      Шаблоны* запросов для составления договора:
-                    </h2>
-                    <div className="frequent-queries-list">
-                      {frequentQueries.map((item, index) => (
-                        <div key={index} className="frequent-queries-item">
-                          <button
-                            className={`frequent-queries-question ${
-                              openTemplates[item.title] ? "active" : ""
-                            }`}
-                            onClick={() => toggleTemplate(item.title)}
-                          >
-                            <span>{item.title}</span>
-                            <Icon
-                              name="arrow"
-                              className="frequent-queries-icon"
-                            />
-                          </button>
-                          <div
-                            className={`frequent-queries-answer ${
-                              openTemplates[item.title]
-                                ? "frequent-queries-answer--open"
-                                : "frequent-queries-answer--closed"
-                            }`}
-                          >
-                            <div className="frequent-queries-answer-content">
-                              {item.prompt}
-                              <button
-                                className="use-template-btn"
-                                onClick={() => handleQueryClick(item.prompt)}
-                              >
-                                Использовать шаблон
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="frequent-queries-image" />
-                </div>
-                <div className="frequent-queries-text-2">
-                  *Пока мы работаем только с предложенными типами договоров
-                </div>
-              </div>
-            </>
+            <FrequentQueriesSection onQueryClick={handleQueryClick} />
           )}
         </div>
       </div>
 
       <div
         className={`generation-overlay ${
-          showOverlay &&
-          !isLoading &&
-          !showContractType &&
-          !showContractSelect &&
-          !showEntitiesForm &&
-          !showFinalResult
+          shouldShowOverlay(showOverlay, generationStates)
             ? "generation-overlay--visible"
             : ""
         }`}

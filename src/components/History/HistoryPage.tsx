@@ -153,6 +153,8 @@ const HistoryPage = () => {
                         <span className="history-date">
                           {formatDate(doc.created_at)}
                         </span>
+                        <span className="history-dot">•</span>
+                        <span className="history-id">ID: {doc.id}</span>
                       </div>
                       <button
                         className="history-toggle"

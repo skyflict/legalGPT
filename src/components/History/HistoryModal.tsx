@@ -118,6 +118,8 @@ const HistoryModal = ({ isOpen, onClose }: Props) => {
                           <span className="history-date">
                             {formatDate(doc.created_at)}
                           </span>
+                          <span className="history-dot">•</span>
+                          <span className="history-id">ID: {doc.id}</span>
                         </div>
                         {queryShort && (
                           <div className="history-query">{queryShort}</div>
