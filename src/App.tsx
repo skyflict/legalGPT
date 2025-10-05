@@ -179,13 +179,29 @@ function App() {
 
       <div className={`app-layout ${isLoggedIn ? "with-sidebar" : ""}`}>
         {isLoggedIn && (
-          <Sidebar
-            isVisible={isSidebarOpen}
-            userRole={userData?.role}
-            onOpenHistory={() => navigate("/history")}
-            onOpenGeneration={() => navigate("/generation")}
-            active={getCurrentView()}
-          />
+          <>
+            <div
+              className={`sidebar-overlay ${isSidebarOpen ? "visible" : ""}`}
+              onClick={() => setIsSidebarOpen(false)}
+            />
+            <Sidebar
+              isVisible={isSidebarOpen}
+              userRole={userData?.role}
+              onOpenHistory={() => {
+                navigate("/history");
+                if (window.innerWidth <= 1024) {
+                  setIsSidebarOpen(false);
+                }
+              }}
+              onOpenGeneration={() => {
+                navigate("/generation");
+                if (window.innerWidth <= 1024) {
+                  setIsSidebarOpen(false);
+                }
+              }}
+              active={getCurrentView()}
+            />
+          </>
         )}
 
         <main className="main-content">
