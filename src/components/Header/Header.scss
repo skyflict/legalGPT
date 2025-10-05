@@ -147,36 +147,12 @@ $z-index-dropdown: 1000;
   @include flex-center;
   justify-content: center;
   display: none; // скрываем по умолчанию
-
-  &:hover {
-    background: $background-hover;
-  }
 }
 
-.hamburger {
-  width: 20px;
-  height: 2px;
-  background: $text-secondary;
-  position: relative;
+.sidebar-toggle img {
   display: block;
-
-  &::before,
-  &::after {
-    content: "";
-    position: absolute;
-    width: 20px;
-    height: 2px;
-    background: $text-secondary;
-    transition: all $transition;
-  }
-
-  &::before {
-    top: -6px;
-  }
-
-  &::after {
-    bottom: -6px;
-  }
+  transition: all $transition;
+  background: #fff;
 }
 
 // Dropdown пользователя

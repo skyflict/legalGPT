@@ -4,6 +4,7 @@ import { Logo } from "./components/Logo";
 import { UserDropdown } from "./components/UserDropdown";
 import { AuthButtons } from "./components/AuthButtons";
 import { apiRequest, API_ENDPOINTS } from "../../utils/api";
+import menuIcon from "../../assets/menu.svg";
 
 interface HeaderProps {
   onOpenAuthModal?: () => void;
@@ -57,7 +58,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={onToggleSidebar}
                 aria-label="Переключить сайдбар"
               >
-                <span className="hamburger"></span>
+                <img src={menuIcon} alt="Меню" width="24" height="24" />
               </button>
             )}
             <Logo />
