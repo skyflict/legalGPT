@@ -1005,6 +1005,7 @@
 
   .frequent-queries-question {
     font-size: 14px;
+    text-align: left;
   }
 
   .frequent-queries-answer-content {
