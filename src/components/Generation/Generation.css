@@ -93,6 +93,10 @@
     margin-bottom: 24px;
     width: 916px !important;
     height: 52px;
+
+    @media (max-width: 768px) {
+      height: 100% !important;
+    }
   }
 }
 

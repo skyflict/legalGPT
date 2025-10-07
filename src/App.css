@@ -23,6 +23,13 @@ body {
   position: relative;
 }
 
+/* Блокировка скролла фона при открытом мобильном сайдбаре */
+body.no-scroll {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
 body::before {
   content: "";
   position: fixed;
@@ -182,7 +189,7 @@ body::before {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 10000px; /* перекрытие всей видимой части экрана */
   background: rgba(0, 0, 0, 0.5);
   z-index: 9999;
   opacity: 0;

@@ -30,6 +30,7 @@ const Sidebar = ({
 }: SidebarProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+  const [isBonusModalOpen, setIsBonusModalOpen] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [bonusAmount, setBonusAmount] = useState<number>(0);
@@ -53,11 +54,18 @@ const Sidebar = ({
 
   const handleCloseAdminModal = () => {
     setIsAdminModalOpen(false);
+    setError(null);
+    setSuccessMessage(null);
+  };
+
+  const handleCloseBonusModal = () => {
+    setIsBonusModalOpen(false);
     setSelectedUser(null);
     setBonusAmount(0);
     setBonusReason("");
     setError(null);
     setSuccessMessage(null);
+    setIsAdminModalOpen(true);
   };
 
   const fetchUsers = async () => {
@@ -81,6 +89,8 @@ const Sidebar = ({
 
   const handleUserSelect = (user: User) => {
     setSelectedUser(user);
+    setIsAdminModalOpen(false);
+    setIsBonusModalOpen(true);
   };
 
   const handleAddBonus = async () => {
@@ -102,8 +112,16 @@ const Sidebar = ({
       setSuccessMessage(
         `Бонус успешно начислен пользователю ${selectedUser.email}`
       );
-      setBonusAmount(0);
-      setBonusReason("");
+
+      // Закрываем модальное окно бонусов и возвращаемся к списку пользователей
+      setTimeout(() => {
+        setIsBonusModalOpen(false);
+        setSelectedUser(null);
+        setBonusAmount(0);
+        setBonusReason("");
+        setSuccessMessage(null);
+        setIsAdminModalOpen(true);
+      }, 2000);
 
       // Обновляем список пользователей
       await fetchUsers();
@@ -170,19 +188,12 @@ const Sidebar = ({
       <Modal
         isOpen={isAdminModalOpen}
         onClose={handleCloseAdminModal}
-        title="Админ.панель - Начисление бонусов"
+        title="Список пользователей"
       >
         <div className="admin-modal-content">
           {isLoading && <div className="loading">Загрузка...</div>}
 
-          {error && <div className="error-message">{error}</div>}
-
-          {successMessage && (
-            <div className="success-message">{successMessage}</div>
-          )}
-
           <div className="users-list">
-            <h3>Список пользователей</h3>
             {users.length > 0 ? (
               <div className="users-table">
                 <table>
@@ -194,12 +205,7 @@ const Sidebar = ({
                   </thead>
                   <tbody>
                     {users.map((user) => (
-                      <tr
-                        key={user.id}
-                        className={
-                          selectedUser?.id === user.id ? "selected" : ""
-                        }
-                      >
+                      <tr key={user.id}>
                         <td>{user.email}</td>
                         <td>{user.balance} Ю</td>
                         <td>
@@ -214,16 +220,51 @@ const Sidebar = ({
                     ))}
                   </tbody>
                 </table>
+                {/* Мобильные карточки */}
+                {users.map((user) => (
+                  <div key={user.id} className="user-card">
+                    <div className="user-card-row">
+                      <span className="user-card-label">Email:</span>
+                      <span className="user-card-value user-card-email">
+                        {user.email}
+                      </span>
+                    </div>
+                    <div className="user-card-row">
+                      <span className="user-card-label">Баланс:</span>
+                      <span className="user-card-value">{user.balance} Ю</span>
+                    </div>
+                    <button
+                      onClick={() => handleUserSelect(user)}
+                      className="select-user-btn"
+                    >
+                      Выбрать
+                    </button>
+                  </div>
+                ))}
               </div>
             ) : (
               <p>Нет доступных пользователей</p>
             )}
           </div>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={isBonusModalOpen}
+        onClose={handleCloseBonusModal}
+        title={`Начисление бонусов для ${selectedUser?.email || ""}`}
+      >
+        <div className="admin-modal-content">
+          {isLoading && <div className="loading">Загрузка...</div>}
+
+          {error && <div className="error-message">{error}</div>}
+
+          {successMessage && (
+            <div className="success-message">{successMessage}</div>
+          )}
 
           {selectedUser && (
             <div className="bonus-form">
-              <h3>Начисление бонусов для {selectedUser.email}</h3>
-
               <div className="form-group">
                 <label htmlFor="bonus-amount">Количество бонусов:</label>
                 <input

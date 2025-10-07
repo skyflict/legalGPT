@@ -131,6 +131,24 @@ function App() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Блокируем скролл фона при открытом мобильном сайдбаре
+  useEffect(() => {
+    const applyNoScroll = () => {
+      if (window.innerWidth <= 1024) {
+        document.body.classList.toggle("no-scroll", isSidebarOpen);
+      } else {
+        document.body.classList.remove("no-scroll");
+      }
+    };
+
+    applyNoScroll();
+    window.addEventListener("resize", applyNoScroll);
+    return () => {
+      window.removeEventListener("resize", applyNoScroll);
+      document.body.classList.remove("no-scroll");
+    };
+  }, [isSidebarOpen]);
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
