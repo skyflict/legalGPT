@@ -219,13 +219,9 @@ const Generation = () => {
   );
 
   const getDocumentName = () => {
-    const documentUrl = documentGeneration.status?.document_url;
-    if (documentUrl) {
-      const parts = documentUrl.split("/");
-      const fileName = parts[parts.length - 1];
-      return decodeURIComponent(fileName);
-    }
-    return "Документ.doc";
+    // Имя документа для отображения
+    const docType = documentGeneration.status?.public_type || "Документ";
+    return docType;
   };
 
   // Используем данные из API вместо статического массива
@@ -391,7 +387,6 @@ const Generation = () => {
               <FinalResultStep
                 documentName={getDocumentName()}
                 documentId={documentGeneration.status?.id}
-                downloadUrl={documentGeneration.status?.document_url}
               />
             </div>
           )}

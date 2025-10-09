@@ -10,7 +10,6 @@ type DocumentItem = {
   stage: string;
   type?: string;
   context?: { query?: string; entities?: Record<string, unknown> };
-  document_url?: string;
   created_at: string;
   modified_at: string;
   required_user_input?: unknown;
@@ -119,7 +118,7 @@ const HistoryModal = ({ isOpen, onClose }: Props) => {
                       </div>
                     </div>
                     <div className="history-actions">
-                      {doc.is_terminal && doc.document_url && (
+                      {doc.is_terminal && (
                         <button
                           className="history-btn"
                           onClick={() => handleDownloadDocument(doc)}

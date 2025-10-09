@@ -7,7 +7,6 @@ import { downloadDocument } from "../../../../utils/api";
 type Props = {
   documentName: string;
   documentId?: string;
-  downloadUrl?: string;
   onStartNew?: () => void;
 };
 
@@ -17,7 +16,6 @@ const FEEDBACK_FORM_URL =
 const FinalResultStep: React.FC<Props> = ({
   documentName,
   documentId,
-  downloadUrl,
   onStartNew,
 }) => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -44,7 +42,7 @@ const FinalResultStep: React.FC<Props> = ({
       <button
         className="download-button"
         onClick={async () => {
-          if (documentId && downloadUrl) {
+          if (documentId) {
             try {
               await downloadDocument(documentId);
               setIsFeedbackOpen(true);
@@ -54,7 +52,7 @@ const FinalResultStep: React.FC<Props> = ({
             }
           }
         }}
-        disabled={!documentId || !downloadUrl}
+        disabled={!documentId}
       >
         <span>Скачать</span>
         <Icon

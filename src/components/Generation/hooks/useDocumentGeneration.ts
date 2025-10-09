@@ -22,7 +22,6 @@ export interface DocumentStatus {
     entities?: any;
   };
   required_user_input?: RequiredUserInput;
-  document_url?: string;
   created_at: string;
   modified_at: string;
   result?: any;

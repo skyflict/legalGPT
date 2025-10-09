@@ -16,12 +16,9 @@ const FinalResultPage: React.FC = () => {
   }, [documentGeneration.currentStep, navigate]);
 
   const getDocumentName = () => {
-    const documentUrl = documentGeneration.status?.document_url;
-    if (documentUrl) {
-      const parts = documentUrl.split("/");
-      return parts[parts.length - 1] || "document.docx";
-    }
-    return "document.docx";
+    // Имя документа для отображения
+    const docType = documentGeneration.status?.public_type || "Документ";
+    return docType;
   };
 
   const handleStartNew = () => {
@@ -34,7 +31,6 @@ const FinalResultPage: React.FC = () => {
       <FinalResultStep
         documentName={getDocumentName()}
         documentId={documentGeneration.status?.id}
-        downloadUrl={documentGeneration.status?.document_url}
         onStartNew={handleStartNew}
       />
     </div>
