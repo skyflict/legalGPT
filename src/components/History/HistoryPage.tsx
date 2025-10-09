@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Icon from "../Icon";
 import "./HistoryModal.css";
-import { apiRequest, API_ENDPOINTS } from "../../utils/api";
+import { apiRequest, API_ENDPOINTS, downloadDocument } from "../../utils/api";
 
 type DocumentItem = {
   id: string;
@@ -68,6 +68,15 @@ const HistoryPage = () => {
   const handleContinueGeneration = (doc: DocumentItem) => {
     // Переход на страницу генерации с передачей ID документа
     navigate(`/generation?document=${doc.id}`);
+  };
+
+  const handleDownloadDocument = async (doc: DocumentItem) => {
+    try {
+      await downloadDocument(doc.id);
+    } catch (error) {
+      console.error("Ошибка при скачивании документа:", error);
+      alert("Не удалось скачать документ");
+    }
   };
 
   return (
@@ -149,10 +158,10 @@ const HistoryPage = () => {
                         Продолжить
                       </button>
                     )}
-                    {doc.document_url && (
+                    {doc.is_terminal && doc.document_url && (
                       <button
                         className="history-btn history-btn--icon"
-                        onClick={() => window.open(doc.document_url, "_blank")}
+                        onClick={() => handleDownloadDocument(doc)}
                         aria-label="Скачать"
                         title="Скачать"
                       >

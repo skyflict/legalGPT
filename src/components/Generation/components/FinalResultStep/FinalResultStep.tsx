@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import Icon from "../../../Icon/Icon";
 import styles from "./FinalResultStep.module.css";
 import Modal from "../../../Modal/Modal";
+import { downloadDocument } from "../../../../utils/api";
 
 type Props = {
   documentName: string;
+  documentId?: string;
   downloadUrl?: string;
   onStartNew?: () => void;
 };
@@ -12,7 +14,12 @@ type Props = {
 const FEEDBACK_FORM_URL =
   "https://forms.yandex.ru/cloud/68bab2914936399c60c1bac5/?page=1";
 
-const FinalResultStep: React.FC<Props> = ({ documentName, downloadUrl, onStartNew }) => {
+const FinalResultStep: React.FC<Props> = ({
+  documentName,
+  documentId,
+  downloadUrl,
+  onStartNew,
+}) => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   // Модалка фидбека открывается после нажатия на скачивание
@@ -36,13 +43,18 @@ const FinalResultStep: React.FC<Props> = ({ documentName, downloadUrl, onStartNe
 
       <button
         className="download-button"
-        onClick={() => {
-          if (downloadUrl) {
-            window.open(downloadUrl, "_blank");
-            setIsFeedbackOpen(true);
+        onClick={async () => {
+          if (documentId && downloadUrl) {
+            try {
+              await downloadDocument(documentId);
+              setIsFeedbackOpen(true);
+            } catch (error) {
+              console.error("Ошибка при скачивании документа:", error);
+              alert("Не удалось скачать документ");
+            }
           }
         }}
-        disabled={!downloadUrl}
+        disabled={!documentId || !downloadUrl}
       >
         <span>Скачать</span>
         <Icon

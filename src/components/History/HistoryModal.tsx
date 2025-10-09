@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import Modal from "../Modal";
 import Icon from "../Icon";
 import "./HistoryModal.css";
-import { apiRequest, API_ENDPOINTS } from "../../utils/api";
+import { apiRequest, API_ENDPOINTS, downloadDocument } from "../../utils/api";
 
 type DocumentItem = {
   id: string;
@@ -66,6 +66,15 @@ const HistoryModal = ({ isOpen, onClose }: Props) => {
 
   const rows = useMemo(() => items, [items]);
 
+  const handleDownloadDocument = async (doc: DocumentItem) => {
+    try {
+      await downloadDocument(doc.id);
+    } catch (error) {
+      console.error("Ошибка при скачивании документа:", error);
+      alert("Не удалось скачать документ");
+    }
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="История документов">
       <div className="history-root">
@@ -110,12 +119,10 @@ const HistoryModal = ({ isOpen, onClose }: Props) => {
                       </div>
                     </div>
                     <div className="history-actions">
-                      {doc.document_url && (
+                      {doc.is_terminal && doc.document_url && (
                         <button
                           className="history-btn"
-                          onClick={() =>
-                            window.open(doc.document_url, "_blank")
-                          }
+                          onClick={() => handleDownloadDocument(doc)}
                         >
                           <span>Скачать</span>
                           <Icon name="download" width={20} height={20} />

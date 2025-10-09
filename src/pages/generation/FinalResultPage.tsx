@@ -33,6 +33,7 @@ const FinalResultPage: React.FC = () => {
     <div className="step-content">
       <FinalResultStep
         documentName={getDocumentName()}
+        documentId={documentGeneration.status?.id}
         downloadUrl={documentGeneration.status?.document_url}
         onStartNew={handleStartNew}
       />

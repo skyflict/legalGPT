@@ -390,6 +390,7 @@ const Generation = () => {
 
               <FinalResultStep
                 documentName={getDocumentName()}
+                documentId={documentGeneration.status?.id}
                 downloadUrl={documentGeneration.status?.document_url}
               />
             </div>

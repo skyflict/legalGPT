@@ -35,6 +35,7 @@ export const API_ENDPOINTS = {
   DOCUMENT_LIST: createApiUrl("v1/document"),
   DOCUMENT_GET: (id: string) => createApiUrl(`v1/document/${id}`),
   DOCUMENT_UPDATE: (id: string) => createApiUrl(`v1/document/${id}`),
+  DOCUMENT_FILE: (id: string) => createApiUrl(`v1/document/${id}/file`),
   DOCUMENT_TYPE: createApiUrl("v1/document-type"),
   ADMIN_USERS: createApiUrl("v1/admin/users"),
   ADMIN_USER_BALANCE: (userId: string) =>
@@ -238,6 +239,67 @@ export const testDocumentTypeApi = async () => {
     return response;
   } catch (error) {
     console.error(error);
+    throw error;
+  }
+};
+
+// Функция для скачивания файла документа
+export const downloadDocument = async (
+  documentId: string,
+  filename?: string
+): Promise<void> => {
+  const token = localStorage.getItem("authToken");
+
+  if (!token) {
+    throw new Error("Не авторизован");
+  }
+
+  try {
+    const response = await fetch(API_ENDPOINTS.DOCUMENT_FILE(documentId), {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // Получаем blob из ответа
+    const blob = await response.blob();
+
+    // Пытаемся получить имя файла из заголовков
+    let finalFilename = filename || "Документ.docx";
+    const contentDisposition = response.headers.get("Content-Disposition");
+    if (contentDisposition) {
+      const filenameMatch = contentDisposition.match(
+        /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+      );
+      if (filenameMatch && filenameMatch[1]) {
+        finalFilename = filenameMatch[1].replace(/['"]/g, "");
+        // Декодируем, если имя файла закодировано
+        try {
+          finalFilename = decodeURIComponent(finalFilename);
+        } catch (e) {
+          // Если декодирование не удалось, используем как есть
+        }
+      }
+    }
+
+    // Создаем ссылку для скачивания
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = finalFilename;
+    document.body.appendChild(a);
+    a.click();
+
+    // Очищаем
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  } catch (error) {
+    console.error("Download error:", error);
     throw error;
   }
 };
