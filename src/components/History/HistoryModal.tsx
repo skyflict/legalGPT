@@ -14,6 +14,9 @@ type DocumentItem = {
   created_at: string;
   modified_at: string;
   required_user_input?: unknown;
+  is_terminal: boolean;
+  public_status: string;
+  public_type: string;
 };
 
 type HistoryResponse = { documents: DocumentItem[] };
@@ -21,25 +24,6 @@ type HistoryResponse = { documents: DocumentItem[] };
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-};
-
-const typeNameMap: Record<string, string> = {
-  dcp: "Договор купли-продажи",
-  arenda: "Договор аренды",
-  gift: "Договор дарения",
-  uslugi: "Договор оказания услуг",
-  zaym: "Договор займа",
-  agent: "Агентский договор",
-  naym: "Договор найма жилого помещения",
-  storage: "Договор хранения",
-};
-
-const stageNameMap: Record<string, string> = {
-  DOC_TYPE_DEDUCED: "Определён тип",
-  ENTITIES_EXCTRACTED: "Нужны данные",
-  DOC_GENERATED: "Сгенерирован",
-  DOC_APPROVED: "Подтверждён",
-  PROCESSING: "Обработка",
 };
 
 function formatDate(iso: string) {
@@ -94,9 +78,8 @@ const HistoryModal = ({ isOpen, onClose }: Props) => {
               <div className="history-empty">Документы отсутствуют</div>
             )}
             {rows.map((doc) => {
-              const typeTitle =
-                (doc.type && typeNameMap[doc.type]) || "Документ";
-              const stageTitle = stageNameMap[doc.stage] || doc.stage;
+              const typeTitle = doc.public_type || "Документ";
+              const stageTitle = doc.public_status || "Неизвестен";
               const queryText = doc.context?.query || "";
               const queryShort =
                 queryText.length > 100

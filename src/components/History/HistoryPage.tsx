@@ -14,29 +14,12 @@ type DocumentItem = {
   created_at: string;
   modified_at: string;
   required_user_input?: unknown;
+  is_terminal: boolean;
+  public_status: string;
+  public_type: string;
 };
 
 type HistoryResponse = { documents: DocumentItem[] };
-
-const typeNameMap: Record<string, string> = {
-  dcp: "Договор купли-продажи",
-  arenda: "Договор аренды",
-  gift: "Договор дарения",
-  uslugi: "Договор оказания услуг",
-  zaym: "Договор займа",
-  agent: "Агентский договор",
-  naym: "Договор найма жилого помещения",
-  storage: "Договор хранения",
-};
-
-const stageNameMap: Record<string, string> = {
-  DOC_TYPE_DEDUCED: "Определён тип",
-  ENTITIES_EXCTRACTED: "Нужны данные",
-  DOC_GENERATED: "Сгенерирован",
-  DOC_APPROVED: "Подтверждён",
-  PROCESSING: "Обработка",
-  LAW_VIOLATED: "Нарушение закона, генерация невозможна",
-};
 
 function formatDate(iso: string) {
   try {
@@ -87,22 +70,6 @@ const HistoryPage = () => {
     navigate(`/generation?document=${doc.id}`);
   };
 
-  const isGenerationIncomplete = (stage: string): boolean => {
-    // Документ не завершен, если статус не "Сгенерирован", "Подтверждён" и не является финальным состоянием
-    // Также исключаем LAW_VIOLATED - такие документы нельзя продолжить
-    const completedStages = [
-      "DOC_GENERATED",
-      "DOC_APPROVED",
-      "COMPLETED",
-      "FINISHED",
-    ];
-    const cannotContinueStages = ["LAW_VIOLATED"];
-
-    return (
-      !completedStages.includes(stage) && !cannotContinueStages.includes(stage)
-    );
-  };
-
   return (
     <section
       className="history-root"
@@ -134,10 +101,11 @@ const HistoryPage = () => {
             <div className="history-empty">Документы отсутствуют</div>
           )}
           {rows.map((doc) => {
-            const typeTitle = (doc.type && typeNameMap[doc.type]) || "Документ";
-            const stageTitle = stageNameMap[doc.stage] || doc.stage;
+            const typeTitle = doc.public_type || "Документ";
+            const stageTitle = doc.public_status || "Неизвестен";
             const queryText = doc.context?.query || "";
             const isExpanded = expandedId === doc.id;
+            const canContinue = !doc.is_terminal;
             return (
               <div className="history-item" key={doc.id}>
                 <div className="history-row">
@@ -172,7 +140,7 @@ const HistoryPage = () => {
                     </div>
                   </div>
                   <div className="history-actions">
-                    {isGenerationIncomplete(doc.stage) && (
+                    {canContinue && (
                       <button
                         className="history-btn history-btn--primary"
                         onClick={() => handleContinueGeneration(doc)}

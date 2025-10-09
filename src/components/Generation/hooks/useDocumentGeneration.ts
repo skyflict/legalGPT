@@ -27,6 +27,9 @@ export interface DocumentStatus {
   modified_at: string;
   result?: any;
   error?: string;
+  is_terminal: boolean;
+  public_status: string;
+  public_type: string;
 }
 
 export interface DocumentGenerationState {
@@ -80,15 +83,19 @@ export const useDocumentGeneration = () => {
             return;
           }
 
-          if (
-            response.stage === "COMPLETED" ||
-            response.stage === "FINISHED" ||
-            response.stage === "DOC_GENERATED"
-          ) {
+          if (response.is_terminal) {
+            // Документ завершен (успех или неудача)
+            const isError =
+              response.stage === "LAW_VIOLATED" ||
+              response.stage === "ERROR" ||
+              response.stage === "FAILED";
             setState((prev) => ({
               ...prev,
-              currentStep: "completed",
+              currentStep: isError ? "error" : "completed",
               isLoading: false,
+              error: isError
+                ? response.error || "Произошла ошибка при генерации документа"
+                : null,
             }));
             stopPolling();
             return;
@@ -107,28 +114,6 @@ export const useDocumentGeneration = () => {
             }
             // Если нет required_user_input, продолжаем поллинг
             // (сервер обработает entities автоматически)
-          }
-
-          if (response.stage === "LAW_VIOLATED") {
-            setState((prev) => ({
-              ...prev,
-              currentStep: "error",
-              isLoading: false,
-            }));
-            stopPolling();
-            return;
-          }
-
-          if (response.stage === "ERROR" || response.stage === "FAILED") {
-            setState((prev) => ({
-              ...prev,
-              currentStep: "error",
-              error:
-                response.error || "Произошла ошибка при генерации документа",
-              isLoading: false,
-            }));
-            stopPolling();
-            return;
           }
         } catch (error) {
           console.error("Polling error:", error);
@@ -248,25 +233,16 @@ export const useDocumentGeneration = () => {
         // Убираем автоматическое создание синтетической схемы
         // Только если сервер явно требует ввод пользователя, показываем форму
 
-        const completedStages = [
-          "DOC_GENERATED",
-          "DOC_APPROVED",
-          "COMPLETED",
-          "FINISHED",
-        ];
-
-        if (completedStages.includes(foundDocument.stage)) {
+        if (foundDocument.is_terminal) {
+          // Документ завершен (успех или неудача)
+          const isError =
+            foundDocument.stage === "LAW_VIOLATED" ||
+            foundDocument.stage === "ERROR" ||
+            foundDocument.stage === "FAILED";
           setState((prev) => ({
             ...prev,
             status: foundDocument,
-            currentStep: "completed",
-            isLoading: false,
-          }));
-        } else if (foundDocument.stage === "LAW_VIOLATED") {
-          setState((prev) => ({
-            ...prev,
-            status: foundDocument,
-            currentStep: "error",
+            currentStep: isError ? "error" : "completed",
             isLoading: false,
           }));
         } else if (

@@ -11,6 +11,9 @@ type DocumentItem = {
   created_at: string;
   modified_at: string;
   required_user_input?: unknown;
+  is_terminal: boolean;
+  public_status: string;
+  public_type: string;
 };
 
 type HistoryResponse = { documents: DocumentItem[] };
@@ -21,20 +24,6 @@ export const useLatestIncompleteDocument = () => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const isGenerationIncomplete = (stage: string): boolean => {
-    const completedStages = [
-      "DOC_GENERATED",
-      "DOC_APPROVED",
-      "COMPLETED",
-      "FINISHED",
-    ];
-    const cannotContinueStages = ["LAW_VIOLATED"];
-
-    return (
-      !completedStages.includes(stage) && !cannotContinueStages.includes(stage)
-    );
-  };
 
   const fetchLatestIncompleteDocument = async () => {
     setIsLoading(true);
@@ -47,9 +36,7 @@ export const useLatestIncompleteDocument = () => {
       const documents = response.documents || [];
 
       // Фильтруем незавершенные документы
-      const incompleteDocuments = documents.filter((doc) =>
-        isGenerationIncomplete(doc.stage)
-      );
+      const incompleteDocuments = documents.filter((doc) => !doc.is_terminal);
 
       if (incompleteDocuments.length > 0) {
         // Сортируем по дате модификации (последний модифицированный)
