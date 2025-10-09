@@ -6,7 +6,7 @@ export interface RequiredUserInput {
   next_stage?: string;
   schema: {
     type: string;
-    properties: any;
+    properties: Record<string, unknown>;
     required: string[];
     additionalProperties: boolean;
   };
@@ -19,12 +19,12 @@ export interface DocumentStatus {
   type?: string;
   context: {
     query: string;
-    entities?: any;
+    entities?: Record<string, unknown>;
   };
   required_user_input?: RequiredUserInput;
   created_at: string;
   modified_at: string;
-  result?: any;
+  result?: Record<string, unknown>;
   error?: string;
   is_terminal: boolean;
   public_status: string;
@@ -132,6 +132,57 @@ export const useDocumentGeneration = () => {
     [stopPolling]
   );
 
+  // Проверка актуального статуса документа при ошибках
+  const checkDocumentStatus = useCallback(
+    async (documentId: string): Promise<boolean> => {
+      try {
+        const response = await apiRequest(
+          API_ENDPOINTS.DOCUMENT_GET(documentId)
+        );
+
+        setState((prev) => ({
+          ...prev,
+          status: response,
+        }));
+
+        // Проверяем, изменился ли статус документа
+        if (response.required_user_input) {
+          setState((prev) => ({
+            ...prev,
+            currentStep: "waiting_input",
+            isLoading: false,
+            error: null,
+          }));
+          return true;
+        }
+
+        if (response.is_terminal) {
+          const isError =
+            response.stage === "LAW_VIOLATED" ||
+            response.stage === "ERROR" ||
+            response.stage === "FAILED";
+          setState((prev) => ({
+            ...prev,
+            currentStep: isError ? "error" : "completed",
+            isLoading: false,
+            error: isError
+              ? response.error || "Произошла ошибка при генерации документа"
+              : null,
+          }));
+          return true;
+        }
+
+        // Документ в процессе обработки - запускаем поллинг
+        await startPolling(documentId);
+        return true;
+      } catch (error) {
+        console.error("Error checking document status:", error);
+        return false;
+      }
+    },
+    [startPolling]
+  );
+
   const startGeneration = useCallback(
     async (query: string) => {
       const documentId = generateUUID();
@@ -156,19 +207,26 @@ export const useDocumentGeneration = () => {
         await startPolling(documentId);
       } catch (error) {
         console.error("Document generation error:", error);
-        setState((prev) => ({
-          ...prev,
-          error: "Ошибка при создании документа",
-          currentStep: "error",
-          isLoading: false,
-        }));
+
+        // Проверяем статус документа на случай если запрос прошел, но ответ не дошел
+        const statusChecked = await checkDocumentStatus(documentId);
+
+        if (!statusChecked) {
+          // Если не удалось получить статус, показываем ошибку
+          setState((prev) => ({
+            ...prev,
+            error: "Ошибка при создании документа",
+            currentStep: "error",
+            isLoading: false,
+          }));
+        }
       }
     },
-    [startPolling]
+    [startPolling, checkDocumentStatus]
   );
 
   const submitUserInput = useCallback(
-    async (userData: any) => {
+    async (userData: Record<string, unknown>) => {
       if (!state.documentId) {
         setState((prev) => ({
           ...prev,
@@ -194,15 +252,23 @@ export const useDocumentGeneration = () => {
         await startPolling(state.documentId);
       } catch (error) {
         console.error("User input submission error:", error);
-        setState((prev) => ({
-          ...prev,
-          error: "Ошибка при отправке данных",
-          currentStep: "error",
-          isLoading: false,
-        }));
+
+        // Проверяем актуальный статус документа
+        // Возможно, запрос прошел, но ответ не дошел, или документ уже пошел дальше
+        const statusChecked = await checkDocumentStatus(state.documentId);
+
+        if (!statusChecked) {
+          // Если не удалось получить статус, показываем ошибку
+          setState((prev) => ({
+            ...prev,
+            error: "Ошибка при отправке данных",
+            currentStep: "error",
+            isLoading: false,
+          }));
+        }
       }
     },
-    [state.documentId, startPolling]
+    [state.documentId, startPolling, checkDocumentStatus]
   );
 
   const continueGeneration = useCallback(
