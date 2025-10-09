@@ -10,7 +10,7 @@ const ContractTypePage: React.FC = () => {
   const documentGeneration = useDocumentGeneration();
 
   const resolvedDocType = useResolvedDocumentType(
-    documentGeneration.status as any
+    documentGeneration.status ?? undefined
   );
 
   React.useEffect(() => {
@@ -35,9 +35,12 @@ const ContractTypePage: React.FC = () => {
   ]);
 
   const handleContractTypeConfirm = () => {
-    const defaultDocumentType =
-      documentGeneration.status?.required_user_input?.schema?.properties
-        ?.document_type?.default;
+    const properties =
+      documentGeneration.status?.required_user_input?.schema?.properties;
+    const documentTypeProperty = properties?.document_type as
+      | { default?: string }
+      | undefined;
+    const defaultDocumentType = documentTypeProperty?.default;
 
     documentGeneration.submitUserInput({
       event_type: "DOC_TYPE_CONFIRMED",

@@ -125,9 +125,12 @@ const Generation = () => {
   };
 
   const handleContractYes = () => {
-    const defaultDocumentType =
-      documentGeneration.status?.required_user_input?.schema?.properties
-        ?.document_type?.default;
+    const properties =
+      documentGeneration.status?.required_user_input?.schema?.properties;
+    const documentTypeProperty = properties?.document_type as
+      | { default?: string }
+      | undefined;
+    const defaultDocumentType = documentTypeProperty?.default;
     documentGeneration.submitUserInput({
       event_type: "DOC_TYPE_CONFIRMED",
       data: {
