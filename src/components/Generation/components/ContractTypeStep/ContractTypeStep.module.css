@@ -20,7 +20,7 @@
 
 .name {
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 16px;
   font-weight: 400;
   margin-left: 16px;

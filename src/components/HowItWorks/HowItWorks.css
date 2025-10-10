@@ -14,7 +14,7 @@
 
 .section-title {
   color: #000;
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 24px;
   font-weight: 300;
   margin-bottom: 40px;
@@ -25,7 +25,7 @@
   background: #fff;
   backdrop-filter: blur(10px);
   padding: 24px;
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 14px !important;
   font-weight: 400;
   color: var(--Text-Primary, #1a1a1a);
@@ -173,7 +173,7 @@
 
 .guarantee-title {
   color: #fff;
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 16px;
   font-weight: 400;
   margin-bottom: 16px;
@@ -181,7 +181,7 @@
 
 .guarantee-description {
   color: #fff;
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 14px;
   font-weight: 400;
 }
@@ -365,7 +365,7 @@
 .how-it-works-step {
   width: 540px;
   padding: 24px;
-  height: 108px;
+  height: 120px;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -382,7 +382,7 @@
 .how-it-works-step-2 {
   width: 559px;
   padding: 24px;
-  height: 108px;
+  height: 120px;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -399,7 +399,7 @@
 .how-it-works-step-3 {
   width: 720px;
   padding: 24px;
-  height: 108px;
+  height: 120px;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -415,14 +415,14 @@
 
 .how-it-works-step-number {
   color: #000;
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 64px;
   font-weight: 300;
 }
 
 .how-it-works-step-title {
   color: #000;
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 14px;
   font-weight: 300;
   display: block;
@@ -434,10 +434,9 @@
 
 .how-it-works-step-image-3 {
   width: 224px;
-  height: 108px;
+  height: 120px;
   border-radius: var(--Corner-Extra-large, 28px);
-  background: url("../../assets/book.webp") white 50% 50% / calc(100% - 115px)
-    no-repeat;
+  background: url("../../assets/book.webp") white 50% -500% / calc(100% - 88px) no-repeat;
   backdrop-filter: blur(10px);
 
   @media (max-width: 768px) {
@@ -447,9 +446,10 @@
 
 .how-it-works-step-image-4 {
   width: 224px;
-  height: 108px;
+  height: 120px;
   border-radius: var(--Corner-Extra-large, 28px);
-  background: url("../../assets/paper.webp") white 50% 50% / contain no-repeat;
+  background: url("../../assets/paper.webp") white 50% 50% / calc(100% - 95px)
+    no-repeat;
   backdrop-filter: blur(10px);
 
   @media (max-width: 768px) {
@@ -467,7 +467,7 @@
   backdrop-filter: blur(10px);
   color: #2e2bff;
   text-align: center;
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;

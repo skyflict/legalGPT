@@ -16,11 +16,10 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: rgba(46, 43, 255, 0.1);
-  backdrop-filter: blur(60px);
-  -webkit-backdrop-filter: blur(60px);
+  background: #f9f9f9;
   min-height: 100vh;
   position: relative;
+  overflow-x: hidden;
 }
 
 /* Блокировка скролла фона при открытом мобильном сайдбаре */
@@ -30,23 +29,71 @@ body.no-scroll {
   width: 100%;
 }
 
+/* Размытые синие круги - левая сторона */
 body::before {
   content: "";
   position: fixed;
   top: 10%;
-  left: 50%;
-  width: 80%;
-  height: 20%;
+  left: 3%;
+  width: 700px;
+  height: 700px;
   background: #0a12aa;
+  border-radius: 50%;
   filter: blur(400px);
+  opacity: 0.2;
   z-index: -1;
   pointer-events: none;
-  transform: translate(-50%, -50%);
-  opacity: 0.3;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  top: 35%;
+  left: 3%;
+  width: 700px;
+  height: 700px;
+  background: #0a12aa;
+  border-radius: 50%;
+  filter: blur(400px);
+  opacity: 0.1;
+  z-index: -1;
+  pointer-events: none;
 }
 
 #root {
   width: 100%;
+  position: relative;
+}
+
+/* Дополнительные размытые круги через #root */
+#root::before {
+  content: "";
+  position: fixed;
+  top: 16%;
+  right: -7%;
+  width: 700px;
+  height: 700px;
+  background: #0a12aa;
+  border-radius: 50%;
+  filter: blur(400px);
+  opacity: 0.2;
+  z-index: -1;
+  pointer-events: none;
+}
+
+#root::after {
+  content: "";
+  position: fixed;
+  top: 50%;
+  right: -3%;
+  width: 700px;
+  height: 700px;
+  background: #0a12aa;
+  border-radius: 50%;
+  filter: blur(400px);
+  opacity: 0.2;
+  z-index: -1;
+  pointer-events: none;
 }
 
 .app {
@@ -54,6 +101,38 @@ body::before {
   display: flex;
   flex-direction: column;
   width: 100%;
+  position: relative;
+}
+
+/* Фиолетовые акценты через .app */
+.app::before {
+  content: "";
+  position: fixed;
+  top: 3%;
+  right: 5%;
+  width: 455px;
+  height: 455px;
+  background: #bab9ff;
+  border-radius: 50%;
+  filter: blur(300px);
+  opacity: 0.6;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.app::after {
+  content: "";
+  position: fixed;
+  top: 24%;
+  left: 3%;
+  width: 455px;
+  height: 455px;
+  background: #bab9ff;
+  border-radius: 50%;
+  filter: blur(300px);
+  opacity: 0.3;
+  z-index: -1;
+  pointer-events: none;
 }
 
 .app-layout {

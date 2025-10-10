@@ -12,7 +12,7 @@
 
 .faq-title {
   color: #000;
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 24px;
   font-weight: 300;
   margin-bottom: 40px;
@@ -50,7 +50,7 @@
   align-items: center;
 
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
@@ -90,7 +90,7 @@
 
 .faq-answer-content {
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 12px;
   font-weight: 400;
   line-height: 140%;

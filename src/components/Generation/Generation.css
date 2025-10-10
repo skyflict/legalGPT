@@ -38,7 +38,7 @@
 
 .generation-title {
   color: #000;
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 32px;
@@ -133,7 +133,7 @@
 .form-label {
   display: block;
   color: #374151;
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 14px;
   font-weight: 500;
   margin-bottom: 8px;
@@ -150,7 +150,7 @@
   overflow: hidden;
   transition: all 0.3s ease;
   color: var(--Text-Secondary, #8e8e8e);
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.4;
@@ -190,7 +190,7 @@
   width: 161px;
   height: 52px;
   color: #000;
-  font-family: Jura;
+  font-family: "Jura", sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 700;
@@ -224,7 +224,7 @@
   width: 161px;
   height: 52px;
   color: #000;
-  font-family: Jura;
+  font-family: "Jura", sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 700;
@@ -282,7 +282,7 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
   color: #000;
-  font-family: Jura;
+  font-family: "Jura", sans-serif;
   font-size: 16px;
   font-weight: 700;
 }
@@ -370,7 +370,7 @@
 
 .contract-question-title {
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 16px;
   font-weight: 400;
   margin-top: 24px;
@@ -382,7 +382,7 @@
   border-radius: var(--Corner-Medium, 12px);
   background: #fff;
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Jura;
+  font-family: "Jura", sans-serif;
   font-size: 16px;
   font-weight: 700;
   display: flex;
@@ -396,7 +396,7 @@
   border-radius: var(--Corner-Medium, 12px);
   background: var(--Brand, #1613ef);
   color: var(--Text-Inverted, #f5f5f5);
-  font-family: Jura;
+  font-family: "Jura", sans-serif;
   font-size: 16px;
   font-weight: 700;
 }
@@ -432,7 +432,7 @@
 
 .contract-type-name {
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
@@ -471,7 +471,7 @@
   border-radius: 16px;
 
   color: var(--Text-Inverted, #f5f5f5);
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 14px;
   font-weight: 400;
 }
@@ -483,7 +483,7 @@
   min-height: 48px;
 
   color: #1b1b1b;
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 14px;
   font-weight: 400;
 }
@@ -526,7 +526,7 @@
   border: none;
   cursor: pointer;
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 16px;
   font-weight: 400;
   transition: opacity 0.2s ease;
@@ -543,7 +543,7 @@
 
 .contract-select-title {
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 16px;
   font-weight: 400;
   margin-bottom: 24px;
@@ -565,7 +565,7 @@
   border: 1px solid #000;
   border-radius: 16px;
   cursor: pointer;
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 16px;
   font-weight: 400;
   color: var(--Text-Primary, #1a1a1a);
@@ -605,7 +605,7 @@
 
 .dropdown-item {
   padding: 16px 20px;
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 16px;
   font-weight: 400;
   color: var(--Text-Primary, #1a1a1a);
@@ -637,7 +637,7 @@
   border: none;
   border-radius: 16px;
   padding: 16px 32px;
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
@@ -666,7 +666,7 @@
 
 .help-text-content {
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 12px;
   font-weight: 400;
   flex: 1;
@@ -707,7 +707,7 @@
 
 .example-title {
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 16px;
   font-weight: 400;
   margin-bottom: 16px;
@@ -715,7 +715,7 @@
 
 .example-text {
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 14px;
   font-weight: 400;
   padding: 24px;
@@ -745,8 +745,8 @@
   width: 279px;
   height: 575px;
   border-radius: var(--Corner-Extra-large, 28px);
-  background: url("../../assets/time.webp") white center 95px /
-    calc(100% - 80px) no-repeat;
+  background: url("../../assets/time.webp") white center 25px /
+    calc(100% - 10px) no-repeat;
   backdrop-filter: blur(10px);
   margin-top: 40px;
   margin-left: 8px;
@@ -759,7 +759,7 @@
 }
 
 .frequent-queries-title {
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 16px;
   font-weight: 400;
   margin-bottom: 16px;
@@ -797,7 +797,7 @@
   align-items: center;
 
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
@@ -837,7 +837,7 @@
 
 .frequent-queries-answer-content {
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 12px;
   font-weight: 400;
   line-height: 140%;
@@ -854,7 +854,7 @@
 
 .frequent-queries-answer p {
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 12px;
   font-weight: 400;
   line-height: 140%;
@@ -873,7 +873,7 @@
   min-height: 48px;
   padding: 16px 24px;
   color: #1b1b1b;
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 14px;
   font-weight: 400;
   border: none;
@@ -922,7 +922,7 @@
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(10px);
   color: #000;
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 14px;
   font-weight: 400;
   text-align: center;
@@ -962,7 +962,7 @@
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(10px);
   color: #000;
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 12px;
   font-weight: 400;
   text-align: center;
@@ -1042,7 +1042,7 @@
   align-items: center;
   gap: 12px;
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Jura;
+  font-family: "Jura", sans-serif;
   font-size: 16px;
   font-weight: 700;
   margin-top: 24px;
@@ -1060,7 +1060,7 @@
 
 .step-two-result {
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 16px;
   font-weight: 400;
 }
@@ -1091,7 +1091,7 @@
   align-items: center;
   gap: 8px;
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 16px;
   font-weight: 400;
   margin-bottom: 24px;
@@ -1112,7 +1112,7 @@
 .form-field-label {
   display: block;
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 14px;
   font-weight: 500;
   margin-bottom: 8px;
@@ -1122,7 +1122,7 @@
   padding: 16px 20px;
   border: 1px solid #e5e7eb;
   border-radius: 16px;
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 13px;
   font-weight: 400;
   color: var(--Text-Primary, #1a1a1a);
@@ -1158,7 +1158,7 @@
   align-items: center;
   gap: 8px;
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 16px;
   font-weight: 400;
   margin-bottom: 16px;
@@ -1166,7 +1166,7 @@
 
 .additional-description {
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 14px;
   font-weight: 400;
   margin-bottom: 24px;
@@ -1182,7 +1182,7 @@
   padding: 16px 32px;
   border: none;
   border-radius: 16px;
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 14px;
   font-weight: 400;
   cursor: pointer;
@@ -1216,7 +1216,7 @@
   align-items: flex-start;
   gap: 12px;
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 12px;
   font-weight: 400;
 }
@@ -1259,7 +1259,7 @@
 
 .final-title {
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 16px;
   font-weight: 400;
   margin-bottom: 24px;
@@ -1283,7 +1283,7 @@
 }
 
 .document-name {
-  font-family: Jura;
+  font-family: "Jura", sans-serif;
   font-size: 16px;
   font-weight: 700;
   color: var(--Text-Primary, #1a1a1a);
@@ -1295,7 +1295,7 @@
   min-height: 48px;
   padding: 12px 24px;
   color: #1b1b1b;
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 14px;
   font-weight: 400;
   border: none;
@@ -1330,13 +1330,13 @@
 
 .consultation-title {
   color: var(--Text-Primary, #1a1a1a);
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 16px;
   font-weight: 400;
 }
 
 .consultation-description {
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 14px;
   font-weight: 400;
   margin-top: 12px;
@@ -1352,7 +1352,7 @@
   color: white;
   border: none;
   border-radius: 16px;
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 14px;
   font-weight: 400;
   cursor: pointer;
@@ -1375,7 +1375,7 @@
 }
 
 .consultation-note {
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 10px;
   font-weight: 400;
   max-width: 338px;

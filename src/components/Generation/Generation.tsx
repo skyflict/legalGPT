@@ -350,7 +350,7 @@ const Generation = () => {
               {isLoading ? (
                 <div className="step-two-loading">
                   <Spinner />
-                  <span>Обрабатываем ваш запрос</span>
+                  <span>Проверяем законы</span>
                 </div>
               ) : (
                 <EntitiesFormStep

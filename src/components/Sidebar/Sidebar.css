@@ -9,7 +9,7 @@
   z-index: 1010;
   flex-shrink: 0;
   pointer-events: auto;
-  font-family: Jura;
+  font-family: "Jura", sans-serif;
 }
 
 .sidebar-content {

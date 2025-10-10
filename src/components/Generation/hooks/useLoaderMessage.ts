@@ -17,11 +17,11 @@ export function useLoaderMessage(isLoading: boolean, status?: Status): string {
       case "DOC_GENERATED":
         return "Генерируем документ...";
       case "PROCESSING":
-        return "Обрабатываем ваш запрос...";
+        return "Проверяем законы...";
       case "VALIDATING":
         return "Проверяем данные...";
       default:
-        return isLoading ? "Обрабатываем ваш запрос..." : "";
+        return isLoading ? "Проверяем законы..." : "";
     }
   }, [isLoading, status?.stage]);
 }

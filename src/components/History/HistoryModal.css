@@ -41,7 +41,7 @@
   filter: none; /* не инвертируем */
 }
 .history-title {
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 16px;
   color: #1a1a1a;
 }
@@ -56,7 +56,7 @@
   align-items: center;
   gap: 8px;
   color: #6b7280;
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 12px;
 }
 .history-dot {
@@ -73,7 +73,7 @@
 .history-query {
   margin-top: 6px;
   color: #1a1a1a;
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 12px;
 }
 .history-actions {
@@ -92,7 +92,7 @@
   border-radius: 12px;
   background: #1f2937;
   color: #fff;
-  font-family: Unbounded;
+  font-family: "Unbounded", sans-serif;
   font-size: 12px;
   cursor: pointer;
 }
@@ -136,7 +136,7 @@
   color: #0f172a;
   border-radius: 10px;
   cursor: pointer;
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 12px;
 }
 .history-toggle .toggle-icon {
@@ -157,12 +157,12 @@
 }
 .details-label {
   color: #6b7280;
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 12px;
 }
 .details-value {
   color: #1a1a1a;
-  font-family: Inter;
+  font-family: "Inter", sans-serif;
   font-size: 14px;
 }
 .details-mono {

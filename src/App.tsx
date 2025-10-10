@@ -115,6 +115,7 @@ function App() {
   };
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [generationKey, setGenerationKey] = useState(0);
 
   useEffect(() => {
     const handleResize = () => {
@@ -212,6 +213,8 @@ function App() {
                 }
               }}
               onOpenGeneration={() => {
+                // Сбрасываем состояние компонента Generation через key
+                setGenerationKey((prev) => prev + 1);
                 navigate("/generation");
                 if (window.innerWidth <= 1024) {
                   setIsSidebarOpen(false);
@@ -239,7 +242,7 @@ function App() {
               path="/generation"
               element={
                 isLoggedIn ? (
-                  <GenerationPage />
+                  <GenerationPage key={generationKey} />
                 ) : (
                   <HomePage
                     onOpenAuthModal={handleOpenAuthModal}
