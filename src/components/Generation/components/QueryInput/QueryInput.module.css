@@ -20,7 +20,7 @@
   resize: none;
   overflow: hidden;
   transition: all 0.3s ease;
-  color: var(--Text-Secondary, #8e8e8e);
+  color: black;
   font-family: "Inter", sans-serif;
   font-size: 16px;
   font-weight: 400;
@@ -39,7 +39,7 @@
 .textareaDisabled {
   opacity: 0.6;
   cursor: not-allowed;
-  background: rgba(241, 245, 249, 0.8);
+  background: #fff;
 }
 
 .actions {

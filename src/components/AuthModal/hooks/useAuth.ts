@@ -248,6 +248,7 @@ export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
   const handleSetNewPassword = async (password: string) => {
     setIsLoading(true);
     setError("");
+    setFieldErrors({});
 
     try {
       if (!resetToken) {
@@ -263,7 +264,27 @@ export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
       });
 
       if (!response.ok) {
-        throw new Error("Ошибка при смене пароля");
+        let friendlyError = "Ошибка при смене пароля";
+        let errorField: "password" | "general" = "general";
+
+        try {
+          const errorBody = (await response.clone().json()) as {
+            message?: string;
+          };
+
+          // Проверяем, является ли это ошибкой валидации пароля
+          if (errorBody?.message && /password.*length.*at least 8/i.test(errorBody.message)) {
+            friendlyError = "Минимальное количество символов - 8";
+            errorField = "password";
+          } else if (errorBody?.message) {
+            friendlyError = errorBody.message;
+          }
+        } catch {
+          // Если не удалось распарсить JSON, используем стандартное сообщение
+        }
+
+        setFieldErrors({ [errorField]: friendlyError });
+        throw new Error(friendlyError);
       }
 
       return { success: true };

@@ -1,6 +1,44 @@
 .history-root {
   width: 824px;
   max-width: 100%;
+  position: relative;
+}
+
+.history-root::after {
+  content: "";
+  position: absolute;
+  top: 30vh;
+  right: 0;
+  transform: translateY(-50%);
+  background-image: url("../../assets/building.png");
+  background-size: contain;
+  background-position: center right;
+  background-repeat: no-repeat;
+  z-index: 1;
+  width: 572px;
+  height: 572px;
+  pointer-events: none;
+}
+
+.history-container {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.history-main-content {
+  flex: 1;
+  max-width: 824px;
+  position: relative;
+  z-index: 10;
+}
+
+.history-sidebar {
+  flex-shrink: 0;
+  position: sticky;
+  top: 20px;
+  z-index: 10;
 }
 .history-loading,
 .history-error,
@@ -11,6 +49,8 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  position: relative;
+  z-index: 10;
 }
 .history-item {
   background: rgba(255, 255, 255, 0.8);
@@ -30,7 +70,7 @@
 .history-icon {
   width: 44px;
   height: 44px;
-  background: #f3f4f6; /* светло-серый фон */
+  background: #1a1a1a14;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -41,9 +81,10 @@
   filter: none; /* не инвертируем */
 }
 .history-title {
-  font-family: "Unbounded", sans-serif;
+  font-family: "Inter", "regular";
   font-size: 16px;
   color: #1a1a1a;
+  font-weight: 500;
 }
 .history-title--clickable {
   cursor: pointer;
@@ -62,6 +103,21 @@
 .history-dot {
   opacity: 0.6;
 }
+
+.toggle-text {
+  font-family: "Inter", "semi-bold";
+  font-size: 14px;
+  color: #1a1a1a;
+  font-weight: 600;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  border: none;
+  color: #0f172a;
+  cursor: pointer;
+}
 .history-id {
   color: #9ca3af;
   font-size: 11px;
@@ -78,9 +134,9 @@
 }
 .history-actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 8px;
-  align-items: flex-end;
+  align-items: center;
 }
 .history-btn {
   display: inline-flex;
@@ -124,61 +180,66 @@
   background: rgba(26, 26, 26, 0.1);
   color: #1b1b1b;
 }
-/* Кнопка "Текст запроса" */
-.history-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-  padding: 6px 10px;
-  border: none;
-  background: #f3f4f6;
-  color: #0f172a;
-  border-radius: 10px;
-  cursor: pointer;
-  font-family: "Inter", sans-serif;
-  font-size: 12px;
-}
-.history-toggle .toggle-icon {
-  transition: transform 0.2s ease;
-}
-.history-toggle .toggle-icon.open {
-  transform: rotate(180deg);
-}
-.history-details {
+
+/* Секция "Текст запроса" */
+.history-query-section {
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px solid #eee;
 }
-.details-grid {
-  display: grid;
-  grid-template-columns: 160px 1fr;
-  gap: 8px 16px;
+
+.query-toggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: "Inter", "semi-bold";
+  font-size: 14px;
+  color: #1a1a1a;
+  font-weight: 600;
 }
-.details-label {
-  color: #6b7280;
-  font-family: "Inter", sans-serif;
-  font-size: 12px;
+
+.query-toggle:hover {
+  opacity: 0.7;
 }
-.details-value {
+
+.query-toggle .toggle-icon {
+  transition: transform 0.2s ease;
+}
+
+.query-toggle .toggle-icon.open {
+  transform: rotate(180deg);
+}
+
+.query-text {
+  margin-top: 12px;
   color: #1a1a1a;
   font-family: "Inter", sans-serif;
   font-size: 14px;
-}
-.details-mono {
   white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.6;
 }
 
 /* Мобильные стили */
 @media (max-width: 768px) {
-  .history-meta {
-    flex-wrap: wrap;
+  .history-container {
+    flex-direction: column;
   }
 
-  .history-id {
+  .history-sidebar {
     width: 100%;
+    position: static;
+  }
+
+  .history-main-content {
     max-width: 100%;
-    margin-top: 4px;
+  }
+
+  .history-meta {
+    flex-wrap: wrap;
   }
 
   .history-row {
@@ -187,13 +248,13 @@
   }
 
   .history-actions {
-    flex-direction: row;
-    align-items: center;
+    flex-wrap: wrap;
     margin-top: 12px;
-    margin-left: 40px;
+    margin-left: 0;
   }
 
-  .details-grid {
-    grid-template-columns: 1fr;
+  .history-btn--primary {
+    flex: 1;
+    min-width: 140px;
   }
 }

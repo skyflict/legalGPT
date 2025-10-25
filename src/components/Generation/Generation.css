@@ -1,7 +1,35 @@
+/* Блок отображения запроса пользователя */
+.user-query-display {
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  background: rgba(46, 43, 255, 0.05);
+  border: 1px solid rgba(46, 43, 255, 0.1);
+}
+
+.user-query-label {
+  color: #2e2bff;
+  font-family: "Unbounded", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  margin-bottom: 8px;
+}
+
+.user-query-text {
+  color: #1a1a1a;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 .generation {
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   transition: all 0.3s ease;
 }
 

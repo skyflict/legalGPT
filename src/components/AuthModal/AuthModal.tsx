@@ -268,28 +268,41 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
             {isLoginMode && resetStep === "new_password" && (
               <>
-                <input
-                  type="password"
-                  placeholder="Новый пароль"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  className="auth-modal__input"
-                  disabled={auth.isLoading}
-                />
-                <input
-                  type="password"
-                  placeholder="Повторите новый пароль"
-                  value={newPasswordConfirm}
-                  onChange={(e) => setNewPasswordConfirm(e.target.value)}
-                  className="auth-modal__input"
-                  disabled={auth.isLoading}
-                />
-
-                {newPassword &&
-                  newPasswordConfirm &&
-                  newPassword !== newPasswordConfirm && (
-                    <div className="auth-modal__error">Пароли не совпадают</div>
+                <div className="auth-modal__field">
+                  <input
+                    type="password"
+                    placeholder="Новый пароль"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className={`auth-modal__input ${auth.fieldErrors.password ? "auth-modal__input--error" : ""}`}
+                    disabled={auth.isLoading}
+                  />
+                  {auth.fieldErrors.password && (
+                    <div className="auth-modal__field-error">
+                      {auth.fieldErrors.password}
+                    </div>
                   )}
+                </div>
+
+                <div className="auth-modal__field">
+                  <input
+                    type="password"
+                    placeholder="Повторите новый пароль"
+                    value={newPasswordConfirm}
+                    onChange={(e) => setNewPasswordConfirm(e.target.value)}
+                    className={`auth-modal__input ${
+                      newPassword && newPasswordConfirm && newPassword !== newPasswordConfirm
+                        ? "auth-modal__input--error"
+                        : ""
+                    }`}
+                    disabled={auth.isLoading}
+                  />
+                  {newPassword &&
+                    newPasswordConfirm &&
+                    newPassword !== newPasswordConfirm && (
+                      <div className="auth-modal__field-error">Пароли не совпадают</div>
+                    )}
+                </div>
 
                 <button
                   type="submit"

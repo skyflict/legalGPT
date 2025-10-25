@@ -61,6 +61,8 @@ const EntitiesFormPage: React.FC = () => {
     }
   }, [documentGeneration.currentStep, navigate]);
 
+  const userQuery = documentGeneration.status?.context?.query;
+
   return (
     <div className="step-content">
       <EntitiesFormStep
@@ -72,6 +74,7 @@ const EntitiesFormPage: React.FC = () => {
         onSubmit={handleUserFormSubmit}
         isValid={isFormValid}
         groups={groups}
+        query={userQuery}
       />
     </div>
   );

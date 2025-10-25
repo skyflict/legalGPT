@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Icon from "../Icon";
 import "./HistoryModal.css";
 import { apiRequest, API_ENDPOINTS, downloadDocument } from "../../utils/api";
+import HelpText from "../Generation/components/HelpText/HelpText";
 
 type DocumentItem = {
   id: string;
@@ -22,7 +23,26 @@ type HistoryResponse = { documents: DocumentItem[] };
 
 function formatDate(iso: string) {
   try {
-    return new Date(iso).toLocaleString("ru-RU");
+    const date = new Date(iso);
+    const months = [
+      "января",
+      "февраля",
+      "марта",
+      "апреля",
+      "мая",
+      "июня",
+      "июля",
+      "августа",
+      "сентября",
+      "октября",
+      "ноября",
+      "декабря",
+    ];
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${day} ${month}, ${hours}:${minutes}`;
   } catch {
     return iso;
   }
@@ -34,6 +54,7 @@ const HistoryPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [items, setItems] = useState<DocumentItem[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [showHelpText, setShowHelpText] = useState(true);
 
   useEffect(() => {
     let ignore = false;
@@ -83,118 +104,135 @@ const HistoryPage = () => {
       className="history-root"
       style={{
         width: "100%",
-        maxWidth: 824,
+        maxWidth: "100%",
         maxHeight: "none",
         overflow: "auto",
       }}
     >
-      <h2
-        className="modal-title"
-        style={{
-          marginBottom: 16,
-          fontFamily: "Unbounded",
-          fontSize: 24,
-          fontWeight: 300,
-          textAlign: "left",
-        }}
-      >
-        Ваши договоры
-      </h2>
-      {isLoading && <div className="history-loading">Загрузка...</div>}
-      {error && <div className="history-error">{error}</div>}
+      <div className="history-container">
+        <div className="history-main-content">
+          <h2
+            className="modal-title"
+            style={{
+              marginBottom: 16,
+              fontFamily: "Unbounded",
+              fontSize: 24,
+              fontWeight: 300,
+              textAlign: "left",
+            }}
+          >
+            Ваши договоры
+          </h2>
+          {isLoading && <div className="history-loading">Загрузка...</div>}
+          {error && <div className="history-error">{error}</div>}
 
-      {!isLoading && !error && (
-        <div className="history-list">
-          {rows.length === 0 && (
-            <div className="history-empty">Документы отсутствуют</div>
-          )}
-          {rows.map((doc) => {
-            const typeTitle = doc.public_type || "Документ";
-            const stageTitle = doc.public_status || "Неизвестен";
-            const queryText = doc.context?.query || "";
-            const isExpanded = expandedId === doc.id;
-            const canContinue = !doc.is_terminal;
-            return (
-              <div className="history-item" key={doc.id}>
-                <div className="history-row">
-                  <div className="history-primary">
-                    <div className="history-icon">
-                      <Icon name="text" width={24} height={24} />
-                    </div>
-                    <div className="history-main">
-                      <div className="history-title">{typeTitle}</div>
-                      <div className="history-meta">
-                        <span className="history-stage">{stageTitle}</span>
-                        <span className="history-dot">•</span>
-                        <span className="history-date">
-                          {formatDate(doc.created_at)}
-                        </span>
-                        <span className="history-dot">•</span>
-                        <span className="history-id">ID: {doc.id}</span>
-                      </div>
-                      <button
-                        className="history-toggle"
-                        onClick={() => toggleRow(doc.id)}
-                        aria-expanded={isExpanded}
-                      >
-                        <span className="toggle-text">Текст запроса</span>
-                        <Icon
-                          name="chevron-down"
-                          width={16}
-                          height={16}
-                          className={`toggle-icon ${isExpanded ? "open" : ""}`}
-                        />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="history-actions">
-                    {canContinue && (
-                      <button
-                        className="history-btn history-btn--primary"
-                        onClick={() => handleContinueGeneration(doc)}
-                        title="Продолжить генерацию"
-                      >
-                        Продолжить
-                      </button>
-                    )}
-                    {doc.is_terminal && (
-                      <button
-                        className="history-btn history-btn--icon"
-                        onClick={() => handleDownloadDocument(doc)}
-                        aria-label="Скачать"
-                        title="Скачать"
-                      >
-                        <Icon name="download" width={20} height={20} />
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {isExpanded && (
-                  <div className="history-details">
-                    <div className="details-grid">
-                      <div className="details-label">Тип</div>
-                      <div className="details-value">{typeTitle}</div>
-
-                      <div className="details-label">Статус</div>
-                      <div className="details-value">{stageTitle}</div>
-
-                      {queryText && (
-                        <>
-                          <div className="details-label">Запрос</div>
-                          <div className="details-value details-mono">
-                            {queryText}
+          {!isLoading && !error && (
+            <div className="history-list">
+              {rows.length === 0 && (
+                <div className="history-empty">Документы отсутствуют</div>
+              )}
+              {rows.map((doc) => {
+                const typeTitle = doc.public_type || "Документ";
+                const queryText = doc.context?.query || "";
+                const isExpanded = expandedId === doc.id;
+                const canContinue = !doc.is_terminal;
+                return (
+                  <div className="history-item" key={doc.id}>
+                    <div className="history-row">
+                      <div className="history-primary">
+                        <div className="history-icon">
+                          <Icon name="text" width={24} height={24} />
+                        </div>
+                        <div className="history-main">
+                          <div className="history-title">{typeTitle}</div>
+                          <div className="history-meta">
+                            <span className="history-date">
+                              {formatDate(doc.created_at)}
+                            </span>
                           </div>
-                        </>
-                      )}
+                        </div>
+                      </div>
+                      <div className="history-actions">
+                        {canContinue && (
+                          <button
+                            className="history-btn history-btn--primary"
+                            onClick={() => handleContinueGeneration(doc)}
+                            title="Продолжить генерацию"
+                          >
+                            Продолжить
+                          </button>
+                        )}
+                        {doc.is_terminal && (
+                          <>
+                            <button
+                              className="history-btn history-btn--secondary"
+                              onClick={() => {
+                                // TODO: Implement lawyer help functionality
+                                console.log(
+                                  "Помощь юриста для документа:",
+                                  doc.id
+                                );
+                              }}
+                              title="Помощь юриста"
+                            >
+                              Помощь юриста
+                            </button>
+                            <button
+                              className="history-btn history-btn--icon"
+                              onClick={() => handleDownloadDocument(doc)}
+                              aria-label="Скачать"
+                              title="Скачать"
+                            >
+                              <Icon name="download" width={20} height={20} />
+                            </button>
+                            {/* <button
+                              className="history-btn history-btn--icon"
+                              onClick={() => handleContinueGeneration(doc)}
+                              aria-label="Редактировать"
+                              title="Редактировать"
+                            >
+                              <Icon name="edit" width={20} height={20} />
+                            </button> */}
+                          </>
+                        )}
+                      </div>
                     </div>
+
+                    {queryText && (
+                      <div className="history-query-section">
+                        <button
+                          className="query-toggle"
+                          onClick={() => toggleRow(doc.id)}
+                        >
+                          <span>Текст запроса</span>
+                          <Icon
+                            name="chevron-down"
+                            width={16}
+                            height={16}
+                            className={`toggle-icon ${
+                              isExpanded ? "open" : ""
+                            }`}
+                          />
+                        </button>
+                        {isExpanded && (
+                          <div className="query-text">{queryText}</div>
+                        )}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          )}
         </div>
-      )}
+
+        <div className="history-sidebar">
+          <HelpText
+            visible={showHelpText}
+            onClose={() => setShowHelpText(false)}
+          />
+        </div>
+      </div>
     </section>
   );
 };

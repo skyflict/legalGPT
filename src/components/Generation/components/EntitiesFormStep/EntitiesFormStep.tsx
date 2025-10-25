@@ -23,6 +23,7 @@ type Props = {
   onSubmit: () => void;
   isValid: boolean;
   groups?: Group[];
+  query?: string;
 };
 
 const EntitiesFormStep: React.FC<Props> = ({
@@ -34,6 +35,7 @@ const EntitiesFormStep: React.FC<Props> = ({
   onSubmit,
   isValid,
   groups = [],
+  query,
 }) => {
   const [openOptionalGroups, setOpenOptionalGroups] = useState<
     Record<string, boolean>
@@ -68,6 +70,13 @@ const EntitiesFormStep: React.FC<Props> = ({
           </div>
 
           <div className="step-three-content">
+            {query && (
+              <div className="user-query-display">
+                <div className="user-query-label">Ваш запрос:</div>
+                <div className="user-query-text">{query}</div>
+              </div>
+            )}
+
             <div className="step-three-title">
               Введите обязательные недостающие данные
               {/* <Icon name="helpOutlined" width={16} height={16} /> */}

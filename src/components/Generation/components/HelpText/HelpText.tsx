@@ -13,7 +13,8 @@ const HelpText: React.FC<HelpTextProps> = ({ visible, onClose }) => {
     <div className={styles.root}>
       <div className={styles.content}>
         Если у вас остались юридические вопросы, вы всегда можете{" "}
-        <a href="#">обратиться</a> к нашим юристам за помощью
+        <span className={styles.helpTextLink}>обратиться</span> к нашим юристам
+        за помощью
       </div>
       <button className={styles.close} onClick={onClose} aria-label="Закрыть">
         <Icon name="close" width={16} height={16} />

@@ -203,16 +203,9 @@ body::after {
   padding: 0 16px;
 }
 
-/* Центрируем основной контент даже при наличии сайдбара */
+/* Выравниваем основной контент по левому краю при наличии сайдбара */
 .app-layout.with-sidebar .container {
-  margin: 0 auto;
-}
-
-/* Отзывчивость */
-@media (max-width: 1600px) {
-  .app-layout.with-sidebar .container {
-    margin: 0;
-  }
+  margin: 0;
 }
 
 @media (max-width: 1024px) {
