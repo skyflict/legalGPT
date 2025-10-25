@@ -79,7 +79,7 @@ const Button: React.FC<ButtonProps> = ({
   loading = false,
   disabled = false,
   active = false,
-  borderRadius = 8,
+  borderRadius = 0,
   type = "button",
   onClick,
   className = "",

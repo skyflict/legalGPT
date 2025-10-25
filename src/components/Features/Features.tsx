@@ -62,7 +62,7 @@ const Features = ({ isLoggedIn = false, onOpenAuthModal }: FeaturesProps) => {
               className="features-footer-btn"
               onClick={onOpenAuthModal}
             >
-              Попробовать
+              Попробовать бесплатно
             </Button>
           </div>
         )}

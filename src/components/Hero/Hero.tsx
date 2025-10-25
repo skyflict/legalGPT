@@ -25,7 +25,7 @@ const Hero = ({ onOpenAuthModal }: HeroProps) => {
               variant="custom"
               textColor="#FFF"
               backgroundColor="#2E2BFF"
-              borderRadius={16}
+              borderRadius={28}
               noBorder
               className="hero-btn"
               glowing={true}

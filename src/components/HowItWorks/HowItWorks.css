@@ -418,6 +418,13 @@
   font-family: "Unbounded", sans-serif;
   font-size: 64px;
   font-weight: 300;
+  transition: color 0.3s ease;
+}
+
+.how-it-works-step:hover .how-it-works-step-number,
+.how-it-works-step-2:hover .how-it-works-step-number,
+.how-it-works-step-3:hover .how-it-works-step-number {
+  color: #2e2bff;
 }
 
 .how-it-works-step-title {
@@ -467,7 +474,7 @@
   backdrop-filter: blur(10px);
   color: #2e2bff;
   text-align: center;
-  font-family: "Unbounded", sans-serif;
+  font-family: "Unbounded", "regular";
   font-size: 14px;
   font-style: normal;
   font-weight: 400;

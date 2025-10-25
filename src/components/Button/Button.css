@@ -28,6 +28,10 @@
   border-radius: 16px;
 }
 
+.btn--radius-28 {
+  border-radius: 28px !important;
+}
+
 /* Размеры кнопок */
 .btn--xs {
   padding: 4px 8px;
@@ -340,13 +344,13 @@
     padding: 10px 18px;
     min-height: 40px;
   }
-  
+
   .btn--md {
     font-size: 13px;
     padding: 8px 14px;
     min-height: 36px;
   }
-  
+
   .btn--sm {
     font-size: 12px;
     padding: 6px 10px;

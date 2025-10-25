@@ -30,6 +30,16 @@
   height: 190px;
   max-width: 100%;
   box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  background: #2e2bff;
+}
+
+.feature-card:hover .feature-title,
+.feature-card:hover .feature-description {
+  color: #fff;
 }
 
 .feature-icon {
@@ -60,7 +70,7 @@
 }
 
 .features-footer-btn {
-  font-family: "Unbounded", sans-serif;
+  font-family: "Unbounded", "regular";
   font-size: 14px;
   font-weight: 400;
   border-radius: 28px;

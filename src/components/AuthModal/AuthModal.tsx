@@ -198,8 +198,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         <div className="auth-modal__content">
           <h2 className="auth-modal__title">{getTitle()}</h2>
 
-          {auth.error && <div className="auth-modal__error">{auth.error}</div>}
-
           <form className="auth-modal__form" onSubmit={handleSubmit}>
             {isLoginMode && resetStep === "none" && (
               <LoginForm
@@ -207,6 +205,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 password={password}
                 isLoading={auth.isLoading}
                 isFormValid={validation.isFormValid && isAgreementsAccepted}
+                errors={auth.fieldErrors}
                 onEmailChange={setEmail}
                 onPasswordChange={setPassword}
                 onSubmit={handleSubmit}

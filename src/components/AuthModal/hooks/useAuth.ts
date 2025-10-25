@@ -10,15 +10,23 @@ interface AuthResponse {
   token: string;
 }
 
+interface FieldErrors {
+  email?: string;
+  password?: string;
+  general?: string;
+}
+
 export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [tempToken, setTempToken] = useState("");
   const [resetToken, setResetToken] = useState("");
 
   const handleRegister = async (email: string, password: string) => {
     setIsLoading(true);
     setError("");
+    setFieldErrors({});
 
     try {
       const response = await fetch(API_ENDPOINTS.REGISTER, {
@@ -58,6 +66,7 @@ export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
   const handleLogin = async (email: string, password: string) => {
     setIsLoading(true);
     setError("");
+    setFieldErrors({});
 
     try {
       const response = await fetch(API_ENDPOINTS.LOGIN, {
@@ -71,6 +80,8 @@ export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
       if (!response.ok) {
         // Пытаемся распарсить тело ошибки от бэкенда, чтобы отдать понятное сообщение
         let friendlyError = "Неверный email или пароль";
+        let errorField: "email" | "password" | "general" = "general";
+
         try {
           const errorBody = (await response.clone().json()) as {
             code?: number;
@@ -82,6 +93,13 @@ export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
               /Invalid Password/i.test(errorBody.message))
           ) {
             friendlyError = "Неверный пароль";
+            errorField = "password";
+          } else if (
+            errorBody?.message &&
+            /email/i.test(errorBody.message)
+          ) {
+            friendlyError = "Неверный формат почты";
+            errorField = "email";
           }
         } catch {
           // Если пришёл не-JSON, пробуем текст
@@ -89,11 +107,14 @@ export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
             const text = await response.text();
             if (/Invalid Password/i.test(text)) {
               friendlyError = "Неверный пароль";
+              errorField = "password";
             }
           } catch {
             // игнорируем
           }
         }
+
+        setFieldErrors({ [errorField]: friendlyError });
         throw new Error(friendlyError);
       }
 
@@ -157,7 +178,10 @@ export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
     }
   };
 
-  const clearError = () => setError("");
+  const clearError = () => {
+    setError("");
+    setFieldErrors({});
+  };
 
   // --- Password reset flow ---
   const handleStartPasswordReset = async (email: string) => {
@@ -260,6 +284,7 @@ export const useAuth = ({ onLogin, onClose }: UseAuthProps) => {
   return {
     isLoading,
     error,
+    fieldErrors,
     tempToken,
     handleRegister,
     handleLogin,

@@ -18,6 +18,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Используйте `npm run lint` для проверки соответствия code style
 - Проект использует Vite, тесты отсутствуют
 
+### Environment Variables
+
+- `VITE_API_BASE_URL` - переопределить базовый URL API (по умолчанию: https://api.neuroyurist.ru)
+
 ## Архитектура проекта
 
 ### Общая структура
@@ -40,10 +44,18 @@ src/
 │   ├── AuthModal/       # Авторизация: логин/регистрация/подтверждение
 │   │   ├── components/  # LoginForm, RegisterForm, ConfirmationForm, AgreementCheckbox
 │   │   └── hooks/       # useAuth, useFormValidation
-│   ├── Header/          # Хедер с UserDropdown и Logo
+│   ├── Header/          # Хедер с UserDropdown, Logo, AuthButtons
+│   │   ├── components/  # UserDropdown, Logo, AuthButtons
+│   │   └── hooks/       # useDropdown
 │   ├── Sidebar/         # Боковая панель навигации (адаптивная)
 │   ├── History/         # HistoryPage, HistoryModal
-│   ├── Generation/      # Компоненты процесса генерации
+│   ├── Generation/      # Компоненты процесса генерации документов
+│   │   ├── components/  # ContractTypeStep, EntitiesFormStep, QueryInput, FinalResultStep
+│   │   │               # ContractSelectSection, FrequentQueriesSection, ContinueGenerationSection
+│   │   │               # HelpText, Spinner, ErrorMessage, FloatingField
+│   │   ├── hooks/       # useUserForm, useResolvedDocumentType
+│   │   ├── constants/   # frequentQueries
+│   │   └── utils/       # generationStates
 │   ├── Button/          # Переиспользуемая кнопка
 │   ├── Icon/            # SVG иконки
 │   ├── Loader/          # Индикаторы загрузки
@@ -58,7 +70,7 @@ src/
 │   ├── HomePage.tsx     # Главная страница (/)
 │   ├── GenerationPage.tsx # Страница генерации (/generation)
 │   ├── HistoryPage.tsx  # История документов (/history)
-│   └── generation/      # Многошаговый процесс генерации
+│   └── generation/      # Шаги процесса генерации (используются в роутинге)
 │       ├── ContractTypePage.tsx    # Шаг 1: Выбор типа документа
 │       ├── EntitiesFormPage.tsx    # Шаг 2: Ввод данных сторон
 │       ├── QueryInputPage.tsx      # Шаг 3: Детали документа
@@ -171,11 +183,21 @@ src/
 
 ### Процесс генерации документов
 
-Многошаговый процесс в `/generation`:
+Многошаговый процесс реализован двумя способами:
+
+**Вариант 1: Через роутинг** (`src/pages/generation/`):
 1. **ContractTypePage**: выбор типа документа из списка (GET /v1/document-type)
 2. **EntitiesFormPage**: ввод данных сторон договора (имена, контакты и т.д.)
 3. **QueryInputPage**: детальная информация для генерации (условия, сроки, суммы)
 4. **FinalResultPage**: отображение результата, возможность скачать .docx файл
+
+**Вариант 2: Через компонент Generation** (`src/components/Generation/`):
+- Единый компонент Generation.tsx управляет состоянием генерации
+- Подкомпоненты для каждого шага: ContractTypeStep, EntitiesFormStep, QueryInput, FinalResultStep
+- Вспомогательные компоненты: ContractSelectSection, FrequentQueriesSection, ContinueGenerationSection
+- Хуки: useUserForm (управление формами), useResolvedDocumentType (работа с типами документов)
+- Константы: frequentQueries (часто используемые запросы)
+- Утилиты: generationStates (управление состояниями процесса генерации)
 
 ### Особенности UI
 

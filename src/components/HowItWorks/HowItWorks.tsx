@@ -82,7 +82,7 @@ const HowItWorks = ({
             className="how-it-works-footer-btn"
             onClick={onOpenAuthModal}
           >
-            Попробовать
+            Попробовать бесплатно
           </Button>
         )}
 
