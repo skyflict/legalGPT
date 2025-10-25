@@ -273,8 +273,8 @@ const FloatingField: React.FC<Props> = ({
     // Базовые стили тултипа
     const baseTooltipStyle = {
       position: "absolute" as const,
-      backgroundColor: "#1f2937",
-      color: "white",
+      backgroundColor: "white",
+      color: "#1a1a1a",
       padding: "8px 12px",
       borderRadius: "6px",
       fontSize: "12px",
@@ -284,6 +284,7 @@ const FloatingField: React.FC<Props> = ({
       width: isMobile ? `${maxWidth}px` : "max-content",
       minWidth: isMobile ? `${maxWidth}px` : "120px",
       zIndex: 1000,
+      border: "1px solid #e5e7eb",
       boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
       wordWrap: "break-word" as const,
       textAlign: "left" as const,
@@ -312,12 +313,13 @@ const FloatingField: React.FC<Props> = ({
 
         arrowStyle = {
           position: "absolute" as const,
-          top: "-4px",
+          top: "-5px",
           width: 0,
           height: 0,
-          borderLeft: "4px solid transparent",
-          borderRight: "4px solid transparent",
-          borderBottom: "4px solid #1f2937",
+          borderLeft: "5px solid transparent",
+          borderRight: "5px solid transparent",
+          borderBottom: "5px solid white",
+          filter: "drop-shadow(0 -1px 1px rgba(0, 0, 0, 0.1))",
           ...(align === "center" && {
             left: "50%",
             transform: "translateX(-50%)",
@@ -349,12 +351,13 @@ const FloatingField: React.FC<Props> = ({
 
         arrowStyle = {
           position: "absolute" as const,
-          bottom: "-4px",
+          bottom: "-5px",
           width: 0,
           height: 0,
-          borderLeft: "4px solid transparent",
-          borderRight: "4px solid transparent",
-          borderTop: "4px solid #1f2937",
+          borderLeft: "5px solid transparent",
+          borderRight: "5px solid transparent",
+          borderTop: "5px solid white",
+          filter: "drop-shadow(0 1px 1px rgba(0, 0, 0, 0.1))",
           ...(align === "center" && {
             left: "50%",
             transform: "translateX(-50%)",
@@ -379,13 +382,14 @@ const FloatingField: React.FC<Props> = ({
         arrowStyle = {
           position: "absolute" as const,
           top: "50%",
-          right: "-4px",
+          right: "-5px",
           transform: "translateY(-50%)",
           width: 0,
           height: 0,
-          borderTop: "4px solid transparent",
-          borderBottom: "4px solid transparent",
-          borderLeft: "4px solid #1f2937",
+          borderTop: "5px solid transparent",
+          borderBottom: "5px solid transparent",
+          borderLeft: "5px solid white",
+          filter: "drop-shadow(1px 0 1px rgba(0, 0, 0, 0.1))",
         };
         break;
 
@@ -400,13 +404,14 @@ const FloatingField: React.FC<Props> = ({
         arrowStyle = {
           position: "absolute" as const,
           top: "50%",
-          left: "-4px",
+          left: "-5px",
           transform: "translateY(-50%)",
           width: 0,
           height: 0,
-          borderTop: "4px solid transparent",
-          borderBottom: "4px solid transparent",
-          borderRight: "4px solid #1f2937",
+          borderTop: "5px solid transparent",
+          borderBottom: "5px solid transparent",
+          borderRight: "5px solid white",
+          filter: "drop-shadow(-1px 0 1px rgba(0, 0, 0, 0.1))",
         };
         break;
     }

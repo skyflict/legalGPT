@@ -15,7 +15,9 @@ const HowItWorks = ({
       <div className="container">
         <div className="how-it-works-content">
           <div className="how-it-works-text">
-            <h2 className="section-title">Пример запроса:</h2>
+            <h2 className="section-title">
+              <span className="highlight">Пример</span> запроса:
+            </h2>
             <div className="example-request">
               Привет! Помоги составить договор оказания услуг: я, Максим
               Игоревич Смирнов, оказываю услуги репетитора. Стоимость одного
@@ -28,7 +30,9 @@ const HowItWorks = ({
           <div className="how-it-works-image" />
         </div>
 
-        <h2 className="section-title">Как работает наш алгоритм?</h2>
+        <h2 className="section-title-algoritm">
+          Как работает наш <span className="highlight">алгоритм</span>?
+        </h2>
 
         <div className="how-it-works-steps">
           <div className="how-it-works-step">

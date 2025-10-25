@@ -9,7 +9,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 24px;
   align-items: start;
-  margin-bottom: 80px;
+  margin-bottom: 64px;
 }
 
 .section-title {
@@ -18,6 +18,17 @@
   font-size: 24px;
   font-weight: 300;
   margin-bottom: 40px;
+  text-align: center;
+  margin-right: -320px;
+}
+
+.section-title-algoritm {
+  color: #000;
+  font-family: "Unbounded", sans-serif;
+  font-size: 24px;
+  font-weight: 300;
+  margin-bottom: 40px;
+  text-align: center;
 }
 
 .example-request {
@@ -103,7 +114,7 @@
   width: 320px;
   height: 153px;
   border-radius: var(--Corner-Extra-large, 28px);
-  background: url("../../assets/scales.webp") white center / calc(100% - 130px)
+  background: url("../../assets/scales.webp") white center / calc(100% - 80px)
     no-repeat;
   backdrop-filter: blur(10px);
   margin-top: 76px;

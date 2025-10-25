@@ -25,6 +25,7 @@
   flex: 1;
   text-align: center;
   margin-left: 280px;
+  margin-top: 50px;
 }
 
 .frequent-queries-text-2 {
@@ -111,6 +112,7 @@
   margin-right: 10px;
   animation: scroll-horizontal 30s linear infinite;
   will-change: transform;
+  margin-top: -10px;
 }
 
 .contract-types .container {
@@ -135,7 +137,7 @@
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(10px);
   flex: 1;
-  /* min-width: 380px; */
+  min-width: 380px;
   display: flex;
   align-items: center;
   justify-content: center;

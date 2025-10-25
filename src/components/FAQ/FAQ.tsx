@@ -58,7 +58,9 @@ const FAQ = () => {
       <div className="container">
         <div className="faq-content">
           <div className="faq-text">
-            <h2 className="faq-title">Частые вопросы:</h2>
+            <h2 className="faq-title">
+              Частые <span className="highlight">вопросы</span>:
+            </h2>
             <div className="faq-list">
               {faqItems.map((item) => (
                 <div key={item.id} className="faq-item">

@@ -98,6 +98,10 @@
 
 .nav-text {
   flex: 1;
+  font-weight: 700;
+  font-family: Jura;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 /* Стили для админ-панели */

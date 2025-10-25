@@ -39,7 +39,7 @@ const Features = ({ isLoggedIn = false, onOpenAuthModal }: FeaturesProps) => {
       <div className="container">
         <div className="features-header">
           <h2 className="features-title">
-            Что умеет <span className="highlight">Yuri</span>?
+            Почему <span className="highlight">Yuri</span>?
           </h2>
         </div>
         <div className="features-grid">

@@ -63,6 +63,27 @@ const FinalResultStep: React.FC<Props> = ({
         />
       </button>
 
+      {/* Окно консультации юриста */}
+      <div className={styles.consultationCard}>
+        <div className={styles.consultationContent}>
+          <h3 className={styles.consultationTitle}>
+            Получить консультацию у юриста
+          </h3>
+          <p className={styles.consultationDescription}>
+            Если вам нужна профессиональная поддержка при дальнейшей работе с
+            договором или у вас остались юридические вопросы, то наш специалист
+            всегда готов вам помочь. Если вас не устроит помощь специалиста, мы
+            вернём вам токены
+          </p>
+          <button className={styles.consultationButton}>Записаться</button>
+          <p className={styles.consultationNote}>
+            При записи на консультацию на вашем счёту будет заморожено 99 коинов
+            для оплаты консультации
+          </p>
+        </div>
+        <div className={styles.consultationImage} />
+      </div>
+
       {onStartNew && (
         <button
           className="action-button action-button--secondary"

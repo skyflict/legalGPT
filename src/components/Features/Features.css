@@ -1,7 +1,7 @@
 .features-header {
   text-align: center;
   margin-bottom: 40px;
-  margin-top: 40px;
+  margin-top: 64px;
 }
 
 .features-title {
@@ -9,7 +9,7 @@
   font-family: "Unbounded", sans-serif;
   font-size: 24px;
   font-weight: 300;
-  text-align: left;
+  text-align: center;
 }
 
 .highlight {
@@ -66,7 +66,7 @@
 
 .features-footer {
   text-align: center;
-  margin-top: 40px;
+  margin-top: 24px;
 }
 
 .features-footer-btn {
