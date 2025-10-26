@@ -7,15 +7,44 @@ import { downloadDocument } from "../../../../utils/api";
 type Props = {
   documentName: string;
   documentId?: string;
+  createdAt?: string;
   onStartNew?: () => void;
 };
 
 const FEEDBACK_FORM_URL =
   "https://forms.yandex.ru/cloud/68bab2914936399c60c1bac5/?page=1";
 
+// Функция для форматирования даты в русский формат
+const formatDate = (isoString?: string): string => {
+  if (!isoString) return "";
+
+  try {
+    const date = new Date(isoString);
+
+    // Проверяем, что дата валидна
+    if (isNaN(date.getTime())) return "";
+
+    // Форматируем дату в формат: "26 октября, 22:28"
+    const day = date.getDate();
+    const months = [
+      "января", "февраля", "марта", "апреля", "мая", "июня",
+      "июля", "августа", "сентября", "октября", "ноября", "декабря"
+    ];
+    const month = months[date.getMonth()];
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${day} ${month}, ${hours}:${minutes}`;
+  } catch (error) {
+    console.error("Ошибка при форматировании даты:", error);
+    return "";
+  }
+};
+
 const FinalResultStep: React.FC<Props> = ({
   documentName,
   documentId,
+  createdAt,
   onStartNew,
 }) => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -36,7 +65,12 @@ const FinalResultStep: React.FC<Props> = ({
         <span className="document-icon">
           <Icon name="text" width={24} height={24} />
         </span>
-        <span className={styles.name}>{documentName}</span>
+        <div className={styles.documentInfo}>
+          <span className="document-name">{documentName}.doc</span>
+          {createdAt && (
+            <span className={styles.documentDate}>{formatDate(createdAt)}</span>
+          )}
+        </div>
       </div>
 
       <button

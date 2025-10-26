@@ -29,6 +29,7 @@ export interface DocumentStatus {
   is_terminal: boolean;
   public_status: string;
   public_type: string;
+  violated_laws?: string[];
 }
 
 export interface DocumentGenerationState {
@@ -85,12 +86,13 @@ export const useDocumentGeneration = () => {
           if (response.is_terminal) {
             // Документ завершен (успех или неудача)
             const isError =
-              response.stage === "LAW_VIOLATED" ||
               response.stage === "ERROR" ||
               response.stage === "FAILED";
+            const isLawViolated = response.stage === "LAW_VIOLATED";
+
             setState((prev) => ({
               ...prev,
-              currentStep: isError ? "error" : "completed",
+              currentStep: isError ? "error" : (isLawViolated ? "waiting_input" : "completed"),
               isLoading: false,
               error: isError
                 ? response.error || "Произошла ошибка при генерации документа"
@@ -158,12 +160,13 @@ export const useDocumentGeneration = () => {
 
         if (response.is_terminal) {
           const isError =
-            response.stage === "LAW_VIOLATED" ||
             response.stage === "ERROR" ||
             response.stage === "FAILED";
+          const isLawViolated = response.stage === "LAW_VIOLATED";
+
           setState((prev) => ({
             ...prev,
-            currentStep: isError ? "error" : "completed",
+            currentStep: isError ? "error" : (isLawViolated ? "waiting_input" : "completed"),
             isLoading: false,
             error: isError
               ? response.error || "Произошла ошибка при генерации документа"
@@ -301,14 +304,18 @@ export const useDocumentGeneration = () => {
         if (foundDocument.is_terminal) {
           // Документ завершен (успех или неудача)
           const isError =
-            foundDocument.stage === "LAW_VIOLATED" ||
             foundDocument.stage === "ERROR" ||
             foundDocument.stage === "FAILED";
+          const isLawViolated = foundDocument.stage === "LAW_VIOLATED";
+
           setState((prev) => ({
             ...prev,
             status: foundDocument,
-            currentStep: isError ? "error" : "completed",
+            currentStep: isError ? "error" : (isLawViolated ? "waiting_input" : "completed"),
             isLoading: false,
+            error: isError
+              ? foundDocument.error || "Произошла ошибка при генерации документа"
+              : null,
           }));
         } else if (
           foundDocument.required_user_input ||

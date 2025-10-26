@@ -1,33 +1,25 @@
+import styles from "./ErrorMessage.module.css";
+
 interface ErrorMessageProps {
-  error: string;
-  onClear: () => void;
+  onReset: () => void;
 }
 
-const ErrorMessage = ({ error, onClear }: ErrorMessageProps) => {
+const ErrorMessage = ({ onReset }: ErrorMessageProps) => {
   return (
-    <div
-      className="error-message"
-      style={{
-        color: "#ef4444",
-        background: "rgba(239, 68, 68, 0.1)",
-        padding: "12px 16px",
-        borderRadius: "8px",
-        margin: "16px 0",
-        fontSize: "14px",
-      }}
-    >
-      {error}
-      <button
-        onClick={onClear}
-        style={{
-          marginLeft: "8px",
-          background: "none",
-          border: "none",
-          color: "#ef4444",
-          cursor: "pointer",
-        }}
-      >
-        ✕
+    <div className={styles.errorContainer}>
+      <div className={styles.errorIcon}>
+        <span className={styles.errorIconSymbol}>✕</span>
+      </div>
+
+      <h2 className={styles.errorTitle}>Упс! Что-то сломалось</h2>
+
+      <p className={styles.errorDescription}>
+        Ваша генерация в любом случае сохранилась, вы сможете вернуться к ней
+        позже во вкладке История
+      </p>
+
+      <button className={styles.errorButton} onClick={onReset}>
+        Начать заново
       </button>
     </div>
   );

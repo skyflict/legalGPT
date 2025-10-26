@@ -1,0 +1,77 @@
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 48px 24px;
+  margin: 24px 0;
+  width: 740px;
+  height: 290px;
+  border-radius: var(--Corner-Extra-large, 28px);
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  margin-left: 90px;
+}
+
+.errorIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.errorIconSymbol {
+  font-size: 32px;
+  font-weight: 300;
+  color: var(--Text-Primary, #1a1a1a);
+}
+
+.errorTitle {
+  color: var(--Text-Primary, #1a1a1a);
+  text-align: center;
+  font-family: Unbounded;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%; /* 22.4px */
+  margin-bottom: 12px;
+  margin-top: 12px;
+}
+
+.errorDescription {
+  color: var(--Text-Primary, #1a1a1a);
+  text-align: center;
+  font-family: Inter;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%; /* 19.6px */
+  margin-bottom: 16px;
+}
+
+.errorButton {
+  width: 142px;
+  height: 40px;
+  color: var(--Text-Primary, #1a1a1a);
+  font-family: Unbounded;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border: none;
+  cursor: pointer;
+  background: var(--Controls-Secondary, rgba(26, 26, 26, 0.08));
+  border-radius: 12px;
+}
+
+@media (max-width: 768px) {
+  .errorContainer {
+    width: 100%;
+    height: 100%;
+    margin-left: 0;
+  }
+}

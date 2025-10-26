@@ -29,14 +29,28 @@ body.no-scroll {
   width: 100%;
 }
 
-/* Размытые синие круги - левая сторона */
+#root {
+  width: 100%;
+  position: relative;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+}
+
+/* Светящиеся круги и акценты, повторяющие Bg.svg (без использования svg) */
+/* Синие большие круги слева */
 body::before {
   content: "";
   position: fixed;
-  top: 10%;
-  left: 3%;
-  width: 700px;
-  height: 700px;
+  top: 11%; /* ~783/7162 */
+  left: -450px; /* центр ~48px от левого края при r=498 */
+  width: 996px; /* 2 * r */
+  height: 996px;
   background: #0a12aa;
   border-radius: 50%;
   filter: blur(400px);
@@ -48,10 +62,10 @@ body::before {
 body::after {
   content: "";
   position: fixed;
-  top: 35%;
-  left: 3%;
-  width: 700px;
-  height: 700px;
+  top: 36%; /* ~2567/7162 */
+  left: -450px;
+  width: 996px;
+  height: 996px;
   background: #0a12aa;
   border-radius: 50%;
   filter: blur(400px);
@@ -60,19 +74,14 @@ body::after {
   pointer-events: none;
 }
 
-#root {
-  width: 100%;
-  position: relative;
-}
-
-/* Дополнительные размытые круги через #root */
+/* Синие большие круги справа */
 #root::before {
   content: "";
   position: fixed;
-  top: 16%;
-  right: -7%;
-  width: 700px;
-  height: 700px;
+  top: 17%; /* ~1197/7162 */
+  right: -450px; /* центр ~100px за правым краем при r=498 */
+  width: 996px;
+  height: 996px;
   background: #0a12aa;
   border-radius: 50%;
   filter: blur(400px);
@@ -84,10 +93,10 @@ body::after {
 #root::after {
   content: "";
   position: fixed;
-  top: 50%;
-  right: -3%;
-  width: 700px;
-  height: 700px;
+  top: 33%; /* ~2347/7162 */
+  right: -450px;
+  width: 996px;
+  height: 996px;
   background: #0a12aa;
   border-radius: 50%;
   filter: blur(400px);
@@ -96,25 +105,17 @@ body::after {
   pointer-events: none;
 }
 
-.app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  position: relative;
-}
-
-/* Фиолетовые акценты через .app */
+/* Фиолетовые акценты */
 .app::before {
   content: "";
   position: fixed;
-  top: 3%;
-  right: 5%;
-  width: 455px;
+  top: -6%; /* ~0.5/7162 с запасом вверх */
+  right: -120px; /* центр близко к правому краю при r~227.5 */
+  width: 455px; /* 2 * 227.5 */
   height: 455px;
   background: #bab9ff;
   border-radius: 50%;
-  filter: blur(300px);
+  filter: blur(200px);
   opacity: 0.6;
   z-index: -1;
   pointer-events: none;
@@ -123,13 +124,13 @@ body::after {
 .app::after {
   content: "";
   position: fixed;
-  top: 24%;
-  left: 3%;
+  top: 24.5%; /* ~1749.5/7162 */
+  left: -120px;
   width: 455px;
   height: 455px;
   background: #bab9ff;
   border-radius: 50%;
-  filter: blur(300px);
+  filter: blur(200px);
   opacity: 0.3;
   z-index: -1;
   pointer-events: none;

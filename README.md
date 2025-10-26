@@ -50,14 +50,16 @@ src/
 │   ├── Sidebar/         # Боковая панель навигации (адаптивная)
 │   ├── History/         # HistoryPage, HistoryModal
 │   ├── Generation/      # Компоненты процесса генерации документов
-│   │   ├── components/  # ContractTypeStep, EntitiesFormStep, QueryInput, FinalResultStep
+│   │   ├── components/  # ContractTypeStep, EntitiesFormStep (с FloatingField для полей ввода)
+│   │   │               # QueryInput, FinalResultStep, Spinner
 │   │   │               # ContractSelectSection, FrequentQueriesSection, ContinueGenerationSection
-│   │   │               # HelpText, Spinner, ErrorMessage, FloatingField
-│   │   ├── hooks/       # useUserForm, useResolvedDocumentType
+│   │   │               # HelpText, ErrorMessage
+│   │   ├── hooks/       # useUserForm, useFormValidity, useResolvedDocumentType
+│   │   │               # useDocumentGeneration, useDocumentTypes, useFormSchema, useLoaderMessage
 │   │   ├── constants/   # frequentQueries
 │   │   └── utils/       # generationStates
 │   ├── Button/          # Переиспользуемая кнопка
-│   ├── Icon/            # SVG иконки
+│   ├── Icon/            # SVG иконки (README.md с документацией по доступным иконкам)
 │   ├── Loader/          # Индикаторы загрузки
 │   ├── Modal/           # Базовое модальное окно
 │   ├── Hero/            # Лендинг для неавторизованных
@@ -75,6 +77,8 @@ src/
 │       ├── EntitiesFormPage.tsx    # Шаг 2: Ввод данных сторон
 │       ├── QueryInputPage.tsx      # Шаг 3: Детали документа
 │       └── FinalResultPage.tsx     # Шаг 4: Результат генерации
+├── hooks/               # Глобальные хуки
+│   └── useLatestIncompleteDocument.ts  # Получение последнего незавершенного документа
 ├── utils/
 │   └── api.ts          # API клиент, эндпоинты, JWT утилиты
 └── assets/             # Статические ресурсы
@@ -94,10 +98,11 @@ src/
 Глобальное состояние управляется через useState хуки в App.tsx:
 - **Авторизация**: `isLoggedIn`, `userEmail`, `userData` (UserData: id, email, role, balance)
 - **Модали**: `isAuthModalOpen`, `authModalMode` ("login" | "register")
-- **UI**: `isLoading`, `isSidebarOpen`
+- **UI**: `isLoading`, `isSidebarOpen`, `generationKey`
 - **localStorage**: authToken и userEmail для персистентности сессии
 - **Боковая панель**: автоматически открывается на десктопе (>1024px), закрывается на мобильных
 - **Защита маршрутов**: редирект неавторизованных пользователей на HomePage с сохранением контекста
+- **Сброс состояния Generation**: при клике на "Новая генерация" в sidebar увеличивается `generationKey`, что вызывает полный remount компонента GenerationPage
 
 #### API интеграция (src/utils/api.ts)
 
@@ -193,11 +198,45 @@ src/
 
 **Вариант 2: Через компонент Generation** (`src/components/Generation/`):
 - Единый компонент Generation.tsx управляет состоянием генерации
-- Подкомпоненты для каждого шага: ContractTypeStep, EntitiesFormStep, QueryInput, FinalResultStep
-- Вспомогательные компоненты: ContractSelectSection, FrequentQueriesSection, ContinueGenerationSection
-- Хуки: useUserForm (управление формами), useResolvedDocumentType (работа с типами документов)
+- Подкомпоненты для каждого шага: ContractTypeStep, EntitiesFormStep, QueryInput, FinalResultStep, Spinner
+- Вспомогательные компоненты: ContractSelectSection, FrequentQueriesSection, ContinueGenerationSection, HelpText, ErrorMessage
+- Хуки:
+  - useUserForm, useFormValidity (управление формами и валидация)
+  - useResolvedDocumentType (работа с типами документов)
+  - useDocumentGeneration (основная логика генерации документов с polling)
+  - useDocumentTypes (загрузка и работа с типами документов)
+  - useFormSchema (парсинг JSON Schema для динамических форм)
+  - useLoaderMessage (сообщения для различных стадий генерации)
+- Глобальные хуки (в src/hooks/):
+  - useLatestIncompleteDocument (получение последнего незавершенного документа для продолжения работы)
 - Константы: frequentQueries (часто используемые запросы)
-- Утилиты: generationStates (управление состояниями процесса генерации)
+- Утилиты: generationStates (управление состояниями процесса генерации: idle, generating, waiting_input, completed, error)
+
+#### Детали реализации процесса генерации
+
+**Polling механизм** (useDocumentGeneration):
+- После создания документа начинается polling состояния с интервалом 2 секунды
+- Polling останавливается при достижении терминального состояния (is_terminal: true)
+- Tracking стадий: DOC_TYPE_DEDUCING → DOC_TYPE_DEDUCED → ENTITIES_EXTRACTING → ENTITIES_EXCTRACTED → ENTITIES_PROVIDED → DOC_GENERATING → DOC_GENERATED
+- При ошибках или завершении polling автоматически останавливается
+
+**Динамические формы** (useFormSchema):
+- Формы генерируются на основе JSON Schema из required_user_input
+- Поддержка группировки полей через `ui:groups`
+- Разделение полей на обязательные (required) и опциональные
+- Валидация через useFormValidity
+
+**Продолжение генерации** (useLatestIncompleteDocument):
+- При загрузке страницы автоматически ищется последний незавершенный документ
+- Пользователю предлагается продолжить работу с этим документом
+- ContinueGenerationSection показывает информацию о незавершенном документе
+
+**Стадии генерации** (generationStates):
+- `idle` - ожидание начала работы
+- `generating` - идет процесс генерации
+- `waiting_input` - требуется ввод данных пользователем
+- `completed` - генерация завершена
+- `error` - произошла ошибка
 
 ### Особенности UI
 
@@ -205,3 +244,34 @@ src/
 - **Блокировка скролла**: при открытии мобильного sidebar добавляется класс `.no-scroll` на body
 - **Overlay**: затемнение фона при открытом мобильном sidebar с возможностью закрытия по клику
 - **Loader**: глобальный компонент загрузки показывается при инициализации авторизации
+- **Динамические сообщения**: useLoaderMessage показывает различные сообщения в зависимости от текущей стадии генерации
+
+### Важные замечания при разработке
+
+#### Работа с формами
+- При добавлении новых полей в динамические формы (EntitiesFormStep) используйте FloatingField компонент
+- Валидация форм происходит через useFormValidity, которая проверяет заполненность обязательных полей из schema.required
+- Группировка полей управляется через `ui:groups` в JSON Schema из API
+
+#### Работа с API
+- Все API запросы проходят через apiRequest(), который автоматически проверяет токен и добавляет Authorization заголовок
+- При истечении токена происходит автоматический logout с перезагрузкой страницы
+- Для отладки API доступны функции в window: testParseToken, logCurrentTokenInfo, getApiInfo, testDocumentTypeApi
+
+#### Состояние генерации
+- Используйте useDocumentGeneration для работы с процессом генерации
+- Polling автоматически останавливается при is_terminal: true
+- Не забывайте вызывать stopPolling при размонтировании компонента (хук делает это автоматически)
+
+#### Работа с типами документов
+- useDocumentTypes загружает типы документов при монтировании
+- Используйте getDocumentTypeById или getDocumentTypeByName для поиска конкретного типа
+
+#### Роутинг
+- Защищенные маршруты (/generation, /history) автоматически редиректят на HomePage для неавторизованных
+- Используйте generationKey в App.tsx для полного сброса состояния GenerationPage
+
+#### Стили
+- Проект использует CSS Modules для компонентов Generation (*.module.css)
+- Обычные CSS файлы для остальных компонентов
+- SCSS файлы для AuthModal и Header

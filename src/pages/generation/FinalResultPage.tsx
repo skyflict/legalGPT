@@ -31,6 +31,7 @@ const FinalResultPage: React.FC = () => {
       <FinalResultStep
         documentName={getDocumentName()}
         documentId={documentGeneration.status?.id}
+        createdAt={documentGeneration.status?.created_at}
         onStartNew={handleStartNew}
       />
     </div>

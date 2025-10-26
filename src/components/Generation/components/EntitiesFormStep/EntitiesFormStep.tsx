@@ -81,6 +81,15 @@ const EntitiesFormStep: React.FC<Props> = ({
               Введите обязательные недостающие данные
               {/* <Icon name="helpOutlined" width={16} height={16} /> */}
             </div>
+            <div className="entities-form-step-description-text">
+              Чтобы договор считался заключённым, необходимо заполнить только
+              обязательные поля и личную информацию, которую вы также сможете
+              добавить самостоятельно после генерации договора. При желании
+              вы можете внести дополнительную информацию, важную для вашего
+              договора, заполнив соответствующие поля. Если вы не сможете
+              их заполнить — не переживайте: мы восполним их с помощью
+              законодательных норм и собственных рекомендаций
+            </div>
 
             {groups.length > 0 ? (
               <>
@@ -228,7 +237,9 @@ const EntitiesFormStep: React.FC<Props> = ({
                               : styles["spoilerContent--closed"]
                           }`}
                         >
-                          <div className={`${styles.additional} ${styles.spoilerContentInner}`}>
+                          <div
+                            className={`${styles.additional} ${styles.spoilerContentInner}`}
+                          >
                             {optionalInGroup.map((fieldName) => {
                               const fieldProps = allFields[fieldName] || {};
                               const defaultValue = fieldProps.default || "";

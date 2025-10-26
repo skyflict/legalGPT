@@ -33,6 +33,9 @@ const Generation = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showManualContractSelect, setShowManualContractSelect] =
     useState(false);
+  const [showNewGenerationModal, setShowNewGenerationModal] = useState(false);
+  const [newQueryText, setNewQueryText] = useState("");
+  const [agreeToDataProcessing, setAgreeToDataProcessing] = useState(false);
 
   const documentGeneration = useDocumentGeneration();
   const { documentTypes, getDocumentTypeById } = useDocumentTypes();
@@ -54,6 +57,7 @@ const Generation = () => {
       documentGeneration.status?.stage === "ENTITIES_PROVIDED") &&
     !isLoading;
   const showFinalResult = documentGeneration.currentStep === "completed";
+  const showLawViolated = documentGeneration.status?.stage === "LAW_VIOLATED";
 
   // Состояния для утилит
   const generationStates = {
@@ -70,13 +74,12 @@ const Generation = () => {
     documentGeneration.status as any
   );
 
-  const isLawViolated = documentGeneration.status?.stage === "LAW_VIOLATED";
-
-  const handleCloseLawViolatedModal = () => {
+  const handleChangeQuery = () => {
     // Возврат на главную: сбрасываем состояние генерации и форму
     documentGeneration.reset();
     setQuery("");
     setShowOverlay(false);
+    setShowManualContractSelect(false);
     try {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch {
@@ -86,6 +89,34 @@ const Generation = () => {
 
   const handleQueryClick = (queryText: string) => {
     setQuery(queryText);
+  };
+
+  const handleQueryChange = (newText: string) => {
+    // Если генерация активна и пользователь пытается изменить текст
+    const isGenerationActive =
+      documentGeneration.currentStep === "generating" ||
+      documentGeneration.currentStep === "waiting_input" ||
+      documentGeneration.isLoading;
+
+    if (isGenerationActive && newText !== query) {
+      setNewQueryText(newText);
+      setShowNewGenerationModal(true);
+    } else {
+      setQuery(newText);
+    }
+  };
+
+  const handleConfirmNewGeneration = async () => {
+    documentGeneration.reset();
+    setQuery("");
+    setShowNewGenerationModal(false);
+    setAgreeToDataProcessing(false);
+  };
+
+  const handleCloseNewGenerationModal = () => {
+    setShowNewGenerationModal(false);
+    setNewQueryText("");
+    setAgreeToDataProcessing(false);
   };
 
   const handleFocus = () => {
@@ -273,10 +304,9 @@ const Generation = () => {
               <QueryInput
                 value={query}
                 isBusy={isLoading}
-                disabled={documentGeneration.currentStep !== "idle"}
                 isFocused={isFocusedState(generationStates)}
                 showOverlay={shouldShowOverlay(showOverlay, generationStates)}
-                onChange={setQuery}
+                onChange={handleQueryChange}
                 onSend={handleSend}
                 onCancel={handleCancel}
                 onFocus={handleFocus}
@@ -296,10 +326,7 @@ const Generation = () => {
               )}
 
             {documentGeneration.error && (
-              <ErrorMessage
-                error={documentGeneration.error}
-                onClear={documentGeneration.clearError}
-              />
+              <ErrorMessage onReset={handleChangeQuery} />
             )}
           </div>
 
@@ -390,7 +417,41 @@ const Generation = () => {
               <FinalResultStep
                 documentName={getDocumentName()}
                 documentId={documentGeneration.status?.id}
+                createdAt={documentGeneration.status?.created_at}
               />
+            </div>
+          )}
+
+          {showLawViolated && (
+            <div className="law-violated-section">
+              <div className="step-number-container">
+                <div className="step-number-no-active">1</div>
+                <span>
+                  <Icon name="whiteLine" width={139} height={4} />
+                </span>
+                <div className="step-number-error">2</div>
+              </div>
+
+              <h3 className="law-violated-title">
+                Запрос не соответствует закону
+              </h3>
+
+              {documentGeneration.status?.violated_laws &&
+                documentGeneration.status.violated_laws.length > 0 && (
+                  <ul className="law-violated-list">
+                    {documentGeneration.status.violated_laws.map(
+                      (law: string, index: number) => (
+                        <li key={index} className="law-violated-item">
+                          {law}
+                        </li>
+                      )
+                    )}
+                  </ul>
+                )}
+
+              <button className="changeButton" onClick={handleChangeQuery}>
+                Изменить запрос
+              </button>
             </div>
           )}
 
@@ -412,28 +473,23 @@ const Generation = () => {
       <Loader isVisible={shouldShowLoader} message={loaderMessage} />
 
       <Modal
-        isOpen={!!isLawViolated}
-        onClose={handleCloseLawViolatedModal}
-        title="Генерация отменена"
+        isOpen={showNewGenerationModal}
+        onClose={handleCloseNewGenerationModal}
+        title="Начать новую генерацию?"
       >
-        <div>
-          <p>
-            Генерация отменена, запрос нарушает требования законодательства.
+        <div className="auth-modal__form">
+          <p style={{ marginBottom: "24px", lineHeight: "160%" }}>
+            Для новой генерации с вашего счёта спишутся 10 Ю, при этом текущая
+            незавершённая генерация отобразится в истории
           </p>
-          <div
-            style={{
-              marginTop: 16,
-              display: "flex",
-              justifyContent: "flex-end",
-            }}
+
+          <button
+            className="auth-modal__submit-btn"
+            style={{ marginBottom: "16px" }}
+            onClick={handleConfirmNewGeneration}
           >
-            <button
-              onClick={handleCloseLawViolatedModal}
-              className="modal-primary-btn"
-            >
-              На главную
-            </button>
-          </div>
+            Новый запрос
+          </button>
         </div>
       </Modal>
     </section>
