@@ -34,8 +34,6 @@ const Generation = () => {
   const [showManualContractSelect, setShowManualContractSelect] =
     useState(false);
   const [showNewGenerationModal, setShowNewGenerationModal] = useState(false);
-  const [newQueryText, setNewQueryText] = useState("");
-  const [agreeToDataProcessing, setAgreeToDataProcessing] = useState(false);
 
   const documentGeneration = useDocumentGeneration();
   const { documentTypes, getDocumentTypeById } = useDocumentTypes();
@@ -99,7 +97,6 @@ const Generation = () => {
       documentGeneration.isLoading;
 
     if (isGenerationActive && newText !== query) {
-      setNewQueryText(newText);
       setShowNewGenerationModal(true);
     } else {
       setQuery(newText);
@@ -110,13 +107,10 @@ const Generation = () => {
     documentGeneration.reset();
     setQuery("");
     setShowNewGenerationModal(false);
-    setAgreeToDataProcessing(false);
   };
 
   const handleCloseNewGenerationModal = () => {
     setShowNewGenerationModal(false);
-    setNewQueryText("");
-    setAgreeToDataProcessing(false);
   };
 
   const handleFocus = () => {
