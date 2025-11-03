@@ -64,6 +64,7 @@ src/
 │   ├── Modal/           # Базовое модальное окно
 │   ├── Hero/            # Лендинг для неавторизованных
 │   ├── Features/        # Блок преимуществ
+│   ├── ForWhom/         # Блок "Для кого"
 │   ├── HowItWorks/      # Блок "Как это работает"
 │   ├── ContractTypes/   # Типы документов
 │   ├── FAQ/             # Часто задаваемые вопросы
@@ -101,8 +102,10 @@ src/
 - **UI**: `isLoading`, `isSidebarOpen`, `generationKey`
 - **localStorage**: authToken и userEmail для персистентности сессии
 - **Боковая панель**: автоматически открывается на десктопе (>1024px), закрывается на мобильных
+  - Переключение через `toggleSidebar()` (вызывается из Header)
+  - Оверлей закрывает сайдбар на мобильных при клике вне его области
 - **Защита маршрутов**: редирект неавторизованных пользователей на HomePage с сохранением контекста
-- **Сброс состояния Generation**: при клике на "Новая генерация" в sidebar увеличивается `generationKey`, что вызывает полный remount компонента GenerationPage
+- **Сброс состояния Generation**: при клике на "Новая генерация" в sidebar увеличивается `generationKey` (App.tsx:217), что вызывает полный remount компонента GenerationPage (App.tsx:245 через key prop)
 
 #### API интеграция (src/utils/api.ts)
 
@@ -201,7 +204,7 @@ src/
 - Подкомпоненты для каждого шага: ContractTypeStep, EntitiesFormStep, QueryInput, FinalResultStep, Spinner
 - Вспомогательные компоненты: ContractSelectSection, FrequentQueriesSection, ContinueGenerationSection, HelpText, ErrorMessage
 - Хуки:
-  - useUserForm, useFormValidity (управление формами и валидация)
+  - useUserForm, useFormValidity (управление формами и валидация - оба в hooks/useUserForm.ts)
   - useResolvedDocumentType (работа с типами документов)
   - useDocumentGeneration (основная логика генерации документов с polling)
   - useDocumentTypes (загрузка и работа с типами документов)
@@ -250,7 +253,8 @@ src/
 
 #### Работа с формами
 - При добавлении новых полей в динамические формы (EntitiesFormStep) используйте FloatingField компонент
-- Валидация форм происходит через useFormValidity, которая проверяет заполненность обязательных полей из schema.required
+- Валидация форм происходит через useFormValidity (из hooks/useUserForm.ts), которая проверяет заполненность обязательных полей из schema.required
+- useUserForm управляет состоянием формы, поддерживает defaults из схемы и существующие значения из context.entities
 - Группировка полей управляется через `ui:groups` в JSON Schema из API
 
 #### Работа с API
@@ -270,6 +274,7 @@ src/
 #### Роутинг
 - Защищенные маршруты (/generation, /history) автоматически редиректят на HomePage для неавторизованных
 - Используйте generationKey в App.tsx для полного сброса состояния GenerationPage
+- При успешной авторизации происходит автоматический редирект с "/" на "/generation" (App.tsx:48-51, 87-89)
 
 #### Стили
 - Проект использует CSS Modules для компонентов Generation (*.module.css)

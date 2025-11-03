@@ -16,7 +16,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #f9f9f9;
+  background: #e8e7f5;
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
@@ -40,100 +40,11 @@ body.no-scroll {
   flex-direction: column;
   width: 100%;
   position: relative;
-}
-
-/* Светящиеся круги и акценты, повторяющие Bg.svg (без использования svg) */
-/* Синие большие круги слева */
-body::before {
-  content: "";
-  position: fixed;
-  top: 11%; /* ~783/7162 */
-  left: -450px; /* центр ~48px от левого края при r=498 */
-  width: 996px; /* 2 * r */
-  height: 996px;
-  background: #0a12aa;
-  border-radius: 50%;
-  filter: blur(400px);
-  opacity: 0.2;
-  z-index: -1;
-  pointer-events: none;
-}
-
-body::after {
-  content: "";
-  position: fixed;
-  top: 36%; /* ~2567/7162 */
-  left: -450px;
-  width: 996px;
-  height: 996px;
-  background: #0a12aa;
-  border-radius: 50%;
-  filter: blur(400px);
-  opacity: 0.1;
-  z-index: -1;
-  pointer-events: none;
-}
-
-/* Синие большие круги справа */
-#root::before {
-  content: "";
-  position: fixed;
-  top: 17%; /* ~1197/7162 */
-  right: -450px; /* центр ~100px за правым краем при r=498 */
-  width: 996px;
-  height: 996px;
-  background: #0a12aa;
-  border-radius: 50%;
-  filter: blur(400px);
-  opacity: 0.2;
-  z-index: -1;
-  pointer-events: none;
-}
-
-#root::after {
-  content: "";
-  position: fixed;
-  top: 33%; /* ~2347/7162 */
-  right: -450px;
-  width: 996px;
-  height: 996px;
-  background: #0a12aa;
-  border-radius: 50%;
-  filter: blur(400px);
-  opacity: 0.2;
-  z-index: -1;
-  pointer-events: none;
-}
-
-/* Фиолетовые акценты */
-.app::before {
-  content: "";
-  position: fixed;
-  top: -6%; /* ~0.5/7162 с запасом вверх */
-  right: -120px; /* центр близко к правому краю при r~227.5 */
-  width: 455px; /* 2 * 227.5 */
-  height: 455px;
-  background: #bab9ff;
-  border-radius: 50%;
-  filter: blur(200px);
-  opacity: 0.6;
-  z-index: -1;
-  pointer-events: none;
-}
-
-.app::after {
-  content: "";
-  position: fixed;
-  top: 24.5%; /* ~1749.5/7162 */
-  left: -120px;
-  width: 455px;
-  height: 455px;
-  background: #bab9ff;
-  border-radius: 50%;
-  filter: blur(200px);
-  opacity: 0.3;
-  z-index: -1;
-  pointer-events: none;
+  background-color: #e8e7f5;
+  background-repeat: repeat-y;
+  background-position: center top;
+  background-size: 100% auto;
+  background-attachment: scroll;
 }
 
 .app-layout {

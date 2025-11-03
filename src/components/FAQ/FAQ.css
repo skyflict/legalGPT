@@ -20,6 +20,12 @@
   margin-right: -320px;
 }
 
+@media (max-width: 768px) {
+  .faq-title {
+    margin-right: 0px;
+  }
+}
+
 .faq-list {
   display: flex;
   flex-direction: column;
@@ -118,10 +124,8 @@
   width: 279px;
   height: 455px;
   border-radius: var(--Corner-Extra-large, 28px);
-  background: url("../../assets/femida.webp") white center / calc(100% - 70px)
-    no-repeat;
-  backdrop-filter: blur(10px);
   margin-top: 76px;
+  background: url("../../assets/Femida.png") white center / calc(100%) no-repeat;
 }
 
 .scales-illustration {
@@ -192,19 +196,11 @@
     gap: 30px;
   }
 
-  .faq-title {
-    font-size: 20px;
-    margin-bottom: 30px;
-    text-align: center;
-  }
-
   .faq-item {
     width: 100%;
   }
 
   .faq-image {
-    width: 100%;
-    max-width: 300px;
     margin: 20px auto 0;
   }
 }
@@ -217,12 +213,6 @@
   .faq-content {
     grid-template-columns: 1fr;
     gap: 24px;
-  }
-
-  .faq-title {
-    font-size: 18px;
-    margin-bottom: 24px;
-    text-align: center;
   }
 
   .faq-item {
@@ -240,11 +230,6 @@
 
   .faq-answer p {
     font-size: 14px;
-  }
-
-  .faq-image {
-    width: 100%;
-    margin: 16px auto 0;
   }
 
   .scales-illustration {

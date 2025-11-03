@@ -1,0 +1,204 @@
+.for-whom {
+  width: 100%;
+  padding-top: 64px;
+}
+
+.for-whom-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.for-whom-title {
+  color: #000;
+  font-family: "Unbounded", sans-serif;
+  font-size: 24px;
+  font-weight: 300;
+  text-align: center;
+}
+
+.highlight {
+  color: #2e2bff;
+}
+
+.for-whom-grid {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin-left: 24px;
+}
+
+.for-whom-card {
+  width: 288px;
+  position: relative;
+  height: calc(
+    180px + 148px - 20px
+  ); /* высота верхнего блока + высота нижнего - перекрытие */
+}
+
+.for-whom-card-image {
+  width: 288px;
+  height: 180px;
+  border-radius: var(--Corner-Extra-large, 28px);
+  background: url("../../assets/building.png") white center / cover no-repeat;
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 1;
+  background-color: #fff;
+}
+
+.for-whom-card-content {
+  display: flex;
+  padding: 24px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  align-self: stretch;
+  width: 288px;
+  height: 148px;
+  box-sizing: border-box;
+  border-radius: var(--Corner-Extra-large, 28px);
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  position: absolute;
+  top: calc(180px - 20px);
+  left: 0;
+  z-index: 2;
+}
+
+.for-whom-card-title {
+  color: #000;
+  font-family: "Unbounded", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.for-whom-card-description {
+  color: #000;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.for-whom-footer {
+  text-align: center;
+  margin-top: 32px;
+}
+
+.for-whom-footer-btn {
+  font-family: "Unbounded", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  border-radius: 28px;
+  width: 100%;
+  width: 912px;
+  height: 68px;
+  padding: 16px 32px;
+  box-sizing: border-box;
+}
+
+.for-whom-footer-btn:hover {
+  background-color: #2e2bff !important;
+  color: #fff !important;
+}
+
+@media (max-width: 1024px) {
+  .for-whom {
+    padding: 40px 16px;
+  }
+
+  .for-whom-grid {
+    gap: 20px;
+  }
+
+  .for-whom-card {
+    width: 100%;
+    max-width: 288px;
+    height: auto;
+    min-height: 328px;
+  }
+
+  .for-whom-card-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 288 / 180;
+  }
+
+  .for-whom-card-content {
+    width: 100%;
+    height: auto;
+    min-height: 148px;
+    position: relative;
+    top: auto;
+    left: auto;
+  }
+
+  .for-whom-footer-btn {
+    min-width: none;
+    width: 100%;
+    height: 56px;
+    font-size: 14px;
+    padding: 14px 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .for-whom {
+    padding: 32px 12px;
+  }
+
+  .for-whom-grid {
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .for-whom-card {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-height: 328px;
+    min-width: 350px;
+    margin-left: -20px;
+    margin-top: 5px;
+  }
+
+  .for-whom-card-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 288 / 180;
+  }
+
+  .for-whom-card-content {
+    width: 100%;
+    height: auto;
+    min-height: 148px;
+    position: relative;
+    top: auto;
+    left: auto;
+  }
+
+  .for-whom-card-title {
+    font-size: 16px;
+  }
+
+  .for-whom-card-description {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .for-whom-footer {
+    margin-top: 40px;
+  }
+
+  .for-whom-footer-btn {
+    height: 68px;
+    font-size: 14px;
+    padding: 12px 24px;
+    min-width: none;
+    width: 100%;
+  }
+}

@@ -9,7 +9,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 24px;
   align-items: start;
-  margin-bottom: 64px;
+  margin-top: 64px;
 }
 
 .section-title {
@@ -20,6 +20,12 @@
   margin-bottom: 40px;
   text-align: center;
   margin-right: -320px;
+}
+
+@media (max-width: 768px) {
+  .section-title {
+    margin-right: 0px;
+  }
 }
 
 .section-title-algoritm {
@@ -111,13 +117,32 @@
 }
 
 .how-it-works-image {
-  width: 320px;
-  height: 153px;
+  width: 315px;
+  height: 195px;
   border-radius: var(--Corner-Extra-large, 28px);
-  background: url("../../assets/scales.webp") white center / calc(100% - 80px)
-    no-repeat;
+  background-color: transparent;
+  background-image: url("../../assets/Scales.png");
+  background-position: center center;
+  background-size: auto calc(100%);
+  background-repeat: no-repeat;
   backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+
   margin-top: 76px;
+}
+
+.how-it-works-image::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #2b80ff;
+  opacity: 0.1;
+  filter: blur(60px);
+  z-index: -1;
 }
 
 .courthouse-illustration {
@@ -263,25 +288,13 @@
     justify-items: center;
   }
 
-  .section-title {
-    font-size: 18px;
-    text-align: center;
-  }
-
   .example-request {
     padding: 16px;
     min-height: 120px;
   }
 
   .how-it-works-image {
-    width: 100%;
-    max-width: 400px;
-    height: 188px;
     margin-top: 24px;
-    margin-left: auto;
-    margin-right: auto;
-    background-position: center;
-    background-size: contain;
   }
 
   .step-item {
@@ -374,9 +387,9 @@
 }
 
 .how-it-works-step {
-  width: 540px;
+  width: 404px;
   padding: 24px;
-  height: 120px;
+  height: 156px;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -391,9 +404,9 @@
 }
 
 .how-it-works-step-2 {
-  width: 559px;
+  width: 484px;
   padding: 24px;
-  height: 120px;
+  height: 156px;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -408,9 +421,9 @@
 }
 
 .how-it-works-step-3 {
-  width: 720px;
+  width: 524px;
   padding: 24px;
-  height: 120px;
+  height: 156px;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -451,34 +464,67 @@
 }
 
 .how-it-works-step-image-3 {
-  width: 224px;
-  height: 120px;
+  width: 364px;
+  height: 156px;
   border-radius: var(--Corner-Extra-large, 28px);
-  background: url("../../assets/book.webp") white 50% -500% / calc(100% - 88px) no-repeat;
-  backdrop-filter: blur(10px);
+  background-color: transparent;
+  background-image: url("../../assets/Book.png");
+  background-position: center center;
+  background-size: auto calc(100%);
+  background-repeat: no-repeat;
+}
 
-  @media (max-width: 768px) {
+.how-it-works-step-image-3::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #2b80ff;
+  opacity: 0.1;
+  filter: blur(60px);
+  z-index: -1;
+}
+
+@media (max-width: 768px) {
+  .how-it-works-step-image-3 {
+    display: none;
+  }
+
+  .how-it-works-step-image-4 {
     display: none;
   }
 }
 
 .how-it-works-step-image-4 {
-  width: 224px;
-  height: 120px;
+  width: 364px;
+  height: 156px;
   border-radius: var(--Corner-Extra-large, 28px);
-  background: url("../../assets/paper.webp") white 50% 50% / calc(100% - 95px)
-    no-repeat;
-  backdrop-filter: blur(10px);
+  background-color: transparent;
+  background-image: url("../../assets/Folder.png");
+  background-position: center center;
+  background-size: auto calc(100%);
+  background-repeat: no-repeat;
+}
 
-  @media (max-width: 768px) {
-    display: none;
-  }
+.how-it-works-step-image-4::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #2b80ff;
+  opacity: 0.1;
+  filter: blur(60px);
+  z-index: -1;
 }
 
 .how-it-works-button,
 .how-it-works-footer-btn {
   width: 100%;
-  max-width: 890px;
+  max-width: 912px;
   height: 68px;
   border-radius: var(--Corner-Extra-large, 28px);
   background: #fff;

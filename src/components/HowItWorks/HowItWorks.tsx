@@ -13,23 +13,6 @@ const HowItWorks = ({
   return (
     <section className="how-it-works">
       <div className="container">
-        <div className="how-it-works-content">
-          <div className="how-it-works-text">
-            <h2 className="section-title">
-              <span className="highlight">Пример</span> запроса:
-            </h2>
-            <div className="example-request">
-              Привет! Помоги составить договор оказания услуг: я, Максим
-              Игоревич Смирнов, оказываю услуги репетитора. Стоимость одного
-              занятия 3 000 рублей, продолжительность 1 час. Время начала
-              занятия согласовывается за 2 дня до урока. Оплата онлайн по карте
-              после занятия.
-            </div>
-          </div>
-
-          <div className="how-it-works-image" />
-        </div>
-
         <h2 className="section-title-algoritm">
           Как работает наш <span className="highlight">алгоритм</span>?
         </h2>
@@ -38,16 +21,16 @@ const HowItWorks = ({
           <div className="how-it-works-step">
             <div className="how-it-works-step-number">1</div>
             <div className="how-it-works-step-title">
-              Определяем, какой тип договора вам нужен, проверяем соответствие
-              запроса законодательству и находим возможные нарушения
+              Определяем, какой <br />
+              тип договора вам нужен
             </div>
           </div>
 
           <div className="how-it-works-step-2">
             <div className="how-it-works-step-number">2</div>
             <div className="how-it-works-step-title">
-              Распознаём ключевые данные в вашем запросе и при необходимости
-              уточняем недостающую информацию
+              Проверяем соответствие запроса законодательству и находим
+              возможные нарушения
             </div>
           </div>
         </div>
@@ -56,8 +39,8 @@ const HowItWorks = ({
           <div className="how-it-works-step-3">
             <div className="how-it-works-step-number">3</div>
             <div className="how-it-works-step-title">
-              Генерируем готовый договор с помощью искусственного интеллекта и
-              шаблонов, разработанных опытными юристами
+              Распознаём ключевые данные в вашем запросе и при необходимости
+              уточняем недостающую информацию
             </div>
           </div>
 
@@ -70,8 +53,8 @@ const HowItWorks = ({
           <div className="how-it-works-step-3">
             <div className="how-it-works-step-number">4</div>
             <div className="how-it-works-step-title">
-              Мгновенно подключаем юриста сервиса для анализа и индивидуальной
-              проработки вашего кейса по запросу
+              Генерируем готовый договор с помощью искусственного интеллекта
+              и шаблонов, разработанных опытными юристами
             </div>
           </div>
         </div>
@@ -90,7 +73,26 @@ const HowItWorks = ({
           </Button>
         )}
 
-        <div className="guarantee-section">
+        <div className="how-it-works-content">
+          <div className="how-it-works-text">
+            <h2 className="section-title">
+              <span className="highlight">Пример</span> запроса:
+            </h2>
+            <div className="example-request">
+              Привет! Составь, пожалуйста, договор оказания услуг, по которому
+              я, как индивидуальный предприниматель Максим Игоревич Смирнов,
+              буду проводить уроки английского языка. Стоимость одного занятия —
+              3 000 рублей, продолжительность — 60 минут (1 час), при этом
+              точное время начала занятия будет определяться
+              за 2 дня до занятия. Оплата моих услуг будет осуществляться
+              безналичным способом после проведения занятия
+            </div>
+          </div>
+
+          <div className="how-it-works-image" />
+        </div>
+
+        {/* <div className="guarantee-section">
           <div className="guarantee-card">
             <div className="guarantee-title">
               Если не устроил результат — вернём генерацию
@@ -103,7 +105,7 @@ const HowItWorks = ({
           </div>
 
           <div className="guarantee-image" />
-        </div>
+        </div> */}
       </div>
     </section>
   );

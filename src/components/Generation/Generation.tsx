@@ -39,6 +39,16 @@ const Generation = () => {
   const { documentTypes, getDocumentTypeById } = useDocumentTypes();
   const { latestDocument } = useLatestIncompleteDocument();
 
+  // Загрузка сохраненного запроса из localStorage при монтировании
+  useEffect(() => {
+    const pendingQuery = localStorage.getItem("pendingDocumentQuery");
+    if (pendingQuery && pendingQuery.trim()) {
+      setQuery(pendingQuery);
+      // Очищаем localStorage после загрузки
+      localStorage.removeItem("pendingDocumentQuery");
+    }
+  }, []);
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
 

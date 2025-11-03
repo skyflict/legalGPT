@@ -1,6 +1,7 @@
 import React from "react";
 import Hero from "../components/Hero/Hero";
 import ContractTypes from "../components/ContractTypes/ContractTypes";
+import ForWhom from "../components/ForWhom/ForWhom";
 import Features from "../components/Features/Features";
 import HowItWorks from "../components/HowItWorks/HowItWorks";
 import FAQ from "../components/FAQ/FAQ";
@@ -22,6 +23,7 @@ const HomePage: React.FC<Props> = ({
       {!isLoggedIn && (
         <ContractTypes onOpenRegisterModal={onOpenRegisterModal} />
       )}
+      <ForWhom isLoggedIn={isLoggedIn} onOpenAuthModal={onOpenAuthModal} />
       <Features isLoggedIn={isLoggedIn} onOpenAuthModal={onOpenAuthModal} />
       <HowItWorks isLoggedIn={isLoggedIn} onOpenAuthModal={onOpenAuthModal} />
       <FAQ />

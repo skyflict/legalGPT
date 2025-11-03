@@ -1,85 +1,87 @@
 import React from "react";
 import "./ContractTypes.css";
 
-import Button from "../Button";
-import Icon from "../Icon/Icon";
-
 interface ContractTypesProps {
   onOpenRegisterModal: () => void;
+}
+
+interface FeatureCard {
+  id: number;
+  title: string;
+  description: string;
 }
 
 const ContractTypes: React.FC<ContractTypesProps> = ({
   onOpenRegisterModal,
 }) => {
-  const contractTypes = [
-    { id: 1, title: "Агентский договор", isActive: false },
-    { id: 2, title: "Договор аренды", isActive: true },
-    { id: 3, title: "Договор купли-продажи", isActive: false },
-    { id: 4, title: "Договор дарения", isActive: false },
-    { id: 5, title: "Договор найма жилого помещения", isActive: false },
-    { id: 6, title: "Договор хранения", isActive: false },
-    { id: 7, title: "Договор оказания услуг", isActive: false },
-    { id: 8, title: "Договор займа", isActive: false },
+  const features: FeatureCard[] = [
+    {
+      id: 1,
+      title: "Помощь юристов",
+      description:
+        "Опытные юристы проверят договор, выявят риски и предложат правки.",
+    },
+    {
+      id: 2,
+      title: "Подготовит договоров",
+      description:
+        "Нейросеть подготовит договор под задачу, учтет детали и требования.",
+    },
+    {
+      id: 3,
+      title: "Оформление исков",
+      description:
+        "Нейросеть оформит исковое заявление с которым можно идти в суд.",
+    },
+    {
+      id: 4,
+      title: "Автоматизация ваших документов",
+      description:
+        "Разработчики адаптируют нейросеть для задач вашей компании.",
+    },
   ];
 
   return (
     <section className="contract-types">
       <div className="container">
-        <div className="contract-types-content">
-          <div className="section-subtitle">
-            <a href="#" className="register-link" onClick={onOpenRegisterModal}>
-              Зарегистрируйтесь
-            </a>
-            , чтобы воспользоваться нейро-конструктором документов:
-          </div>
-
-          <div className="section-subtitle-2-container">
-            <Button
-              variant="custom"
-              height={40}
-              textColor="#000"
-              backgroundColor="rgba(255, 255, 255, 0.70)"
-              borderRadius={16}
-              style={{
-                cursor: "default",
-                border: "none",
-                color: "#000",
-                fontFamily: "Jura",
-                fontSize: "12px",
-                fontWeight: 700,
-              }}
-            >
-              <Icon
-                name="award"
-                width={16}
-                height={16}
-                className="award-icon"
-              />
-              проверено командой юристов
-            </Button>
-          </div>
+        <div className="section-subtitle">
+          <span className="section-subtitle-text-bold">Возможности</span>{" "}
+          сервиса
+        </div>
+        <div className="section-subtitle-text">
+          Yuri — больше чем генератор шаблонов. Это ваш личный юридический
+          отдел: быстрый AI <br />
+          создаёт основу, а опытные юристы подключаются, когда нужна экспертиза
         </div>
         <div className="contract-grid">
-          {contractTypes.map((contract) => (
+          {features.map((feature) => (
             <div
-              key={contract.id}
-              className={`contract-card ${contract.isActive ? "active" : ""}`}
+              key={feature.id}
+              className="contract-card"
               onClick={onOpenRegisterModal}
               style={{ cursor: "pointer" }}
             >
-              <span className="contract-title">{contract.title}</span>
+              <div className="contract-card-content">
+                <span className="contract-title">{feature.title}</span>
+                <span className="contract-description">
+                  {feature.description}
+                </span>
+              </div>
             </div>
           ))}
-          {contractTypes.map((contract) => (
+          {features.map((feature) => (
             <div
-              key={`duplicate-${contract.id}`}
-              className={`contract-card duplicate ${
-                contract.isActive ? "active" : ""
-              }`}
+              key={`duplicate-${feature.id}`}
+              className="contract-card duplicate"
               onClick={onOpenRegisterModal}
               style={{ cursor: "pointer" }}
             >
-              <span className="contract-title">{contract.title}</span>
+              <div className="contract-card-content">
+                <span className="contract-title">{feature.title}</span>
+                <span className="contract-description">
+                  {feature.description}
+                </span>
+              </div>
             </div>
           ))}
         </div>

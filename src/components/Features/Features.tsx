@@ -1,36 +1,30 @@
 import "./Features.css";
-import Button from "../Button/Button";
 
-interface FeaturesProps {
-  isLoggedIn?: boolean;
-  onOpenAuthModal?: () => void;
-}
-
-const Features = ({ isLoggedIn = false, onOpenAuthModal }: FeaturesProps) => {
+const Features: React.FC = () => {
   const features = [
     {
       id: 1,
-      title: "Договоры за минуты - просто и удобно ",
+      title: "Качественно, просто, быстро",
       description:
-        "Создавайте профессиональные документы быстро и без лишних сложностей. Наш сервис поможет вам оформить договор в несколько шагов, экономя время и силы",
+        "Получите профессионально подготовленные документы, экономя свои время и ресурсы",
     },
     {
       id: 2,
-      title: "С опорой на закон",
+      title: "Предупреждение рисков",
       description:
-        "Перед созданием мы автоматически проверяем запросы на соответствие действующим правилам и нормам",
+        "Проверим запрос на легальность, если найдём недопустимые условия — уведомим вас",
     },
     {
       id: 3,
-      title: "Думать, как юрист",
+      title: "Автоматизация ваших договоров",
       description:
-        "Мощная нейросеть, адаптированная юристами, специализируется на создании договоров",
+        "Нейросеть, разработанная совместно с юристами, легко адаптируется под ваши корпоративные документы",
     },
     {
       id: 4,
-      title: "Ваша приватность - превыше всего",
+      title: "Приватность персональных данных",
       description:
-        "Вы сами определяете какие данные отправлять в нейросеть, а какие заполнять самостоятельно",
+        "Все данные защищены согласно требованиям ФЗ № 152 «О персональных данных»",
     },
   ];
 
@@ -50,22 +44,6 @@ const Features = ({ isLoggedIn = false, onOpenAuthModal }: FeaturesProps) => {
             </div>
           ))}
         </div>
-        {!isLoggedIn && (
-          <div className="features-footer">
-            <Button
-              variant="custom"
-              textColor="#2E2BFF"
-              backgroundColor="#FFF"
-              borderRadius={16}
-              noBorder
-              glowing={true}
-              className="features-footer-btn"
-              onClick={onOpenAuthModal}
-            >
-              Попробовать бесплатно
-            </Button>
-          </div>
-        )}
       </div>
     </section>
   );

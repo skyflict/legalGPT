@@ -295,6 +295,16 @@ $z-index-dropdown: 1000;
   }
 }
 
+.header__logo-text {
+  color: #000;
+  font-family: Unbounded;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 140%; /* 22.4px */
+  margin-left: 9px;
+}
+
 @media (max-width: 768px) {
   .header {
     &__content {
@@ -355,5 +365,9 @@ $z-index-dropdown: 1000;
       padding: 10px 12px;
       font-size: 12px;
     }
+  }
+
+  .header__logo-text {
+    display: none;
   }
 }

@@ -62,6 +62,9 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
             <Logo />
+            <div className="header__logo-text">
+              ваш партнер в мире <br /> юридических услуг
+            </div>
           </div>
 
           <div className="header__actions">

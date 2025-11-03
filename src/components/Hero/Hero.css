@@ -64,11 +64,10 @@
 .hero-content {
   display: flex;
   justify-content: center;
-  align-items: center;
-  min-height: 500px;
   position: relative;
   z-index: 10;
   padding: 0 16px;
+  margin-bottom: 129px;
 }
 
 .hero-text {
@@ -78,9 +77,14 @@
 }
 
 .hero-title {
-  font-family: "Unbounded", sans-serif;
-  font-size: 64px;
+  color: #000;
+  text-align: center;
+  font-family: Unbounded;
+  font-size: 32px;
+  font-style: normal;
   font-weight: 300;
+  line-height: 140%; /* 44.8px */
+  margin-top: 133px;
 }
 
 .hero-title-2 {
@@ -99,10 +103,13 @@
 
 .hero-description {
   color: #000;
-  font-family: "Inter", sans-serif;
+  text-align: center;
+  font-family: Inter;
   font-size: 14px;
+  font-style: normal;
   font-weight: 400;
-  margin-top: 40px;
+  line-height: 140%; /* 19.6px */
+  margin-top: 44px;
 }
 
 .hero-btn {
@@ -132,44 +139,64 @@
 }
 
 .hero-input-section {
-  margin-bottom: 24px;
+  margin-top: 8px;
+  margin-bottom: 12px;
 }
 
-.input-container {
+.input-wrapper {
+  position: relative;
   display: flex;
-  gap: 12px;
-  align-items: center;
-  max-width: 500px;
+  align-items: flex-end;
+  max-width: 640px;
   margin: 0 auto;
 }
 
 .hero-input {
-  flex: 1;
-  padding: 16px 20px;
-  border: 2px solid #e5e7eb;
+  width: 100%;
+  min-height: 96px;
+  height: auto;
+  padding: 12px 6px 12px 12px;
+  border: 1px solid transparent;
   border-radius: 16px;
   font-size: 16px;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  line-height: 1.4;
   transition: all 0.3s ease;
-  background: white;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  resize: none;
+  overflow: hidden;
+  color: black;
+  box-sizing: border-box;
 }
 
 .hero-input:focus {
   outline: none;
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  border-color: transparent;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 20px rgba(46, 43, 255, 0.15);
 }
 
 .hero-input::placeholder {
   color: #9ca3af;
 }
 
+.hero-input-actions {
+  position: absolute;
+  right: 8px;
+  bottom: 30px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
 .hero-send-btn {
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-  color: white;
+  background: #fff;
   border: none;
   border-radius: 12px;
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -178,26 +205,60 @@
   flex-shrink: 0;
 }
 
-.hero-send-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
+.hero-send-btn:hover:not(:disabled) {
+  transform: scale(1.05);
 }
 
-.security-note {
-  color: #000;
-  text-align: center;
-  font-family: "Inter", sans-serif;
+.hero-send-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Быстрые действия */
+.hero-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  justify-content: left;
+  margin-left: 80px;
+}
+
+.hero-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.03);
+  cursor: pointer;
+  white-space: nowrap;
+
+  color: var(--Text-Primary, #1a1a1a);
+  font-family: Unbounded;
   font-size: 12px;
-  font-weight: 400;
-  margin-top: 24px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  height: 32px;
 }
 
-.security-icon {
-  margin-right: 5px;
+.hero-action-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
-.security-link {
-  text-decoration: underline;
+.hero-action-btn--dark {
+  border-radius: 12px;
+  background: var(--Text-Primary, #1a1a1a);
+  color: #fff;
+}
+
+.hero-action-icon {
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1;
 }
 
 @media (max-width: 768px) {
@@ -208,6 +269,7 @@
   .hero-content {
     min-height: 400px;
     padding: 16px 12px;
+    margin-bottom: 0px;
   }
 
   .hero-text {
@@ -217,6 +279,7 @@
   .hero-title {
     font-size: 28px;
     line-height: 1.2;
+    margin-top: 0px;
   }
 
   .hero-description {
@@ -231,21 +294,37 @@
     margin-top: 20px;
   }
 
-  .input-container {
+  .hero-input-section {
+    margin-top: 24px;
+  }
+
+  .input-wrapper {
     max-width: 100%;
-    flex-direction: column;
-    gap: 12px;
   }
 
   .hero-input {
-    padding: 12px 16px;
+    padding: 14px 50px 14px 16px;
     width: 100%;
+    font-size: 15px;
+    min-height: 80px;
   }
 
   .hero-send-btn {
-    width: 40px;
-    height: 40px;
-    align-self: center;
+    width: 36px;
+    height: 36px;
+  }
+
+  .hero-quick-actions {
+    margin-left: 0px;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hero-action-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 13px;
+    padding: 10px 16px;
   }
 
   .security-note {
