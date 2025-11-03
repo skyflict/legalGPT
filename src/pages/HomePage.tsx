@@ -24,7 +24,7 @@ const HomePage: React.FC<Props> = ({
         <ContractTypes onOpenRegisterModal={onOpenRegisterModal} />
       )}
       <ForWhom isLoggedIn={isLoggedIn} onOpenAuthModal={onOpenAuthModal} />
-      <Features isLoggedIn={isLoggedIn} onOpenAuthModal={onOpenAuthModal} />
+      <Features />
       <HowItWorks isLoggedIn={isLoggedIn} onOpenAuthModal={onOpenAuthModal} />
       <FAQ />
     </>

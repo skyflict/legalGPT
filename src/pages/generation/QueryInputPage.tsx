@@ -234,7 +234,7 @@ const QueryInputPage: React.FC = () => {
         </div>
       </section>
 
-      <Features isLoggedIn={true} onOpenAuthModal={() => {}} />
+      <Features />
       <HowItWorks isLoggedIn={true} onOpenAuthModal={() => {}} />
       <FAQ />
     </>
