@@ -272,13 +272,11 @@
   }
 
   .contract-description {
-    font-size: 12px;
-    left: 16px;
-    right: 16px;
-    top: calc(50% + 6px);
+    display: none;
   }
 
   .contract-card:hover .contract-title {
-    transform: translateY(-10px);
+    transform: none;
+    color: #000;
   }
 }

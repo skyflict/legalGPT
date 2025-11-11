@@ -23,6 +23,7 @@
 @media (max-width: 768px) {
   .faq-title {
     margin-right: 0px;
+    text-align: left;
   }
 }
 
@@ -125,7 +126,10 @@
   height: 455px;
   border-radius: var(--Corner-Extra-large, 28px);
   margin-top: 76px;
-  background: url("../../assets/Femida.png") white center / calc(100%) no-repeat;
+  background-image: url("../../assets/Femida.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .scales-illustration {
@@ -222,14 +226,30 @@
 
   .faq-question {
     font-size: 14px;
+    text-align: left;
+  }
+
+  .faq-question span {
+    text-align: left;
   }
 
   .faq-answer-content {
     font-size: 12px;
+    text-align: left;
   }
 
   .faq-answer p {
     font-size: 14px;
+    text-align: left;
+  }
+
+  .faq-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 279 / 455;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 
   .scales-illustration {

@@ -18,6 +18,10 @@
   width: 572px;
   height: 572px;
   pointer-events: none;
+
+  @media (max-width: 768px) {
+    background-image: none;
+  }
 }
 
 .history-container {
@@ -225,6 +229,10 @@
 
 /* Мобильные стили */
 @media (max-width: 768px) {
+  .history-root {
+    width: 100%;
+  }
+
   .history-container {
     flex-direction: column;
   }
@@ -236,6 +244,7 @@
 
   .history-main-content {
     max-width: 100%;
+    width: 100%;
   }
 
   .history-meta {

@@ -5,9 +5,9 @@
 .hero::after {
   content: "";
   position: absolute;
-  top: 50%;
+  top: 50px;
   right: 0;
-  transform: translateY(-50%);
+  transform: translateY(0);
   background-image: url("../../assets/building.png");
   background-size: contain;
   background-position: center right;
@@ -15,7 +15,6 @@
   z-index: 1;
   width: 572px;
   height: 572px;
-  margin-top: 80px;
 }
 
 @media (max-width: 1024px) {

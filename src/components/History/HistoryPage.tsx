@@ -121,7 +121,7 @@ const HistoryPage = () => {
               textAlign: "left",
             }}
           >
-            Ваши договоры
+            Ваши договоры:
           </h2>
           {isLoading && <div className="history-loading">Загрузка...</div>}
           {error && <div className="history-error">{error}</div>}
@@ -147,8 +147,9 @@ const HistoryPage = () => {
                           <div className="history-title">{typeTitle}</div>
                           <div className="history-meta">
                             <span className="history-date">
-                              {formatDate(doc.created_at)}
+                              {formatDate(doc.created_at)},
                             </span>
+                            <span>ID: {doc.id}</span>
                           </div>
                         </div>
                       </div>

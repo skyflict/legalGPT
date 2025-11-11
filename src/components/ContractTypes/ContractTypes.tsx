@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./ContractTypes.css";
 
 interface ContractTypesProps {
@@ -14,6 +14,19 @@ interface FeatureCard {
 const ContractTypes: React.FC<ContractTypesProps> = ({
   onOpenRegisterModal,
 }) => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   const features: FeatureCard[] = [
     {
       id: 1,
@@ -58,8 +71,8 @@ const ContractTypes: React.FC<ContractTypesProps> = ({
             <div
               key={feature.id}
               className="contract-card"
-              onClick={onOpenRegisterModal}
-              style={{ cursor: "pointer" }}
+              onClick={!isMobile ? onOpenRegisterModal : undefined}
+              style={{ cursor: !isMobile ? "pointer" : "default" }}
             >
               <div className="contract-card-content">
                 <span className="contract-title">{feature.title}</span>
@@ -73,8 +86,8 @@ const ContractTypes: React.FC<ContractTypesProps> = ({
             <div
               key={`duplicate-${feature.id}`}
               className="contract-card duplicate"
-              onClick={onOpenRegisterModal}
-              style={{ cursor: "pointer" }}
+              onClick={!isMobile ? onOpenRegisterModal : undefined}
+              style={{ cursor: !isMobile ? "pointer" : "default" }}
             >
               <div className="contract-card-content">
                 <span className="contract-title">{feature.title}</span>

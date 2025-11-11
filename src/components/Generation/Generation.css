@@ -79,7 +79,7 @@
   border-radius: 12px;
   border: 1px solid rgba(79, 70, 229, 0.1);
   max-width: 100%;
-  min-width: 916px;
+  min-width: 968px;
   box-sizing: border-box;
   min-height: 80px;
 
@@ -131,7 +131,7 @@
 
 .form-group {
   margin-bottom: 24px;
-  min-width: 916px;
+  min-width: 968px;
   border-radius: 28px !important;
 
   @media (max-width: 768px) {
@@ -804,7 +804,7 @@
   font-size: 14px;
   font-weight: 400;
   padding: 24px;
-  width: 916px;
+  width: 968px;
   height: 108px;
   border-radius: var(--Corner-Extra-large, 28px);
   background: rgba(255, 255, 255, 0.5);
@@ -828,13 +828,14 @@
 }
 
 .frequent-queries-image {
-  width: 279px;
-  height: 575px;
+  width: 348px;
+  height: 488px;
   border-radius: var(--Corner-Extra-large, 28px);
-  background: url("../../assets/Clock.png") white center / calc(100% - 10px)
-    no-repeat;
   margin-top: 40px;
-  margin-left: 8px;
+  background-image: url("../../assets/Clock.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .frequent-queries-image {
@@ -857,7 +858,7 @@
 }
 
 .frequent-queries-item {
-  width: 605px;
+  width: 596px;
   max-width: 100%;
   padding: 16px 24px;
   border-radius: var(--Corner-Large, 16px);

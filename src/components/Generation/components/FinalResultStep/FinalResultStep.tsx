@@ -27,8 +27,18 @@ const formatDate = (isoString?: string): string => {
     // Форматируем дату в формат: "26 октября, 22:28"
     const day = date.getDate();
     const months = [
-      "января", "февраля", "марта", "апреля", "мая", "июня",
-      "июля", "августа", "сентября", "октября", "ноября", "декабря"
+      "января",
+      "февраля",
+      "марта",
+      "апреля",
+      "мая",
+      "июня",
+      "июля",
+      "августа",
+      "сентября",
+      "октября",
+      "ноября",
+      "декабря",
     ];
     const month = months[date.getMonth()];
     const hours = String(date.getHours()).padStart(2, "0");
@@ -111,8 +121,8 @@ const FinalResultStep: React.FC<Props> = ({
           </p>
           <button className={styles.consultationButton}>Записаться</button>
           <p className={styles.consultationNote}>
-            При записи на консультацию на вашем счёту будет заморожено 99 коинов
-            для оплаты консультации
+            При записи на консультацию на вашем счёту будет <br />
+            заморожено 99 коинов для оплаты консультации
           </p>
         </div>
         <div className={styles.consultationImage} />

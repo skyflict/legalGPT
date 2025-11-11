@@ -107,9 +107,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
-  background: url("../../../../assets/scales.webp") white center /
-    calc(100% + 140px) no-repeat;
+  background-image: url("../../../../assets/scales.png");
+  background-size: calc(100% + 140px);
+  background-position: center;
+  background-repeat: no-repeat;
+  /* Градиентная маска для бесшовного перехода */
+  mask-image: radial-gradient(
+    ellipse 80% 100% at center,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.8) 50%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 80% 100% at center,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.8) 50%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-size: 120% 120%;
+  -webkit-mask-size: 120% 120%;
+  mask-position: center;
+  -webkit-mask-position: center;
 }
 
 .scalesImage {
@@ -179,5 +197,9 @@
   .consultationImage {
     width: 180px;
     height: 180px;
+  }
+
+  .consultationImage {
+    display: none;
   }
 }

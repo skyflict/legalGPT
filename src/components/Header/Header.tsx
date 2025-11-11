@@ -47,6 +47,19 @@ export const Header: React.FC<HeaderProps> = ({
     }
   }, [isLoggedIn]);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   return (
     <header className="header">
       <div className="container">
@@ -61,7 +74,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <img src={menuIcon} alt="Меню" width="24" height="24" />
               </button>
             )}
-            <Logo />
+            <Logo width={isMobile ? 100 : 117} height={isMobile ? 32 : 44} />
             <div className="header__logo-text">
               ваш партнер в мире <br /> юридических услуг
             </div>

@@ -75,6 +75,10 @@ $z-index-dropdown: 1000;
   &__left {
     @include flex-center;
     gap: 12px;
+
+    @media (max-width: 768px) {
+      gap: 0;
+    }
   }
 
   &__actions {
@@ -301,14 +305,14 @@ $z-index-dropdown: 1000;
   font-size: 16px;
   font-style: normal;
   font-weight: 300;
-  line-height: 140%; /* 22.4px */
+  line-height: 140%;
   margin-left: 9px;
 }
 
 @media (max-width: 768px) {
   .header {
     &__content {
-      padding: 10px 12px;
+      padding: 10px 12px 10px 0;
     }
 
     &__actions {
@@ -369,5 +373,10 @@ $z-index-dropdown: 1000;
 
   .header__logo-text {
     display: none;
+  }
+
+  .sidebar-toggle img {
+    width: 16px;
+    height: 16px;
   }
 }
