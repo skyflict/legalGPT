@@ -31,19 +31,30 @@
   width: 288px;
   position: relative;
   height: calc(
-    180px + 148px - 20px
+    240px + 148px - 20px
   ); /* высота верхнего блока + высота нижнего - перекрытие */
 }
 
 .for-whom-card-image {
   width: 288px;
-  height: 180px;
-  border-radius: var(--Corner-Extra-large, 28px);
-  background: url("../../assets/building.png") white center / cover no-repeat;
+  height: 240px;
+  border-radius: var(--Corner-Extra-large, 28px) var(--Corner-Extra-large, 28px)
+    0 0;
+  background-color: #fff;
   backdrop-filter: blur(10px);
   position: relative;
   z-index: 1;
-  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.for-whom-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
 }
 
 .for-whom-card-content {
@@ -60,7 +71,7 @@
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(10px);
   position: absolute;
-  top: calc(180px - 20px);
+  top: calc(240px - 20px);
   left: 0;
   z-index: 2;
 }
@@ -118,13 +129,12 @@
     width: 100%;
     max-width: 288px;
     height: auto;
-    min-height: 328px;
   }
 
   .for-whom-card-image {
     width: 100%;
     height: auto;
-    aspect-ratio: 288 / 180;
+    aspect-ratio: 288 / 240;
   }
 
   .for-whom-card-content {
@@ -160,16 +170,13 @@
     width: 100%;
     max-width: 100%;
     height: auto;
-    min-height: 328px;
     min-width: 350px;
     margin-left: -20px;
     margin-top: 5px;
   }
 
   .for-whom-card-image {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 288 / 180;
+    display: none;
   }
 
   .for-whom-card-content {
